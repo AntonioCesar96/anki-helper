@@ -39,8 +39,9 @@ exports.buscarTraducoesContext = async palavra => {
     var grupo = $(el_traducoes[i]).attr('data-posgroup');
     var frequencia = $(el_traducoes[i]).attr('data-freq');
     var classeGramatical = $(el_traducoes[i]).attr('data-pos');
+    var id = ((+new Date) + Math.random()* 100).toString(32);
 
-    traducoes.push({traducao: traducao, classeGramatical: classeGramatical, grupo: grupo, frequencia: frequencia});
+    traducoes.push({id: id, traducao: traducao, classeGramatical: classeGramatical, grupo: grupo, frequencia: frequencia});
 
   }
 
@@ -49,16 +50,44 @@ exports.buscarTraducoesContext = async palavra => {
 
 // Cambridge
 exports.buscarDefinicaoCambridge = async palavra => {
-  var palavraBusca = palavra.replace(' ', '-')
-  var command = 'curl -X GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca
+  var palavraBusca = palavra.replace(' ', '-');
+  var command = 'curl -X GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca;
 
-  const { stdout, stderr } = await exec(command) 
+  const { stdout, stderr } = await exec(command);
   const $ = cheerio.load(stdout);
 
-  var dicionarioBritanico = buscarPalavraSimples($, 'Britânico')
-  var dicionarioAmericano = buscarPalavraSimples($, 'Americano')
-  
-  return [ dicionarioBritanico, dicionarioAmericano ];
+  var dicionarioBritanico = buscarPalavraSimples($, 'Britânico');
+  var dicionarioAmericano = buscarPalavraSimples($, 'Americano');
+  var dicionarios = [ dicionarioBritanico, dicionarioAmericano ];
+
+  var pronuncias = agruparPronuncias(dicionarios);
+  var dicionariosAgrupados = agruparDicionarios(dicionarios);
+
+  return { pronuncias: pronuncias, dicionarios: dicionariosAgrupados };
+}
+
+function agruparPronuncias(dicionarios) {
+  var pronuncias = dicionarios.flatMap(x => x.classesGramaticais).flatMap(x => x.pronuncias);
+  var pronunciasAux = pronuncias.filter(x => x.regiao === 'us');
+
+  if(pronunciasAux.length === 0) {
+    pronunciasAux = pronuncias;
+  }
+
+  return pronunciasAux.filter((v,i,a)=>a.findIndex(t=>(t.pronuncia === v.pronuncia))===i);
+}
+
+function agruparDicionarios(dicionarios) {
+
+  var dicionariosAgrupados = [];
+  for (let i = 0; i < dicionarios.length; i++) {
+    const dicionario = dicionarios[i];
+    var definicoes = dicionario.classesGramaticais.flatMap(x => x.definicoes);
+
+    dicionariosAgrupados.push({dicionario: dicionario.dicionario, significados: definicoes});
+  }
+
+  return dicionariosAgrupados;
 }
 
 function buscarPalavraSimples($, dicionario) {
@@ -84,7 +113,7 @@ function buscarPalavraSimples($, dicionario) {
       var regiao = $(el_regioes[j]).find('.region').text().trim();
       var pronuncia = $(el_regioes[j]).find('.pron').text().trim();
 
-      pronuncias.push({regiao: regiao, pronuncia: pronuncia});
+      pronuncias.push({classeGramatical: classeGramatical, regiao: regiao, pronuncia: pronuncia});
     }
 
     // Body
@@ -104,8 +133,8 @@ function buscarPalavraSimples($, dicionario) {
         if(exemplo)
           exemplos.push(exemplo);
       }
-
-      definicoes.push({definicao: definicao, exemplos: exemplos});
+      var id = ((+new Date) + Math.random()* 100).toString(32);
+      definicoes.push({id: id, classeGramatical: classeGramatical, definicao: definicao, exemplos: exemplos});
 
     }
 

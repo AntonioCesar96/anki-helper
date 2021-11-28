@@ -3,13 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AdicionarModule } from './add/adicionar.module';
+import { AnkiHelperCommonModule } from './_common/common.module';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule,
+    AnkiHelperCommonModule,
+    AdicionarModule,
     AppRoutingModule
   ],
   providers: [],
