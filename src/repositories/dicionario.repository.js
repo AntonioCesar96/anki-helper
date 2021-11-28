@@ -1,37 +1,10 @@
-const express = require('express')
+'use strict';
+
 const cheerio = require('cheerio');
 var util = require('util');
 var exec = util.promisify(require('child_process').exec);
 
-const app = express()
-const port = 3000
-
-// 
-
-app.get('/', async (req, res) => {
-  
-  var palavra = req.query.palavra;
-  
-  var cambridge = await buscarDefinicaoCambridge(palavra);
-  var context = await buscarTraducoesContext(palavra);
-  var imagens = await buscarImagens(palavra);
-
-  var retorno = {};
-  retorno.palavra = palavra;
-  retorno.traducoes = context;
-  retorno.imagens = imagens;
-  retorno.dicionarios = cambridge;
-
-
-  res.send(retorno);
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
-
-// Context
-async function buscarImagens(palavra) {
+exports.buscarImagens = async palavra => {
   var palavraBusca = palavra.replace(' ', '+')
   var command = 'curl -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36" "https://www.google.com/search?tbm=isch&q=' + palavraBusca + '"';
 
@@ -52,7 +25,7 @@ async function buscarImagens(palavra) {
 }
 
 // Context
-async function buscarTraducoesContext(palavra) {
+exports.buscarTraducoesContext = async palavra => {
   var palavraBusca = palavra.replace(' ', '+')
   var command = 'curl -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36" https://context.reverso.net/traducao/ingles-portugues/' + palavraBusca
 
@@ -75,7 +48,7 @@ async function buscarTraducoesContext(palavra) {
 }
 
 // Cambridge
-async function buscarDefinicaoCambridge(palavra) {
+exports.buscarDefinicaoCambridge = async palavra => {
   var palavraBusca = palavra.replace(' ', '-')
   var command = 'curl -X GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca
 
