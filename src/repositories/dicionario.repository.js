@@ -17,7 +17,7 @@ exports.buscarImagens = async palavra => {
   for (let i = 0; i < el_imagens.length; i++) {
     var dataSrc = $(el_imagens[i]).attr('data-src');
     if(dataSrc)
-      imagens.push(dataSrc);
+      imagens.push({src: dataSrc});
 
   }
 

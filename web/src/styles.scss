@@ -16,9 +16,66 @@ main,
   height: 100%;
 }
 
-.card-add {
-  border-right: 1px solid #000;
+.card-add-wrapper {
+  border-right: 1px solid #aaaaaa;
   padding: 20px 30px;
+  height: 100%;
+}
+
+.card-add {
+  height: calc(100%);
   overflow-x: hidden;
   overflow-y: scroll;
+}
+
+.anki-content-wrapper {
+  height: calc(100% - 50px);
+  margin-top: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.botao-wrapper {
+  position: fixed;
+  top: 5px;
+  right: 2%;
+
+  .btn-success {
+    margin-right: 10px;
+  }
+
+  select {
+    margin-right: 30px;
+    vertical-align: middle;
+  }
+}
+
+.anki-input {
+  display: block;
+  width: 100%;
+  min-height: 62px;
+  padding: 15px 10px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #000;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #aaaaaa;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: .25rem;
+
+  &:focus {
+    color: #000;
+    background-color: #fff;
+    border-color: #f2cb7f;
+    outline: 0;
+    box-shadow: 0 0 0 2px #ebb03f
+  } 
+
+  p {
+    margin: 0;
+  }
 }

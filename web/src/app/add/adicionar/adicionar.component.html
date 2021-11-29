@@ -1,90 +1,117 @@
 <div class="row full-h">
-  <div class="col-6 card-add">
-    <form class="row align-items-end" [formGroup]="form" novalidate>
-      <div class="col-4">
-        <label for="idPalavra" class="form-label">Palavra</label>
-        <input type="text" class="form-control" id="idPalavra" formControlName="palavra">
-      </div>
-      <div class="col-6">
-        <label for="idFrase" class="form-label">Frase</label>
-        <input type="text" class="form-control" id="idFrase" formControlName="frase">
-      </div>
-      <div class="col-2">
-        <a (click)="obterDefinicao()" class="btn btn-primary">Buscar</a>
-      </div>
-    </form>
-
-    <!-- <div class="row">
-      <div class="col-12">
-        <br>
-        <h1>{{rootObject?.palavra}}</h1>
-        <br>
-      </div>
-    </div> -->
-
-    <div class="row">
-      <div class="col-12">
-        <br>
-        <h5>Traduções</h5>
-      </div>
-      <div class="col-12">
-        <div class="form-check form-check-inline" *ngFor="let traducao of rootObject?.traducoes">
-          <input class="form-check-input" type="checkbox" name="traducao" [id]="traducao.id" [value]="traducao.id">
-          <label class="form-check-label" [for]="traducao.id">{{traducao.traducao}}</label>
+  <div class="col-6 card-add-wrapper">
+    <div class="card-add">
+      <form class="row align-items-end" [formGroup]="form" novalidate>
+        <div class="col-4">
+          <label for="idPalavra" class="form-label">Palavra</label>
+          <input type="text" class="form-control" id="idPalavra" formControlName="palavra">
         </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
-        <br>
-        <h5>Pronúncias</h5>
-      </div>
-      <div class="col-12">
-        <div class="form-check form-check-inline" *ngFor="let pronuncia of rootObject?.pronuncias">
-          <input class="form-check-input" type="checkbox" name="pronuncia" [id]="pronuncia.pronuncia" [value]="pronuncia.pronuncia">
-          <label class="form-check-label" [for]="pronuncia.pronuncia">{{pronuncia.pronuncia}}</label>
+        <!-- <div class="col-6">
+          <label for="idFrase" class="form-label">Frase</label>
+          <input type="text" class="form-control" id="idFrase" formControlName="frase">
+        </div> -->
+        <div class="col-2">
+          <a (click)="obterDefinicao()" class="btn btn-primary">Buscar</a>
         </div>
-      </div>
-    </div>
+      </form>
 
-    <div class="row">
-      <div class="col-12">
-        <br>
-        <h5>Significados</h5>
-      </div>
-      <div class="col-12">
-        <div *ngFor="let dicionario of rootObject?.dicionarios">
-          <h6>{{dicionario.dicionario}}</h6>
+      <!-- <div class="row">
+        <div class="col-12">
+          <br>
+          <h1>{{rootObject?.palavra}}</h1>
+          <br>
+        </div>
+      </div> -->
 
-          <div class="form-check form-check-inline" *ngFor="let significado of dicionario?.significados">
-            <input class="form-check-input" type="checkbox" name="significado" [id]="significado.id" [value]="significado.id">
-            <label class="form-check-label" [for]="significado.id">{{significado.definicao}}</label>
+      <div class="row">
+        <div class="col-12">
+          <br>
+          <h5>Pronúncias</h5>
+        </div>
+        <div class="col-12">
+          <div class="form-check form-check-inline" *ngFor="let pronuncia of rootObject?.pronuncias">
+            <input class="form-check-input" type="checkbox" name="pronuncia" [checked]="pronuncia.checked"
+            [id]="pronuncia.pronuncia" [value]="pronuncia.pronuncia" (change)="changePronuncia(pronuncia)">
+            <label class="form-check-label" [for]="pronuncia.pronuncia">{{pronuncia.pronuncia}}</label>
           </div>
+        </div>
+      </div>
 
+      <div class="row">
+        <div class="col-12">
+          <br>
+          <h5>Traduções</h5>
+        </div>
+        <div class="col-12">
+          <div class="form-check form-check-inline" *ngFor="let traducao of rootObject?.traducoes">
+            <input class="form-check-input" type="checkbox" name="traducao" [id]="traducao.id" [value]="traducao.id"
+              [checked]="traducao.checked" (change)="changeTraducao(traducao)">
+            <label class="form-check-label" [for]="traducao.id">{{traducao.traducao}}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <br>
+          <h5>Significados</h5>
+        </div>
+        <div class="col-12">
+          <div *ngFor="let dicionario of rootObject?.dicionarios">
+            <h6>{{dicionario.dicionario}}</h6>
+
+            <div class="form-check form-check-inline" *ngFor="let significado of dicionario?.significados">
+              <input class="form-check-input" type="checkbox" name="significado" [checked]="significado.checked"
+              [id]="significado.id" [value]="significado.id" (change)="changeSignificado(significado)">
+              <label class="form-check-label" [for]="significado.id">{{significado.definicao}}</label>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <br>
+          <h5>Imagens</h5>
+        </div>
+        <div class="col-12">
+          <div class="form-check form-check-inline" *ngFor="let imagem of rootObject?.imagens">
+            <input class="form-check-input" type="checkbox" name="traducao" [checked]="imagem.checked"
+            [id]="imagem.src" [value]="imagem.src" (change)="changeImagem(imagem)">
+            <label class="form-check-label" [for]="imagem.src">
+              <img [src]="imagem.src" />
+            </label>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="row">
-      <div class="col-12">
-        <br>
-        <h5>Imagens</h5>
-      </div>
-      <div class="col-12">
-        <div class="form-check form-check-inline" *ngFor="let imagem of rootObject?.imagens">
-          <input class="form-check-input" type="checkbox" name="traducao" [id]="imagem" [value]="imagem">
-          <label class="form-check-label" [for]="imagem">
-            <img [src]="imagem" >
-          </label>
-        </div>
-      </div>
-    </div>
-
   </div>
-  <div class="col-6">
-    <div id="editor">
-      <p>Here goes the initial content of the editor.</p>
+  <div class="col-6 anki-content-wrapper">
+    <div class="anki-content">
+      <div class="anki-content-form">
+        <h5>Front</h5>
+        <div class="anki-input" contentEditable="true" #ankiFront>
+          He disguised himself by wearing a false beard.
+        </div>
+        <br>
+        <h5>Back</h5>
+        <div class="anki-input" contentEditable="true" #ankiBack>
+          <div #ankiBackPronuncia></div>
+          <div #ankiBackTraducao></div>
+          <div #ankiBackSignificado></div>
+          <div #ankiBackImagem></div>
+        </div>
+      </div>
+
+      <div class="botao-wrapper">
+        <select #Select (change)="changeDeck(Select.value)">
+          <option *ngFor="let i of decks">{{i}}</option>
+        </select>
+
+          <a (click)="adicionar()" class="btn btn-success">Adicionar</a>
+          <a (click)="limpar()" class="btn btn-danger">Limpar</a>
+        </div>
     </div>
   </div>
 </div>

@@ -18,7 +18,7 @@ exports.obterNomeDosDecks = async () => {
 
 exports.salvarNota = async nota => {
 
-  await salvarAnexos(nota.imagens);
+  await salvarAnexos(nota.anexos);
 
   var body = {
     action: "addNote",
