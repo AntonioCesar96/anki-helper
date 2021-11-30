@@ -15,6 +15,16 @@
         </div>
       </form>
 
+      <div class="row">
+        <div class="col-12">
+          <br>
+          <h5><span class="click" (click)="esconderTraducao = !esconderTraducao;">Tradução frase</span></h5>
+        </div>
+        <div class="col-12">
+          <span [class.esconder]="esconderTraducao">{{traducaoFrase}}</span>
+        </div>
+      </div>
+
       <!-- <div class="row">
         <div class="col-12">
           <br>
@@ -22,6 +32,20 @@
           <br>
         </div>
       </div> -->
+
+      <div class="row">
+        <div class="col-12">
+          <br>
+          <h5>Traduções da palavra</h5>
+        </div>
+        <div class="col-12">
+          <div class="form-check form-check-inline" *ngFor="let traducao of rootObject?.traducoes">
+            <input class="form-check-input" type="checkbox" name="traducao" [id]="traducao.id" [value]="traducao.id"
+              [checked]="traducao.checked" (change)="changeTraducao(traducao)">
+            <label class="form-check-label" [for]="traducao.id">{{traducao.traducao}}</label>
+          </div>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-12">
@@ -36,20 +60,6 @@
             <input class="form-check-input" type="checkbox" name="pronuncia" [checked]="pronuncia.checked"
             [id]="pronuncia.pronuncia" [value]="pronuncia.pronuncia" (change)="changePronuncia(pronuncia)">
             <label class="form-check-label" [for]="pronuncia.pronuncia">{{pronuncia.pronuncia}}</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12">
-          <br>
-          <h5>Traduções</h5>
-        </div>
-        <div class="col-12">
-          <div class="form-check form-check-inline" *ngFor="let traducao of rootObject?.traducoes">
-            <input class="form-check-input" type="checkbox" name="traducao" [id]="traducao.id" [value]="traducao.id"
-              [checked]="traducao.checked" (change)="changeTraducao(traducao)">
-            <label class="form-check-label" [for]="traducao.id">{{traducao.traducao}}</label>
           </div>
         </div>
       </div>
@@ -115,6 +125,7 @@
           <a (click)="adicionar()" class="btn btn-success">Adicionar</a>
           <a (click)="limpar()" class="btn btn-danger">Limpar</a>
           <a (click)="obterAudio()" class="btn btn-primary">Áudio</a>
+          <a (click)="traduzirFrase()" class="btn btn-warning">Traduzir</a>
         </div>
     </div>
   </div>

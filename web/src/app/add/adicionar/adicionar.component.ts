@@ -29,6 +29,8 @@ export class AdicionarComponent implements OnInit {
   decks: string[] = []; 
   deckSelecionado: string = ''; 
   audiosSelecionados: Anexo[] = []; 
+  traducaoFrase = '';
+  esconderTraducao = true;
 
   constructor(
     private fb: FormBuilder, 
@@ -63,6 +65,7 @@ export class AdicionarComponent implements OnInit {
     this.adicionarService.obterDefinicao(this.form.value.palavra)
     .subscribe(res => {
       this.rootObject = res;
+      this.traduzirFrase();
       this.playTTS(this.form.value.palavra);
 
       var traducoes = this.traducoesSelecionadas.filter(x => x.palavraFiltro === this.form.value.palavra);
@@ -76,8 +79,18 @@ export class AdicionarComponent implements OnInit {
     });
   }
 
+  traduzirFrase() {
+    const elementoAnkiFront = this.ankiFront.nativeElement;
+    this.adicionarService.obterTraducao(elementoAnkiFront.innerText)
+    .subscribe(res => {
+      if(res && res[0] && res[0][0] && res[0][0][0]) {
+        this.traducaoFrase = res[0][0][0];
+      }
+    });
+  }
+
   playTTS(text: any) {
-    const url= `https://translate.google.com/translate_tts?ie=UTF-8&tl=en-US&client=tw-ob&q=${text}`;
+    const url= `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${text}`;
     const elemento = this.audioEl.nativeElement;
     elemento.src = url;
  };
@@ -85,7 +98,7 @@ export class AdicionarComponent implements OnInit {
  obterAudio() {
   var anexo = new Anexo();
   anexo.nome = 'a' + ((+new Date) + Math.random()* 100).toString(32).replace('.', '');
-  anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en-US&client=tw-ob&q=${window.getSelection()}`;
+  anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${window.getSelection()}`;
 
   this.audiosSelecionados.push(anexo);
 

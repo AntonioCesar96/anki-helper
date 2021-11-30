@@ -40,7 +40,7 @@ main,
   top: 5px;
   right: 2%;
 
-  .btn-success, .btn-danger {
+  .btn-success, .btn-danger, .btn-primary {
     margin-right: 10px;
   }
 
@@ -85,4 +85,13 @@ main,
   width: 10px;
   height: 10px;
   background-color: #ebb03f;
+}
+
+.click {
+  cursor: pointer;
+}
+
+.esconder {
+  background: #333;
+  color: #333;
 }
