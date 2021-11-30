@@ -5,6 +5,7 @@ export interface Imagem {
 
 export interface Traducao {
     id: string;
+    palavraFiltro: string;
     traducao: string;
     classeGramatical: string;
     grupo: string;
@@ -51,5 +52,4 @@ export class Cartao {
     back!: string;
     anexos!: Anexo[];
 }
-
 

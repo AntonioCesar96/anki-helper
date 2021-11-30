@@ -29,6 +29,9 @@
           <h5>Pronúncias</h5>
         </div>
         <div class="col-12">
+          <audio controls #audioEl></audio>
+          <br>
+
           <div class="form-check form-check-inline" *ngFor="let pronuncia of rootObject?.pronuncias">
             <input class="form-check-input" type="checkbox" name="pronuncia" [checked]="pronuncia.checked"
             [id]="pronuncia.pronuncia" [value]="pronuncia.pronuncia" (change)="changePronuncia(pronuncia)">
@@ -92,7 +95,7 @@
       <div class="anki-content-form">
         <h5>Front</h5>
         <div class="anki-input" contentEditable="true" #ankiFront>
-          He disguised himself by wearing a false beard.
+          I think my feelings for Robin may be resurfacing. 
         </div>
         <br>
         <h5>Back</h5>
@@ -111,6 +114,7 @@
 
           <a (click)="adicionar()" class="btn btn-success">Adicionar</a>
           <a (click)="limpar()" class="btn btn-danger">Limpar</a>
+          <a (click)="obterAudio()" class="btn btn-primary">Áudio</a>
         </div>
     </div>
   </div>

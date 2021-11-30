@@ -40,7 +40,7 @@ main,
   top: 5px;
   right: 2%;
 
-  .btn-success {
+  .btn-success, .btn-danger {
     margin-right: 10px;
   }
 
@@ -78,4 +78,11 @@ main,
   p {
     margin: 0;
   }
+}
+
+.audio {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #ebb03f;
 }
