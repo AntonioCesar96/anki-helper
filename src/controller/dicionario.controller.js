@@ -2,7 +2,7 @@
 
 const repository = require('../repositories/dicionario.repository');
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 0 }); // segundos
+const cache = new NodeCache({ stdTTL: 600 }); // segundos
 
 exports.buscarPalavra = async (req, res, next) => {
 
@@ -13,17 +13,29 @@ exports.buscarPalavra = async (req, res, next) => {
       return res.status(200).json(cache.get(palavra));
     }
     
-    var cambridge = await repository.buscarDefinicaoCambridge(palavra);
-    var context = await repository.buscarTraducoesContext(palavra);
-    var imagens = await repository.buscarImagens(palavra);
+    const promises = [
+      repository.buscarTraducoesContext(palavra),
+      repository.buscarImagens(palavra),
+      repository.buscarDefinicaoCambridge(palavra),
+    ];
 
     var retorno = {};
     retorno.palavra = palavra;
-    retorno.traducoes = context;
-    retorno.imagens = imagens;
-    retorno.pronuncias = cambridge.pronuncias;
-    retorno.dicionarios = cambridge.dicionarios;
-
+    
+    var list = await Promise.all(promises);
+    for (let i = 0; i < list.length; i++) {
+      const element = list[i];
+      if(element.key === 'context') {
+        retorno.traducoes = element.body.traducoes;
+        retorno.sugestoes = element.body.sugestoes;
+      } else if(element.key === 'imagens') {
+        retorno.imagens = element.body;
+      } else if(element.key === 'cambridge') {
+        retorno.pronuncias = element.body.pronuncias;
+        retorno.dicionarios = element.body.dicionarios;
+      }
+    }
+    
     cache.set(palavra, retorno); 
 
     res.status(200).send(retorno);

@@ -8,7 +8,7 @@ exports.obterNomeDosDecks = async (req, res, next) => {
 
     res.status(200).send(retorno.result);
   } catch (err) {
-    handleError(res);
+    handleError(res, err);
   }
 }
 exports.salvarNota = async (req, res, next) => {
@@ -18,12 +18,14 @@ exports.salvarNota = async (req, res, next) => {
 
     res.status(200).send(retorno);
   } catch (err) {
-    handleError(res);
+    handleError(res, err);
   }
 };
 
-function handleError(res) {
-  res.status(500).send({
-    message: 'Falha ao processar sua requisição'
+function handleError(res, err) {
+  res.status(200).send({
+    message: 'Falha ao processar sua requisição',
+    error: err.message,
+    stack: err.stack
   });
 }

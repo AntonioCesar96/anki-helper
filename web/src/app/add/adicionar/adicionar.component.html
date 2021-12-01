@@ -1,7 +1,7 @@
 <div class="row full-h">
   <div class="col-6 card-add-wrapper">
     <div class="card-add">
-      <form class="row align-items-end" [formGroup]="form" novalidate>
+      <form (submit)="obterDefinicao()" class="row align-items-end" [formGroup]="form" novalidate>
         <div class="col-4">
           <label for="idPalavra" class="form-label">Palavra</label>
           <input type="text" class="form-control" id="idPalavra" formControlName="palavra">
@@ -13,15 +13,43 @@
         <div class="col-2">
           <a (click)="obterDefinicao()" class="btn btn-primary">Buscar</a>
         </div>
+        <div class="col-2">
+          <div class="loader" *ngIf="mostrarLoader">
+            <div class="preloader-wrapper small active">
+              <div class="spinner-layer spinner-green-only">
+                <div class="circle-clipper left">
+                  <div class="circle"></div>
+                </div><div class="gap-patch">
+                  <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                  <div class="circle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
+
+      <div class="row" *ngIf="rootObject?.sugestoes && rootObject?.sugestoes?.length !== 0">
+        <div class="col-12">
+          <br>
+            Sugestões: <span class="sugestao" *ngFor="let item of rootObject?.sugestoes" 
+            (click)="sugerir(item)">{{item}}</span>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-12">
           <br>
-          <h5><span class="click" (click)="esconderTraducao = !esconderTraducao;">Tradução frase</span></h5>
+          <h5>
+            <span class="click" (click)="mostrarTraducao = !mostrarTraducao;">
+              Tradução frase 
+              {{ mostrarTraducao ? '-' : '+' }}
+            </span>
+          </h5>
         </div>
         <div class="col-12">
-          <span [class.esconder]="esconderTraducao">{{traducaoFrase}}</span>
+          <span [class.esconder]="!mostrarTraducao">{{traducaoFrase}}</span>
         </div>
       </div>
 
@@ -42,7 +70,16 @@
           <div class="form-check form-check-inline" *ngFor="let traducao of rootObject?.traducoes">
             <input class="form-check-input" type="checkbox" name="traducao" [id]="traducao.id" [value]="traducao.id"
               [checked]="traducao.checked" (change)="changeTraducao(traducao)">
-            <label class="form-check-label" [for]="traducao.id">{{traducao.traducao}}</label>
+            <label class="form-check-label tooltip2-wrapper" [for]="traducao.id">
+              {{traducao.traducao}}
+
+              <div class="tooltip2">
+                <div class="tooltip2-inner">
+                  Frequência {{traducao.frequencia ? traducao.frequencia : 0}}
+                </div>
+              </div>
+            
+            </label>
           </div>
         </div>
       </div>
@@ -73,7 +110,7 @@
           <div *ngFor="let dicionario of rootObject?.dicionarios">
             <h6>{{dicionario.dicionario}}</h6>
 
-            <div class="form-check form-check-inline" *ngFor="let significado of dicionario?.significados">
+            <div class="form-check form-check" *ngFor="let significado of dicionario?.significados">
               <input class="form-check-input" type="checkbox" name="significado" [checked]="significado.checked"
               [id]="significado.id" [value]="significado.id" (change)="changeSignificado(significado)">
               <label class="form-check-label" [for]="significado.id">{{significado.definicao}}</label>
@@ -118,11 +155,12 @@
       </div>
 
       <div class="botao-wrapper">
-        <select #Select (change)="changeDeck(Select.value)">
-          <option *ngFor="let i of decks">{{i}}</option>
-        </select>
+          <span *ngIf="decks.length === 0"><b>*Anki esta fechado </b></span>
+          <select #Select (change)="changeDeck(Select.value)">
+            <option *ngFor="let i of decks">{{i}}</option>
+          </select>
 
-          <a (click)="adicionar()" class="btn btn-success">Adicionar</a>
+          <button (click)="adicionar()" [disabled]="decks.length === 0" class="btn btn-success">Adicionar</button>
           <a (click)="limpar()" class="btn btn-danger">Limpar</a>
           <a (click)="obterAudio()" class="btn btn-primary">Áudio</a>
           <a (click)="traduzirFrase()" class="btn btn-warning">Traduzir</a>

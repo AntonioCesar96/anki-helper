@@ -30,7 +30,8 @@ export class AdicionarComponent implements OnInit {
   deckSelecionado: string = ''; 
   audiosSelecionados: Anexo[] = []; 
   traducaoFrase = '';
-  esconderTraducao = true;
+  mostrarTraducao = false;
+  mostrarLoader = false;
 
   constructor(
     private fb: FormBuilder, 
@@ -39,18 +40,24 @@ export class AdicionarComponent implements OnInit {
   ngOnInit(): void {
     this.criarForm();
 
+    // ---------------
+    this.obterDefinicao();
+
+    this.mostrarLoader = true;
     this.adicionarService.obterDecks()
     .subscribe(res => {
+      this.mostrarLoader = false;
       if(res && res.length > 0) {
         this.decks = res;
         this.changeDeck(res[0]);
+        return;
       }
     });
   }
 
   criarForm() {
     this.form = this.fb.group({
-      palavra: ['resurfacing'],
+      palavra: ['rise'],
       frase: [''],
     });
   }
@@ -61,7 +68,9 @@ export class AdicionarComponent implements OnInit {
       return;
     }
 
-    this.form.value.palavra = this.form.value.palavra.trim();
+    this.mostrarTraducao = false;
+    this.mostrarLoader = true;
+    this.alterarPalavra(this.form.value.palavra.trim());
     this.adicionarService.obterDefinicao(this.form.value.palavra)
     .subscribe(res => {
       this.rootObject = res;
@@ -76,16 +85,60 @@ export class AdicionarComponent implements OnInit {
           traducaoEncontrada.checked = traducao.checked;
         }
       }
+
+      for (let i = 0; i < this.pronunciasSelecionadas.length; i++) {
+        const pronuncia = this.pronunciasSelecionadas[i];
+        var pronunciaEncontrada = this.rootObject.pronuncias.find(x => x.pronuncia === pronuncia.pronuncia);
+        if(pronunciaEncontrada) {
+          pronunciaEncontrada.checked = pronuncia.checked;
+        }
+      }
+
+      for (let i = 0; i < this.significadosSelecionados.length; i++) {
+        const significado = this.significadosSelecionados[i];
+        var significadoEncontrada = this.rootObject.dicionarios
+          .flatMap(x => x.significados)
+          .find(x => x.definicao === significado.definicao);
+
+        if(significadoEncontrada) {
+          significadoEncontrada.checked = significado.checked; 
+        }
+      }
+
+      for (let i = 0; i < this.imagensSelecionadas.length; i++) {
+        const imagem = this.imagensSelecionadas[i];
+        var imagemEncontrada = this.rootObject.imagens.find(x => x.src === imagem.src);
+
+        if(imagemEncontrada) {
+          imagemEncontrada.checked = imagem.checked; 
+        }
+      }
+
+      this.mostrarLoader = false;
     });
   }
 
+  sugerir(sugestao: string) {
+    this.alterarPalavra(sugestao);
+    this.obterDefinicao();
+  }
+
+  alterarPalavra(sugestao: string) {
+    var control = this.form.get('palavra');
+    if(control) {
+      control.setValue(sugestao);
+    }
+  }
+
   traduzirFrase() {
+    this.mostrarLoader = true;
     const elementoAnkiFront = this.ankiFront.nativeElement;
     this.adicionarService.obterTraducao(elementoAnkiFront.innerText)
     .subscribe(res => {
       if(res && res[0] && res[0][0] && res[0][0][0]) {
         this.traducaoFrase = res[0][0][0];
       }
+      this.mostrarLoader = false;
     });
   }
 
@@ -96,6 +149,8 @@ export class AdicionarComponent implements OnInit {
  };
 
  obterAudio() {
+  this.mostrarLoader = true;
+
   var anexo = new Anexo();
   anexo.nome = 'a' + ((+new Date) + Math.random()* 100).toString(32).replace('.', '');
   anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${window.getSelection()}`;
@@ -113,6 +168,8 @@ export class AdicionarComponent implements OnInit {
       el.addEventListener('click', () => {this.tocar(anexo.nome)}); 
     }
   }, 500);
+
+  this.mostrarLoader = false;
  }
 
  tocar(nome: any) {
@@ -165,14 +222,18 @@ export class AdicionarComponent implements OnInit {
 
   // TODO: Agrupar assim { regiao: "US, UK", pronuncia: "/dɪsˈɡaɪz/", regiao: "US", pronuncia: "/dɪsˈɡAɪz/"}
   changePronuncia(pronuncia: Pronuncia) {
+    var pronunciaEncontrada = this.pronunciasSelecionadas.find(x => x.pronuncia === pronuncia.pronuncia);
+    if(pronunciaEncontrada) {
+      const index = this.pronunciasSelecionadas.indexOf(pronunciaEncontrada, 0);
+      this.pronunciasSelecionadas[index] = pronuncia;
+    }
+
     pronuncia.checked = !pronuncia.checked
+
     if(pronuncia.checked) {
       this.pronunciasSelecionadas.push(pronuncia);
     } else {
-      const index = this.pronunciasSelecionadas.indexOf(pronuncia, 0);
-      if (index > -1) {
-        this.pronunciasSelecionadas.splice(index, 1);
-      }
+      this.pronunciasSelecionadas = this.pronunciasSelecionadas.filter(x => x.checked);
     }
 
     const elemento = this.ankiBackPronuncia.nativeElement;
@@ -193,7 +254,8 @@ export class AdicionarComponent implements OnInit {
     if(traducao.checked) {
       this.traducoesSelecionadas.push(traducao);
     } else {
-      var traducaoEncontrada = this.traducoesSelecionadas.find(x => x.traducao === traducao.traducao);
+      var traducaoEncontrada = this.traducoesSelecionadas
+      .find(x => x.palavraFiltro === this.form.value.palavra && x.traducao === traducao.traducao);
       if(traducaoEncontrada) {
         const index = this.traducoesSelecionadas.indexOf(traducaoEncontrada, 0);
         if (index > -1) {
@@ -228,14 +290,18 @@ export class AdicionarComponent implements OnInit {
   }
 
   changeSignificado(significado: Significado) {
+    var significadoEncontrada = this.significadosSelecionados.find(x => x.definicao === significado.definicao);
+    if(significadoEncontrada) {
+      const index = this.significadosSelecionados.indexOf(significadoEncontrada, 0);
+      this.significadosSelecionados[index] = significado;
+    }
+
     significado.checked = !significado.checked
+
     if(significado.checked) {
       this.significadosSelecionados.push(significado);
     } else {
-      const index = this.significadosSelecionados.indexOf(significado, 0);
-      if (index > -1) {
-        this.significadosSelecionados.splice(index, 1);
-      }
+      this.significadosSelecionados = this.significadosSelecionados.filter(x => x.checked);
     }
 
     const elemento = this.ankiBackSignificado.nativeElement;
@@ -250,14 +316,18 @@ export class AdicionarComponent implements OnInit {
   }
 
   changeImagem(imagem: Imagem) {
+    var imagemEncontrada = this.imagensSelecionadas.find(x => x.src === imagem.src);
+    if(imagemEncontrada) {
+      const index = this.imagensSelecionadas.indexOf(imagemEncontrada, 0);
+      this.imagensSelecionadas[index] = imagem;
+    }
+
     imagem.checked = !imagem.checked
+
     if(imagem.checked) {
       this.imagensSelecionadas.push(imagem);
     } else {
-      const index = this.imagensSelecionadas.indexOf(imagem, 0);
-      if (index > -1) {
-        this.imagensSelecionadas.splice(index, 1);
-      }
+      this.imagensSelecionadas = this.imagensSelecionadas.filter(x => x.checked);
     }
 
     const elemento = this.ankiBackImagem.nativeElement;
@@ -280,6 +350,8 @@ export class AdicionarComponent implements OnInit {
   }
 
   adicionar() {
+    this.mostrarLoader = true;
+
     const elementoAnkiFront = this.ankiFront.nativeElement;
     const elementoAnkiBack = this.ankiBack.nativeElement;
 
@@ -315,6 +387,7 @@ export class AdicionarComponent implements OnInit {
     }
 
     this.adicionarService.criarCartao(cartao).subscribe(res => {
+      this.mostrarLoader = false;
       if(!res.error) {
         this.limpar();
       }

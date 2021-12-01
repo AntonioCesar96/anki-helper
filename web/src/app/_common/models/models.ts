@@ -39,6 +39,7 @@ export interface RootObject {
     imagens: Imagem[];
     pronuncias: Pronuncia[];
     dicionarios: Dicionario[];
+    sugestoes: string[];
 }
 
 export class Anexo {
