@@ -8,7 +8,7 @@ var tamanhoBuffer = 10000;
 
 exports.buscarDefinicaoCambridge = async palavra => {
   var palavraBusca = palavra.replaceAll(' ', '-');
-  var command = 'curl -X GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca;
+  var command = 'curl -L GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca;
 
   const { stdout, stderr } = await exec(command, {maxBuffer: 1024 * tamanhoBuffer});
   const $ = cheerio.load(stdout);
