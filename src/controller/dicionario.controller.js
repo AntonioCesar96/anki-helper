@@ -17,6 +17,7 @@ exports.buscarPalavra = async (req, res, next) => {
       repository.buscarTraducoesContext(palavra),
       repository.buscarImagens(palavra),
       repository.buscarDefinicaoCambridge(palavra),
+    // repository.buscarDefinicaoOxford(palavra),
     ];
 
     var retorno = {};
