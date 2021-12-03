@@ -59,7 +59,7 @@ export class AdicionarComponent implements OnInit {
 
   criarForm() {
     this.form = this.fb.group({
-      palavra: [''],
+      palavra: ['raise'],
       frase: [''],
     });
   }

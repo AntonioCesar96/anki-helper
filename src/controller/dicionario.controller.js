@@ -37,7 +37,7 @@ exports.buscarPalavra = async (req, res, next) => {
       }
     }
     
-    // cache.set(palavra, retorno); 
+     cache.set(palavra, retorno); 
 
     res.status(200).send(retorno);
   } catch (err) {

@@ -106,11 +106,11 @@ function buscarPalavraSimples($, dicionario) {
         .replaceAll('[C]', '');
 
       var exemplos = [];
-      var el_exemplos = $(el_classesGramaticais[i]).find('.def-block .examp');
+      var el_exemplos = $(el_definicoes[j]).find('.def-block .examp');
       for (let n = 0; n < el_exemplos.length; n++) {
         var exemplo = $(el_exemplos[n]).text().trim();
   
-        if(exemplo)
+        if(exemplo && n < 10)
           exemplos.push(exemplo);
       }
 

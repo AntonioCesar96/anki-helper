@@ -27,6 +27,7 @@ export interface Significado {
     definicao: string;
     exemplos: string[];
     checked: boolean;
+    mostrarMais: boolean;
 }
 
 export interface Dicionario {

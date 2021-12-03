@@ -64,6 +64,24 @@
       <div class="row">
         <div class="col-12">
           <br>
+          <h5>Pronúncias</h5>
+        </div>
+        <div class="col-12">
+          <audio controls #audioEl></audio>
+          <br>
+
+          <div class="form-check form-check-inline" *ngFor="let pronuncia of rootObject?.pronuncias">
+            <input class="form-check-input" type="checkbox" name="pronuncia" [checked]="pronuncia.checked"
+            [id]="pronuncia.pronuncia" [value]="pronuncia.pronuncia" (change)="changePronuncia(pronuncia)">
+            <label class="form-check-label" [for]="pronuncia.pronuncia">{{pronuncia.pronuncia}}</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-12">
+          <br>
           <h5>Traduções da palavra</h5>
         </div>
         <div class="col-12">
@@ -84,41 +102,44 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12">
-          <br>
-          <h5>Pronúncias</h5>
-        </div>
-        <div class="col-12">
-          <audio controls #audioEl></audio>
-          <br>
-
-          <div class="form-check form-check-inline" *ngFor="let pronuncia of rootObject?.pronuncias">
-            <input class="form-check-input" type="checkbox" name="pronuncia" [checked]="pronuncia.checked"
-            [id]="pronuncia.pronuncia" [value]="pronuncia.pronuncia" (change)="changePronuncia(pronuncia)">
-            <label class="form-check-label" [for]="pronuncia.pronuncia">{{pronuncia.pronuncia}}</label>
-          </div>
-        </div>
-      </div>
 
       <div class="row">
         <div class="col-12">
           <br>
           <h5>Significados: <b>{{rootObject?.palavra}}</b></h5>
         </div>
-        <div class="col-12">
+        <div class="col-12 significado-wrapper">
           <div *ngFor="let dicionario of rootObject?.dicionarios">
             <h6>{{dicionario.dicionario}}</h6>
 
-            <div class="form-check form-check" *ngFor="let significado of dicionario?.significados">
+            <div class="form-check form-check significado" *ngFor="let significado of dicionario?.significados">
               <input class="form-check-input" type="checkbox" name="significado" [checked]="significado.checked"
               [id]="significado.id" [value]="significado.id" (change)="changeSignificado(significado)">
 
-            <label>
-              <span *ngIf="sentidoPossuiClasseGramatical(significado)"><b><i>{{significado.sentido}}</i></b> - </span>
-              <span *ngIf="sentidoNaoPossuiClasseGramatical(significado)"><b>{{significado.classeGramatical}} <i>{{significado.sentido}}</i></b> - </span>
-              {{significado.definicao}}
+              <label>
+                <span class="sentido" *ngIf="sentidoPossuiClasseGramatical(significado)"><i>{{significado.sentido}}</i> - </span>
+                <span class="sentido" *ngIf="sentidoNaoPossuiClasseGramatical(significado)"><i>{{significado.classeGramatical}} {{significado.sentido}}</i> - </span>
+                {{significado.definicao}}
               </label>
+
+              <div class="exemplos" *ngIf="significado.exemplos.length === 1">
+                <div *ngFor="let exemplo of significado.exemplos">
+                  <span><i>- {{exemplo}}</i></span>
+                </div>
+              </div>
+
+              <div class="exemplos" *ngIf="significado.exemplos.length > 1 && !significado.mostrarMais">
+                <span><i>- {{significado.exemplos[0]}}</i></span>
+                <div><span class="sugestao" (click)="significado.mostrarMais = true;"><i>- Mostrar Mais</i></span></div>
+              </div> 
+              
+              <div class="exemplos" *ngIf="significado.exemplos.length > 1 && significado.mostrarMais">
+                <div *ngFor="let exemplo of significado.exemplos">
+                  <span><i>- {{exemplo}}</i></span>
+                </div>
+                <div><span class="sugestao" (click)="significado.mostrarMais = false;"><i>- Mostrar Menos</i></span></div>
+              </div> 
+
             </div>
 
           </div>

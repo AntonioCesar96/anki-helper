@@ -15,6 +15,9 @@ body,
 main,
 .full-h {
   height: 100%;
+  font-family: Arial,Helvetica,sans-serif;
+  color: #1d2a57;
+  font-size: 17px;
 }
 
 .card-add-wrapper {
@@ -158,5 +161,39 @@ main,
   h5 {
     margin-bottom: 10px;
     margin-top: 10px;
+  }
+}
+
+.significado {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid #fec400;
+
+  label {
+    font-size: 18px;
+  }
+}
+
+h5 {
+  font-size: 28px;
+}
+
+.significado-wrapper {
+  color: #1d2a57;
+  h6 {
+    margin-top: 15px;
+    font-size: 26px;
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+  .sentido {
+    color: #5d2fc1;
+  }
+
+  .exemplos {
+    font-size: 17px;
   }
 }
