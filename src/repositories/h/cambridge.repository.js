@@ -6,11 +6,20 @@ var exec = util.promisify(require('child_process').exec);
 
 var tamanhoBuffer = 10000;
 
+async function obterHtml(command) {
+  let { stdout, stderr } = await exec(command, {maxBuffer: 1024 * tamanhoBuffer});
+  return stdout;
+}
+
 exports.buscarDefinicaoCambridge = async palavra => {
   var palavraBusca = palavra.replaceAll(' ', '-');
-  var command = 'curl -L GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca;
 
-  const { stdout, stderr } = await exec(command, {maxBuffer: 1024 * tamanhoBuffer});
+  var stdout = await obterHtml('curl -X GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca);
+  
+  if(!stdout || stdout === '') {
+    stdout = await obterHtml('curl -L GET https://dictionary.cambridge.org/pt/dicionario/ingles/' + palavraBusca);
+  }
+  
   const $ = cheerio.load(stdout);
 
   var dicionarioBritanico = buscarPalavraSimples($, 'Britânico');
@@ -22,7 +31,7 @@ exports.buscarDefinicaoCambridge = async palavra => {
 
   return {
     key: "cambridge",
-    body: { pronuncias: pronuncias, dicionarios: dicionariosAgrupados }
+    body: { palavra: dicionarioBritanico.palavra, pronuncias: pronuncias, dicionarios: dicionariosAgrupados }
   };
 }
 
@@ -62,12 +71,17 @@ function buscarPalavraSimples($, dicionario) {
   var el_dicBritanico = $('div[data-id="' + dataId + '"]');
   var el_classesGramaticais = $(el_dicBritanico).find('.entry-body__el');
 
+  var palavraHtml = '';
   var classesGramaticais = [];
   for (let i = 0; i < el_classesGramaticais.length; i++) {
 
     // Header
     var classeGramatical = $(el_classesGramaticais[i]).find('.pos-header .pos.dpos').first().text().trim();
 
+    if(palavraHtml == '') {
+      palavraHtml = $(el_classesGramaticais[i]).find('.pos-header .di-title').text().trim();
+    }
+    
     var pronuncias = [];
     var el_regioes = $(el_classesGramaticais[i]).find('.pos-header .dpron-i');
     for (let j = 0; j < el_regioes.length; j++) {
@@ -79,28 +93,34 @@ function buscarPalavraSimples($, dicionario) {
 
     // Body
     var definicoes = [];
-    var el_definicoes = $(el_classesGramaticais[i]).find('.def-block');
+    var el_definicoes = $(el_classesGramaticais[i]).find('.dsense');
     for (let j = 0; j < el_definicoes.length; j++) {
-      var definicao = $(el_definicoes[j]).find('.ddef_h .def').text().trim();
-
+      var definicao = $(el_definicoes[j]).find('.def-block .ddef_h .def').text().trim();
+      
       if(!definicao)
-        continue;
+      continue;
+
+      var sentido = $(el_definicoes[j]).find('.dsense_h').text()
+        .trim()
+        .replaceAll('[T]', '')
+        .replaceAll('[C]', '');
 
       var exemplos = [];
-      var el_exemplos = $(el_classesGramaticais[i]).find('.examp');
+      var el_exemplos = $(el_classesGramaticais[i]).find('.def-block .examp');
       for (let n = 0; n < el_exemplos.length; n++) {
         var exemplo = $(el_exemplos[n]).text().trim();
   
         if(exemplo)
           exemplos.push(exemplo);
       }
+
       var id = ((+new Date) + Math.random()* 100).toString(32);
-      definicoes.push({id: id, classeGramatical: classeGramatical, definicao: definicao, exemplos: exemplos});
+      definicoes.push({id: id, classeGramatical: classeGramatical, sentido: sentido, definicao: definicao, exemplos: exemplos});
 
     }
 
     classesGramaticais.push({classeGramatical: classeGramatical, pronuncias: pronuncias, definicoes: definicoes});
   }
 
-  return { dicionario: dicionario, classesGramaticais: classesGramaticais };
+  return { palavra: palavraHtml, dicionario: dicionario, classesGramaticais: classesGramaticais };
 }

@@ -23,6 +23,7 @@ export interface Pronuncia {
 export interface Significado {
     id: string;
     classeGramatical: string;
+    sentido: string;
     definicao: string;
     exemplos: string[];
     checked: boolean;
@@ -50,7 +51,9 @@ export class Anexo {
 export class Cartao {
     deckName!: string;
     front!: string;
-    back!: string;
+    pronuncia!: string;
+    traducao!: string;
+    significado!: string;
     anexos!: Anexo[];
 }
 

@@ -12,9 +12,11 @@ import { AdicionarService } from '../adicionar.service';
 export class AdicionarComponent implements OnInit {
   @ViewChild('audioEl') audioEl!: ElementRef<HTMLAudioElement>;
 
-
   @ViewChild('ankiFront') ankiFront!: ElementRef;
-  @ViewChild('ankiBack') ankiBack!: ElementRef;
+  @ViewChild('ankiPronuncia') ankiPronuncia!: ElementRef;
+  @ViewChild('ankiTraducao') ankiTraducao!: ElementRef;
+  @ViewChild('ankiSignificado') ankiSignificado!: ElementRef;
+
   @ViewChild('ankiBackTraducao') ankiBackTraducao!: ElementRef;
   @ViewChild('ankiBackPronuncia') ankiBackPronuncia!: ElementRef;
   @ViewChild('ankiBackSignificado') ankiBackSignificado!: ElementRef;
@@ -311,9 +313,30 @@ export class AdicionarComponent implements OnInit {
       return;
     }
 
-    var texto = this.significadosSelecionados.map(x => '- ' + x.definicao).join('<br>');
+    var texto = this.significadosSelecionados.map(x => this.mapSignificado(x)).join('<br>');
     elemento.innerHTML = texto;
   }
+
+  mapSignificado(significado: Significado) {
+    var retorno = '';
+    if(this.sentidoPossuiClasseGramatical(significado)) {
+      retorno += `<b><i>${significado.sentido}</i></b><br>`;
+    } else if (this.sentidoNaoPossuiClasseGramatical(significado)) {
+      retorno += `<b>${significado.classeGramatical} <i>${significado.sentido}</i></b><br>`;
+    }
+
+    retorno += `- ${significado.definicao}`;
+    return retorno;
+  }
+
+  sentidoPossuiClasseGramatical(significado: Significado) {
+    return significado.sentido && significado.sentido.includes(significado.classeGramatical);
+  }
+
+  sentidoNaoPossuiClasseGramatical(significado: Significado) {
+    return !significado.sentido || !significado.sentido.includes(significado.classeGramatical);
+  }
+
 
   changeImagem(imagem: Imagem) {
     var imagemEncontrada = this.imagensSelecionadas.find(x => x.src === imagem.src);
@@ -353,13 +376,17 @@ export class AdicionarComponent implements OnInit {
     this.mostrarLoader = true;
 
     const elementoAnkiFront = this.ankiFront.nativeElement;
-    const elementoAnkiBack = this.ankiBack.nativeElement;
+    const elementoAnkiPronuncia = this.ankiPronuncia.nativeElement;
+    const elementoAnkiTraducao = this.ankiTraducao.nativeElement;
+    const elementoAnkiSignificado = this.ankiSignificado.nativeElement;
 
     var cartao = new Cartao(); 
 
     cartao.deckName = this.deckSelecionado;
     cartao.front = elementoAnkiFront.innerHTML;
-    cartao.back = elementoAnkiBack.innerHTML;
+    cartao.pronuncia = elementoAnkiPronuncia.innerHTML;
+    cartao.traducao = elementoAnkiTraducao.innerHTML;
+    cartao.significado = elementoAnkiSignificado.innerHTML;
     cartao.anexos = [];
 
     for (let i = 0; i < this.imagensSelecionadas.length; i++) {
@@ -369,7 +396,7 @@ export class AdicionarComponent implements OnInit {
       anexo.nome = ((+new Date) + Math.random()* 100).toString(32).replace('.', '') + '.jpg';
       anexo.url = imagem.src.replace('&', '&amp;');
 
-      cartao.back = cartao.back.replace(anexo.url, anexo.nome);
+      cartao.significado = cartao.significado.replace(anexo.url, anexo.nome);
       cartao.anexos.push(anexo);
     }
 
@@ -382,7 +409,7 @@ export class AdicionarComponent implements OnInit {
 
       var replace = '<a id="'+audio.nome+'" class="btn btn-primary"><span class="audio"></span></a>';
       cartao.front = cartao.front.replace(replace, '[sound:'+anexo.nome+']');
-      cartao.back = cartao.back.replace(replace, '[sound:'+anexo.nome+']');
+      cartao.significado = cartao.significado.replace(replace, '[sound:'+anexo.nome+']');
       cartao.anexos.push(anexo);
     }
 

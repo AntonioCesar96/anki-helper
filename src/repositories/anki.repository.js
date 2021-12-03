@@ -26,10 +26,12 @@ exports.salvarNota = async nota => {
     params: {
       note: {
         deckName: nota.deckName,
-        modelName: "Basic",
+        modelName: "Basice 4 Fields",
         fields: {
             Front: nota.front,
-            Back: nota.back
+            Pronuncia: nota.pronuncia,
+            Traducao: nota.traducao,
+            Significado: nota.significado,
         },
         options: {
             allowDuplicate: false,

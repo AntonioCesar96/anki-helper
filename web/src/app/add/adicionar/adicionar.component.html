@@ -104,7 +104,7 @@
       <div class="row">
         <div class="col-12">
           <br>
-          <h5>Significados</h5>
+          <h5>Significados: <b>{{rootObject?.palavra}}</b></h5>
         </div>
         <div class="col-12">
           <div *ngFor="let dicionario of rootObject?.dicionarios">
@@ -113,7 +113,12 @@
             <div class="form-check form-check" *ngFor="let significado of dicionario?.significados">
               <input class="form-check-input" type="checkbox" name="significado" [checked]="significado.checked"
               [id]="significado.id" [value]="significado.id" (change)="changeSignificado(significado)">
-              <label class="form-check-label" [for]="significado.id">{{significado.definicao}}</label>
+
+            <label>
+              <span *ngIf="sentidoPossuiClasseGramatical(significado)"><b><i>{{significado.sentido}}</i></b> - </span>
+              <span *ngIf="sentidoNaoPossuiClasseGramatical(significado)"><b>{{significado.classeGramatical}} <i>{{significado.sentido}}</i></b> - </span>
+              {{significado.definicao}}
+              </label>
             </div>
 
           </div>
@@ -143,11 +148,16 @@
         <h5>Front</h5>
         <div class="anki-input" contentEditable="true" #ankiFront>
         </div>
-        <br>
-        <h5>Back</h5>
-        <div class="anki-input" contentEditable="true" #ankiBack>
+        <h5>Pronuncia</h5>
+        <div class="anki-input" contentEditable="true" #ankiPronuncia>
           <div #ankiBackPronuncia></div>
+        </div>
+        <h5>Traducao</h5>
+        <div class="anki-input" contentEditable="true" #ankiTraducao>
           <div #ankiBackTraducao></div>
+        </div>
+        <h5>Significado</h5>
+        <div class="anki-input" contentEditable="true" #ankiSignificado>
           <div #ankiBackSignificado></div>
           <div #ankiBackImagem></div>
         </div>

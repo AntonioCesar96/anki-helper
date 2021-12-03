@@ -21,7 +21,6 @@ exports.buscarPalavra = async (req, res, next) => {
     ];
 
     var retorno = {};
-    retorno.palavra = palavra;
     
     var list = await Promise.all(promises);
     for (let i = 0; i < list.length; i++) {
@@ -32,12 +31,13 @@ exports.buscarPalavra = async (req, res, next) => {
       } else if(element.key === 'imagens') {
         retorno.imagens = element.body;
       } else if(element.key === 'cambridge') {
+        retorno.palavra = element.body.palavra;
         retorno.pronuncias = element.body.pronuncias;
         retorno.dicionarios = element.body.dicionarios;
       }
     }
     
-    cache.set(palavra, retorno); 
+    // cache.set(palavra, retorno); 
 
     res.status(200).send(retorno);
   } catch (err) {
