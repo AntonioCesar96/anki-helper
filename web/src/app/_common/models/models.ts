@@ -20,12 +20,18 @@ export interface Pronuncia {
     checked: boolean;
 }
 
+export interface Exemplo {
+    id: string;
+    exemplo: string;
+    checked: boolean;
+}
+
 export interface Significado {
     id: string;
     classeGramatical: string;
     sentido: string;
     definicao: string;
-    exemplos: string[];
+    exemplos: Exemplo[];
     checked: boolean;
     mostrarMais: boolean;
 }

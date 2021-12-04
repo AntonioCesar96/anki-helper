@@ -111,7 +111,7 @@ function buscarPalavraSimples($, dicionario) {
         var exemplo = $(el_exemplos[n]).text().trim();
   
         if(exemplo && n < 10)
-          exemplos.push(exemplo);
+          exemplos.push({exemplo: exemplo, id: 'e'+((+new Date) + Math.random()* 100).toString(32)});
       }
 
       var id = ((+new Date) + Math.random()* 100).toString(32);

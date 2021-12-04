@@ -116,26 +116,42 @@
               <input class="form-check-input" type="checkbox" name="significado" [checked]="significado.checked"
               [id]="significado.id" [value]="significado.id" (change)="changeSignificado(significado)">
 
-              <label>
+              <label class="significado-label" [for]="significado.id">
                 <span class="sentido" *ngIf="sentidoPossuiClasseGramatical(significado)"><i>{{significado.sentido}}</i> - </span>
                 <span class="sentido" *ngIf="sentidoNaoPossuiClasseGramatical(significado)"><i>{{significado.classeGramatical}} {{significado.sentido}}</i> - </span>
                 {{significado.definicao}}
               </label>
 
               <div class="exemplos" *ngIf="significado.exemplos.length === 1">
-                <div *ngFor="let exemplo of significado.exemplos">
-                  <span><i>- {{exemplo}}</i></span>
-                </div>
+                
+                <input [disabled]="!significado.checked" class="form-check-input" type="checkbox" name="exemplo" [checked]="significado.exemplos[0].checked"
+                [id]="significado.exemplos[0].id" [value]="significado.exemplos[0].id" (change)="changeExemplo(significado.exemplos[0], significado)">
+
+                <label [for]="significado.exemplos[0].id">
+                  <span><i>- {{significado.exemplos[0].exemplo}}</i></span>
+                </label>
               </div>
 
               <div class="exemplos" *ngIf="significado.exemplos.length > 1 && !significado.mostrarMais">
-                <span><i>- {{significado.exemplos[0]}}</i></span>
+                <input [disabled]="!significado.checked" class="form-check-input" type="checkbox" name="exemplo" [checked]="significado.exemplos[0].checked"
+                [id]="significado.exemplos[0].id" [value]="significado.exemplos[0].id" (change)="changeExemplo(significado.exemplos[0], significado)">
+
+                <label [for]="significado.exemplos[0].id">
+                  <span><i>- {{significado.exemplos[0].exemplo}}</i></span>
+                </label>
                 <div><span class="sugestao" (click)="significado.mostrarMais = true;"><i>- Mostrar Mais</i></span></div>
               </div> 
               
               <div class="exemplos" *ngIf="significado.exemplos.length > 1 && significado.mostrarMais">
                 <div *ngFor="let exemplo of significado.exemplos">
-                  <span><i>- {{exemplo}}</i></span>
+
+                  <input [disabled]="!significado.checked" class="form-check-input" type="checkbox" name="exemplo" [checked]="exemplo.checked"
+                    [id]="exemplo.id" [value]="exemplo.id" (change)="changeExemplo(exemplo, significado)">
+
+                  <label [for]="exemplo.id">
+                    <span><i>- {{exemplo.exemplo}}</i></span>
+                  </label>
+
                 </div>
                 <div><span class="sugestao" (click)="significado.mostrarMais = false;"><i>- Mostrar Menos</i></span></div>
               </div> 

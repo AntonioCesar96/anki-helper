@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation  } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Imagem, Pronuncia, RootObject, Significado, Traducao, Cartao, Anexo } from 'src/app/_common/models/models';
+import { Imagem, Pronuncia, RootObject, Significado, Traducao, Cartao, Anexo, Exemplo } from 'src/app/_common/models/models';
 import { AdicionarService } from '../adicionar.service';
 
 @Component({
@@ -100,10 +100,19 @@ export class AdicionarComponent implements OnInit {
         const significado = this.significadosSelecionados[i];
         var significadoEncontrada = this.rootObject.dicionarios
           .flatMap(x => x.significados)
-          .find(x => x.definicao === significado.definicao);
+          .find(x => x.id === significado.id);
 
         if(significadoEncontrada) {
           significadoEncontrada.checked = significado.checked; 
+
+          for (let j = 0; j < this.significadosSelecionados[i].exemplos.length; j++) {
+            const exemplo = this.significadosSelecionados[i].exemplos[j];
+
+            var exemploEncontrada = significadoEncontrada.exemplos.find(x => x.id === exemplo.id);
+            if(exemploEncontrada) {
+              exemploEncontrada.checked = exemplo.checked; 
+            }
+          }
         }
       }
 
@@ -288,11 +297,11 @@ export class AdicionarComponent implements OnInit {
       }
     }
 
-    elemento.innerHTML = textoHtml;
+    elemento.innerHTML = textoHtml; // + '<br><br>';
   }
 
   changeSignificado(significado: Significado) {
-    var significadoEncontrada = this.significadosSelecionados.find(x => x.definicao === significado.definicao);
+    var significadoEncontrada = this.significadosSelecionados.find(x => x.id === significado.id);
     if(significadoEncontrada) {
       const index = this.significadosSelecionados.indexOf(significadoEncontrada, 0);
       this.significadosSelecionados[index] = significado;
@@ -313,11 +322,14 @@ export class AdicionarComponent implements OnInit {
       return;
     }
 
-    var texto = this.significadosSelecionados.map(x => this.mapSignificado(x)).join('<br>');
+    var texto = this.significadosSelecionados.map(x => this.mapSignificado(x)).join('');
     elemento.innerHTML = texto;
   }
 
   mapSignificado(significado: Significado) {
+    var exemplosSelecionados = significado.exemplos.filter(x => x.checked);
+    var exemplosHtml = '<ul>' + exemplosSelecionados.map(x => `<li>&nbsp;&nbsp;<i>${x.exemplo}</i></li>`).join('') + '</ul>';
+
     var retorno = '';
     if(this.sentidoPossuiClasseGramatical(significado)) {
       retorno += `<b><i>${significado.sentido}</i></b><br>`;
@@ -325,8 +337,26 @@ export class AdicionarComponent implements OnInit {
       retorno += `<b>${significado.classeGramatical} <i>${significado.sentido}</i></b><br>`;
     }
 
-    retorno += `- ${significado.definicao}`;
+    retorno += `- ${significado.definicao}` + exemplosHtml;
     return retorno;
+  }
+
+  changeExemplo(exemplo: Exemplo, significado: Significado) {
+    var significadoEncontrada = this.significadosSelecionados.find(x => x.definicao === significado.definicao);
+    if(significadoEncontrada) {
+      var exemploEncontrada = significadoEncontrada.exemplos.find(x => x.id === exemplo.id);
+      if(exemploEncontrada) {
+        const index = significadoEncontrada.exemplos.indexOf(exemploEncontrada, 0);
+        significadoEncontrada.exemplos[index] = exemplo;
+      }
+    }
+
+    exemplo.checked = !exemplo.checked;
+
+    const elemento = this.ankiBackSignificado.nativeElement;
+
+    var texto = this.significadosSelecionados.map(x => this.mapSignificado(x)).join('');
+    elemento.innerHTML = texto;
   }
 
   sentidoPossuiClasseGramatical(significado: Significado) {
