@@ -183,18 +183,18 @@
     <div class="anki-content">
       <div class="anki-content-form">
         <h5>Front</h5>
-        <div class="anki-input" contentEditable="true" #ankiFront>
+        <div class="anki-input" contentEditable="true" #ankiFront (paste)="onPaste($event)">
         </div>
         <h5>Pronuncia</h5>
-        <div class="anki-input" contentEditable="true" #ankiPronuncia>
+        <div class="anki-input" contentEditable="true" #ankiPronuncia (paste)="onPaste($event)">
           <div #ankiBackPronuncia></div>
         </div>
         <h5>Traducao</h5>
-        <div class="anki-input" contentEditable="true" #ankiTraducao>
+        <div class="anki-input" contentEditable="true" #ankiTraducao (paste)="onPaste($event)" >
           <div #ankiBackTraducao></div>
         </div>
         <h5>Significado</h5>
-        <div class="anki-input" contentEditable="true" #ankiSignificado>
+        <div class="anki-input" contentEditable="true" #ankiSignificado (paste)="onPaste($event)">
           <div #ankiBackSignificado></div>
           <div #ankiBackImagem></div>
         </div>
@@ -203,7 +203,7 @@
       <div class="botao-wrapper">
           <span *ngIf="decks.length === 0"><b>*Anki esta fechado </b></span>
           <select #Select (change)="changeDeck(Select.value)">
-            <option *ngFor="let i of decks">{{i}}</option>
+            <option *ngFor="let i of decks" [selected]="i === deckSelecionado">{{i}}</option>
           </select>
 
           <button (click)="adicionar()" [disabled]="decks.length === 0" class="btn btn-success">Adicionar</button>

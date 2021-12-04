@@ -51,8 +51,13 @@ export class AdicionarComponent implements OnInit {
       this.mostrarLoader = false;
       if(res && res.length > 0) {
         this.decks = res;
+
+        var deckStorage = localStorage.getItem('deck');
+        if(deckStorage) {
+          this.changeDeck(deckStorage);
+          return;
+        }
         this.changeDeck(res[0]);
-        return;
       }
     });
   }
@@ -171,10 +176,15 @@ export class AdicionarComponent implements OnInit {
   var audio = new Audio(anexo.url);
   audio.play();
 
-  this.insertHtmlAfterSelection(' <a id="'+anexo.nome+'" class="btn btn-primary"><span class="audio"></span></a> ')
+  this.insertHtmlAfterSelection('<a id="'+anexo.nome+'" class="btn btn-primary"><span class="audio"></span></a>')
   setTimeout(() => {
     const elementoAnkiFront = this.ankiFront.nativeElement;
     var el = elementoAnkiFront.querySelector('#' + anexo.nome);
+    if(!el) {
+      const elementoAnkiBackSignificado = this.ankiBackSignificado.nativeElement;
+      el = elementoAnkiBackSignificado.querySelector('#' + anexo.nome);
+    }
+
     if(el) {
       el.addEventListener('click', () => {this.tocar(anexo.nome)}); 
     }
@@ -396,6 +406,7 @@ export class AdicionarComponent implements OnInit {
 
   changeDeck(value: any) {
     this.deckSelecionado = value;
+    localStorage.setItem('deck', value);
   }
 
   limpar() {
@@ -449,5 +460,15 @@ export class AdicionarComponent implements OnInit {
         this.limpar();
       }
     });
+  }
+
+  onPaste(e: ClipboardEvent) {
+    if(!e.clipboardData) {
+      return
+    }
+    e.preventDefault();
+
+    var text = e.clipboardData.getData('text/plain');
+    document.execCommand("insertHTML", false, text);
   }
 }
