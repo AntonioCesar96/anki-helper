@@ -82,13 +82,17 @@
       <div class="row">
         <div class="col-12">
           <br>
-          <h5>Traduções da palavra</h5>
+          <h5>
+            <span class="click" (click)="mostrarContext = !mostrarContext;">
+              Traduções da palavra {{ mostrarContext ? '-' : '+' }}
+            </span>
+          </h5>
         </div>
         <div class="col-12">
           <div class="form-check form-check-inline" *ngFor="let traducao of rootObject?.traducoes">
             <input class="form-check-input" type="checkbox" name="traducao" [id]="traducao.id" [value]="traducao.id"
               [checked]="traducao.checked" (change)="changeTraducao(traducao)">
-            <label class="form-check-label tooltip2-wrapper" [for]="traducao.id">
+            <label class="form-check-label tooltip2-wrapper" [for]="traducao.id" [class.esconder]="!mostrarContext">
               {{traducao.traducao}}
 
               <div class="tooltip2">

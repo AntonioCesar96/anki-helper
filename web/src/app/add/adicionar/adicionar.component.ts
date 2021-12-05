@@ -33,6 +33,7 @@ export class AdicionarComponent implements OnInit {
   audiosSelecionados: Anexo[] = []; 
   traducaoFrase = '';
   mostrarTraducao = false;
+  mostrarContext = false;
   mostrarLoader = false;
 
   constructor(
@@ -76,6 +77,7 @@ export class AdicionarComponent implements OnInit {
     }
 
     this.mostrarTraducao = false;
+    this.mostrarContext = false;
     this.mostrarLoader = true;
     this.alterarPalavra(this.form.value.palavra.trim());
     this.adicionarService.obterDefinicao(this.form.value.palavra)

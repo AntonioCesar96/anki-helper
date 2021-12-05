@@ -3,7 +3,6 @@
 const imagemRepository = require('./h/imagem.repository');
 const contextRepository = require('./h/context.repository');
 const cambridgeRepository = require('./h/cambridge.repository');
-const oxfordRepository = require('./h/oxford.repository');
 
 exports.buscarImagens = async palavra => {
   var retorno = await imagemRepository.buscarImagens(palavra);
@@ -20,7 +19,7 @@ exports.buscarDefinicaoCambridge = async palavra => {
   return retorno;
 }
 
-exports.buscarDefinicaoOxford = async palavra => {
-  var retorno = await oxfordRepository.buscarDefinicaoOxford(palavra)
+exports.buscarAudio = async palavra => {
+  var retorno = await oxfordRepository.buscarAudio(palavra)
   return retorno;
 }
