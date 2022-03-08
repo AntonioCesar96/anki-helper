@@ -9,7 +9,7 @@ exports.obterNomeDosDecks = async () => {
   const response = await fetch('http://localhost:8765', {
     method: 'post',
     body: JSON.stringify(body),
-    headers: {'Content-Type': 'application/json'}
+    headers: { 'Content-Type': 'application/json' }
   });
 
   const data = await response.json();
@@ -28,19 +28,19 @@ exports.salvarNota = async nota => {
         deckName: nota.deckName,
         modelName: "Basice 4 Fields",
         fields: {
-            Front: nota.front,
-            Pronuncia: nota.pronuncia,
-            Traducao: nota.traducao,
-            Significado: nota.significado,
+          Front: nota.front,
+          Pronuncia: nota.pronuncia,
+          Traducao: nota.traducao,
+          Significado: nota.significado,
         },
         options: {
-            allowDuplicate: false,
-            duplicateScope: "deck",
-            duplicateScopeOptions: {
-                deckName: nota.deckName,
-                checkChildren: false,
-                checkAllModels: false
-            }
+          allowDuplicate: false,
+          duplicateScope: "deck",
+          duplicateScopeOptions: {
+            deckName: nota.deckName,
+            checkChildren: false,
+            checkAllModels: false
+          }
         },
         tags: []
       }
@@ -50,18 +50,41 @@ exports.salvarNota = async nota => {
   const response = await fetch('http://localhost:8765', {
     method: 'post',
     body: JSON.stringify(body),
-    headers: {'Content-Type': 'application/json'}
+    headers: { 'Content-Type': 'application/json' }
   });
 
   const data = await response.json();
   return data;
 }
 
+exports.salvarNotas = async anki => {
+
+  await salvarAnexos(anki.anexos);
+
+  var body = {
+    action: "addNotes",
+    version: 6,
+    params: {
+      notes: anki.cards,
+    }
+  }
+
+  const response = await fetch('http://localhost:8765', {
+    method: 'post',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  const data = await response.json();
+
+  return data;
+}
+
 async function salvarAnexos(anexos) {
-  if(anexos.length > 0) {
+  if (anexos.length > 0) {
     for (let i = 0; i < anexos.length; i++) {
       const anexo = anexos[i];
-      
+
       var bodyAnexo = {
         action: "storeMediaFile",
         version: 6,
@@ -74,7 +97,7 @@ async function salvarAnexos(anexos) {
       const response = await fetch('http://localhost:8765', {
         method: 'post',
         body: JSON.stringify(bodyAnexo),
-        headers: {'Content-Type': 'application/json'}
+        headers: { 'Content-Type': 'application/json' }
       });
 
       const data = await response.json();

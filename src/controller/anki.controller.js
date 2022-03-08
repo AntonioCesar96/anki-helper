@@ -11,10 +11,22 @@ exports.obterNomeDosDecks = async (req, res, next) => {
     handleError(res, err);
   }
 }
+
 exports.salvarNota = async (req, res, next) => {
 
   try {
     var retorno = await repository.salvarNota(req.body);
+
+    res.status(200).send(retorno);
+  } catch (err) {
+    handleError(res, err);
+  }
+};
+
+exports.salvarNotas = async (req, res, next) => {
+
+  try {
+    var retorno = await repository.salvarNotas(req.body);
 
     res.status(200).send(retorno);
   } catch (err) {

@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdicionarGramaticaComponent } from './add-gramatica/adicionar/adicionar.component';
 import { AdicionarComponent } from './add/adicionar/adicionar.component';
 
 const routes: Routes = [
-  { path: '', component: AdicionarComponent },
-  { path: '**', component: AdicionarComponent }
+  { path: 'mineracao', component: AdicionarComponent },
+  { path: '**', component: AdicionarGramaticaComponent },
+  { path: '', component: AdicionarGramaticaComponent },
 ];
 
 @NgModule({

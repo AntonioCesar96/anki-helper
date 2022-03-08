@@ -1,0 +1,39 @@
+<div class="content">
+  - Posso copiar do ebook e colar, depois posso dar enter, <b>não posso copiar e colar o b : / f :</b> <br>
+  - Posso copiar e colar um bloco inteiro desse f  e b que nao da bo.
+  <!-- (paste)="onPaste($event)" -->
+
+<textarea name="" id="" [(ngModel)]="meuInput" ></textarea>
+
+  <div class="notepad" contentEditable="true" #anki>  
+    <div>u : <b><font color="#0000ff">U80 - every and all</font></b></div>
+    <div>q : Complete the sentences. Use every:</div>
+    <div>f : ___ student in the class passed the exam.</div>
+    <div>b : <b>Every</b> student in the class passed the exam.</div>
+  </div>
+
+  <button (click)="adicionar()" class="btn btn-success">Adicionar</button>
+  <a (click)="obterAudio()" class="btn btn-primary">Áudio</a>
+  <span *ngIf="decks.length === 0"><b>*Anki esta fechado </b></span>
+  <select #Select (change)="changeDeck(Select.value)">
+    <option *ngFor="let i of decks" [selected]="i === deckSelecionado">{{i}}</option>
+  </select>
+
+  <div class="loader" *ngIf="mostrarLoader">
+    <div class="preloader-wrapper small active">
+      <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
