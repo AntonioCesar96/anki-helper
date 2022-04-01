@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { AdicionarModule } from './add/adicionar.module';
 import { AnkiHelperCommonModule } from './_common/common.module';
 import { AdicionarGramaticaModule } from './add-gramatica/adicionar.module';
+import { Adicionar2Module } from './add-2/adicionar.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { AdicionarGramaticaModule } from './add-gramatica/adicionar.module';
     AnkiHelperCommonModule,
     AdicionarModule,
     AdicionarGramaticaModule,
+    Adicionar2Module,
     AppRoutingModule
   ],
   providers: [],

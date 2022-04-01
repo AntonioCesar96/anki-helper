@@ -1,22 +1,11 @@
 <div class="content">
   <!-- (paste)="onPaste($event)" -->
 
-  <div class="notepad" contentEditable="true" #ankiUnidade>
-    <b>
-      <font color="#0000ff">U80 - every and all</font>
-    </b>
-  </div>
-
-  <div class="notepad" contentEditable="true" #ankiQuestao>
-    Complete the sentences. Use every:
-  </div>
+  <span *ngFor="let item of listaI">{{ item }} - </span>
 
   <textarea name="" id="textarea" [(ngModel)]="meuInput"></textarea>
 
   <button (click)="adicionar()" class="btn btn-success">Adicionar</button>
-  <a (click)="obterAudio()" class="btn btn-primary">Áudio</a>
-  <a (click)="inserirNegrito()" class="btn btn-primary">Negrito</a>
-  <a (click)="inserirUnderline()" class="btn btn-primary">Underline</a>
   <span *ngIf="decks.length === 0"><b>*Anki esta fechado </b></span>
   <select #Select (change)="changeDeck(Select.value)">
     <option *ngFor="let i of decks" [selected]="i === deckSelecionado">{{i}}</option>

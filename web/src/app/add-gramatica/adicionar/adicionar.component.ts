@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Imagem, Pronuncia, RootObject, Significado, Traducao, Cartao, Anexo, Exemplo } from 'src/app/_common/models/models';
 import { AdicionarGramaticaService } from '../adicionar.service';
@@ -13,7 +13,8 @@ declare var $: any;
 export class AdicionarGramaticaComponent implements OnInit {
   @ViewChild('audioEl') audioEl!: ElementRef<HTMLAudioElement>;
 
-  @ViewChild('anki') anki!: ElementRef;
+  @ViewChild('ankiUnidade') ankiUnidade!: ElementRef;
+  @ViewChild('ankiQuestao') ankiQuestao!: ElementRef;
 
   meuInput: string = "";
 
@@ -55,8 +56,7 @@ export class AdicionarGramaticaComponent implements OnInit {
 
 
     setInterval(() => {
-      const elementoAnkiFront = this.anki.nativeElement;
-      sessionStorage.setItem(this.idSessao, elementoAnkiFront.innerHTML);
+      sessionStorage.setItem(this.idSessao, this.meuInput);
     }, 1000)
   }
 
@@ -69,22 +69,22 @@ export class AdicionarGramaticaComponent implements OnInit {
 
   obterAudio() {
     this.mostrarLoader = true;
-
+    var textoSelecionado = window.getSelection()?.toString();
     var anexo = new Anexo();
     anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '');
-    anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${window.getSelection()}`;
+    anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${textoSelecionado}`;
 
     this.audiosSelecionados.push(anexo);
 
     var audio = new Audio(anexo.url);
     audio.play();
 
-    this.insertHtmlAfterSelection('<a id="' + anexo.nome + '" class="btn btn-primary"><span class="audio"></span></a>')
+    this.insertHtmlAfterSelection(textoSelecionado, '<a id="' + anexo.nome + '" class="btn btn-primary"><span class="audio"></span></a>')
     setTimeout(() => {
-      const elementoAnki = this.anki.nativeElement;
+      const elementoAnki = this.ankiUnidade.nativeElement;
       var el = elementoAnki.querySelector('#' + anexo.nome);
       if (!el) {
-        const elementoAnki = this.anki.nativeElement;
+        const elementoAnki = this.ankiUnidade.nativeElement;
         el = elementoAnki.querySelector('#' + anexo.nome);
       }
 
@@ -104,36 +104,36 @@ export class AdicionarGramaticaComponent implements OnInit {
     }
   };
 
-  insertHtmlAfterSelection(html: any) {
-    var sel, range, expandedSelRange, node;
-    if (window && window.getSelection) {
-      sel = window.getSelection();
-      if (sel && sel.getRangeAt && sel.rangeCount) {
-        var rageAUx = window.getSelection();
-        if (rageAUx) {
-          range = rageAUx.getRangeAt(0);
-          expandedSelRange = range.cloneRange();
-          range.collapse(false);
+  insertHtmlAfterSelection(textoSelecionado: any, html: any) {
 
-          // Range.createContextualFragment() would be useful here but is
-          // non-standard and not supported in all browsers (IE9, for one)
-          var el = document.createElement("div");
-          el.innerHTML = html;
-          var frag = document.createDocumentFragment(), node, lastNode;
-          while ((node = el.firstChild)) {
-            lastNode = frag.appendChild(node);
-          }
-          range.insertNode(frag);
+    var cursorPos = $('#textarea').prop('selectionStart') + textoSelecionado.length;
+    var v = $('#textarea').val();
+    var textBefore = v.substring(0, cursorPos);
+    var textAfter = v.substring(cursorPos, v.length);
 
-          // Preserve the selection
-          if (lastNode) {
-            expandedSelRange.setEndAfter(lastNode);
-            sel.removeAllRanges();
-            sel.addRange(expandedSelRange);
-          }
-        }
-      }
-    }
+    $('#textarea').val(textBefore + html + textAfter);
+  }
+
+  inserirNegrito() {
+    var textoSelecionado = window.getSelection()?.toString();
+
+    var cursorPos = $('#textarea').prop('selectionStart');
+    var v = $('#textarea').val();
+    var textBefore = v.substring(0, cursorPos);
+    var textAfter = v.substring(cursorPos + textoSelecionado?.length, v.length);
+
+    $('#textarea').val(textBefore + '<b>' + textoSelecionado + '</b>' + textAfter);
+  }
+
+  inserirUnderline() {
+    var textoSelecionado = window.getSelection()?.toString();
+
+    var cursorPos = $('#textarea').prop('selectionStart');
+    var v = $('#textarea').val();
+    var textBefore = v.substring(0, cursorPos);
+    var textAfter = v.substring(cursorPos + textoSelecionado?.length, v.length);
+
+    $('#textarea').val(textBefore + '___' + textAfter);
   }
 
   changeDeck(value: any) {
@@ -156,49 +156,24 @@ export class AdicionarGramaticaComponent implements OnInit {
   }
 
   adicionar() {
-
-    console.log(this.meuInput)
-
-    /*
     this.mostrarLoader = true;
 
-    const linhas = $(this.anki.nativeElement).find('> div')
+    var linhas = $('#textarea').val().split('\n');
+
 
     var cards = [];
-    var descricaoUnidade = '';
-    var descricaoQuestao = '';
+    var descricaoUnidade = this.ankiUnidade.nativeElement.innerHTML;
+    var descricaoQuestao = this.ankiQuestao.nativeElement.innerHTML;
     var card: any = {};
     var ultimoEhFront = false;
+    var ultimoEhBack = false;
 
     for (let i = 0; i < linhas.length; i++) {
-      var linha = $(linhas[i]).html().trim();
-
-      while (linha.includes('&nbsp;')) {
-        linha = linha.replace('&nbsp;', '').trim();
-      }
-
-      while (linha.trim()[0] == '<') {
-        linha = $(linha).html().trim();
-      }
-
-      if (linha.length > 0 && linha[0].trim() == 'u') {
-        descricaoUnidade = linha.split(':')[1].trim();
-        ultimoEhFront = false;
-        continue;
-      }
-
-      if (linha.length > 0 && linha[0].trim() == 'q') {
-        descricaoQuestao = linha.split(':')[1].trim();
-        ultimoEhFront = false;
-        continue;
-      }
+      var linha = linhas[i].trim();
 
       if (linha.length > 0 && linha[0].trim() == 'f') {
         if (ultimoEhFront) {
-          card.fields.Front += linha.split(':')[1].trim();
-          if (!linha.split(':')[1].trim().includes('<br>')) {
-            card.fields.Front += '<br>';
-          }
+          card.fields.Front += '<br>' + linha.split('*')[1].trim();
           continue;
         }
 
@@ -222,24 +197,26 @@ export class AdicionarGramaticaComponent implements OnInit {
         };
         card.fields.Front = `${descricaoUnidade}<br><br>`;
         card.fields.Front += `${descricaoQuestao}<br><br>`;
-        card.fields.Front += linha.split(':')[1].trim();
-        if (!linha.split(':')[1].trim().includes('<br>')) {
-          card.fields.Front += '<br>';
-        }
+        card.fields.Front += linha.split('*')[1].trim();
         ultimoEhFront = true;
+        ultimoEhBack = false;
         cards.push(card);
         continue;
       }
 
-      if (linha.length > 0 && linha[0].trim() == 'b') {
-        card.fields.Back += linha.split(':')[1].trim();
-        if (!linha.split(':')[1].trim().includes('<br>')) {
-          card.fields.Back += '<br>';
+      if (linha.length > 0) {
+        if (ultimoEhBack) {
+          card.fields.Back += '<br>' + linha.trim();
+          continue;
         }
+
+        card.fields.Back += linha.trim();
         ultimoEhFront = false;
+        ultimoEhBack = true;
         continue;
       }
     }
+
 
     var anexos = [];
     for (let i = 0; i < this.audiosSelecionados.length; i++) {
@@ -266,12 +243,62 @@ export class AdicionarGramaticaComponent implements OnInit {
 
     console.log(anki);
 
+
     this.adicionarService.salvarNotas(anki).subscribe(res => {
       this.mostrarLoader = false;
       if (!res.error) {
         this.limpar();
       }
     });
-    */
+
+  }
+
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) { 
+    console.log('event.ctrlKey: ' + event.ctrlKey);
+    console.log('event.key: ' + event.key);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

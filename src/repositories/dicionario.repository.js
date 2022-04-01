@@ -9,6 +9,11 @@ exports.buscarImagens = async palavra => {
   return retorno;
 }
 
+exports.buscarPronuncias = async palavras => {
+  var retorno = await imagemRepository.buscarPronuncias(palavras);
+  return retorno;
+}
+
 exports.buscarTraducoesContext = async palavra => {
   var retorno = await contextRepository.buscarTraducoesContext(palavra)
   return retorno;
