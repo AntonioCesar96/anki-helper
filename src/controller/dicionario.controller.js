@@ -12,9 +12,41 @@ exports.buscarPalavra = async (req, res, next) => {
     if (cache.has(palavra)) {
       return res.status(200).json(cache.get(palavra));
     }
+
+    var retorno = {};
+
+    var element = await repository.buscarDefinicaoCambridge(palavra);
+    retorno.dicionarios = element.body.dicionarios;
+
+    cache.set(palavra, retorno);
+
+    res.status(200).send(retorno);
+  } catch (err) {
+    handleError(res, err);
+  }
+};
+
+function handleError(res, err) {
+  res.status(500).send({
+    message: 'Falha ao processar sua requisição',
+    error: err.message,
+    stack: err.stack
+  });
+}
+
+
+/*
+exports.buscarPalavra = async (req, res, next) => {
+
+  try {
+    var palavra = req.query.palavra;
+
+    if (cache.has(palavra)) {
+      return res.status(200).json(cache.get(palavra));
+    }
     
     const promises = [
-      repository.buscarTraducoesContext(palavra),
+      // repository.buscarTraducoesContext(palavra),
       repository.buscarImagens(palavra),
       repository.buscarDefinicaoCambridge(palavra),
     // repository.buscarDefinicaoOxford(palavra),
@@ -52,3 +84,4 @@ function handleError(res, err) {
     stack: err.stack
   });
 }
+*/

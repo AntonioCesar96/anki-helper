@@ -3,7 +3,7 @@
 const cheerio = require('cheerio');
 var util = require('util');
 var exec = util.promisify(require('child_process').exec);
-
+const puppeteer = require('puppeteer');
 var tamanhoBuffer = 10000;
 
 exports.buscarPronuncias = async palavras => {
@@ -32,3 +32,193 @@ exports.buscarPronuncias = async palavras => {
 
   return lista;
 }
+
+
+exports.obterContext1 = obterContext1Try
+
+async function obterContext1Try(palavraIngles, palavraPortugues, contador) {
+  try {
+
+    var retorno = await obterContext1(palavraIngles, palavraPortugues);
+    return retorno;
+  } catch (err) {
+    console.log(`obterContextTry1 Erro na ${contador} tentativa da palavra ${palavraIngles}`);
+    console.log(err);
+
+    var retorno = await obterContext1Try(palavraIngles, palavraPortugues, ++contador);
+    return retorno;
+  }
+}
+
+async function obterContext1(palavraIngles, palavraPortugues) {
+  var palavraIngles2 = palavraIngles.replaceAll(' ', '+');
+  var palavraPortugues2 = palavraPortugues.replaceAll(' ', '+');
+
+  var palavraBusca = `${palavraIngles2}#${palavraPortugues2}`
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  page.setDefaultTimeout(60000);
+  await page.goto('https://context.reverso.net/traducao/ingles-portugues/' + palavraBusca);
+
+  var sinonimos = await page.evaluate(async (pIngles) => {
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    var sinonimos1 = '';
+    var el_sinonimos1 = document.querySelectorAll('.reverse-search-content .translation');
+
+    for (let i = 0; i < el_sinonimos1.length; i++) {
+      if (!el_sinonimos1[i]) {
+        continue;
+      }
+
+      var sin = el_sinonimos1[i].textContent.trim();
+
+      if (sin === pIngles) {
+        continue;
+      }
+
+      if (sinonimos1 === '') {
+        sinonimos1 = sin;
+        continue;
+      }
+      sinonimos1 += ', ' + sin;
+    }
+
+    return sinonimos1;
+  }, palavraIngles);
+
+  await browser.close();
+
+  return [{ palavraIngles: palavraIngles, palavraPortugues: palavraPortugues, sinonimos: sinonimos }];
+}
+
+exports.obterContext2 = obterContext2Try
+
+async function obterContext2Try(palavraIngles, palavraPortugues, contador) {
+  try {
+
+    var retorno = await obterContext2(palavraIngles, palavraPortugues);
+    return retorno;
+  } catch (err) {
+    console.log(`obterContext2Try1 Erro na ${contador} tentativa da palavra ${palavraIngles}`);
+    console.log(err);
+
+    var retorno = await obterContext2Try(palavraIngles, palavraPortugues, ++contador);
+    return retorno;
+  }
+}
+
+async function obterContext2(palavraIngles, palavraPortugues) {
+  var palavraIngles2 = palavraIngles.replaceAll(' ', '+');
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  page.setDefaultTimeout(60000);
+  await page.goto('https://context.reverso.net/traducao/ingles-portugues/' + palavraIngles2);
+
+  var sinonimos = await page.evaluate(async (pIngles) => {
+
+    var traducoes = document.querySelectorAll('#translations-content .translation');
+    var lista = [];
+
+    if (!traducoes) {
+      return lista;
+    }
+
+    for (let i = 0; i < (traducoes.length > 5 ? 5 : traducoes.length); i++) {
+
+      var traducao = traducoes[i].textContent.trim();
+
+      traducoes[i].click();
+
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      var sinonimos1 = '';
+      var el_sinonimos1 = document.querySelectorAll('.reverse-search-content .translation');
+
+      for (let k = 0; k < el_sinonimos1.length; k++) {
+        if (!el_sinonimos1[k]) {
+          continue;
+        }
+
+        var sin = el_sinonimos1[k].textContent.trim();
+        if (sinonimos1 === '') {
+          sinonimos1 = sin;
+          continue;
+        }
+        sinonimos1 += ', ' + sin;
+      }
+
+      lista.push({ palavraIngles: pIngles, palavraPortugues: traducao, sinonimos: sinonimos1 });
+    }
+
+    return lista;
+  }, palavraIngles);
+
+  await browser.close();
+
+  return sinonimos != null ? sinonimos : [];
+}
+
+
+exports.obterImagem = obterImagemTry
+
+async function obterImagemTry(palavra, contador) {
+  try {
+    var retorno = await obterImagem(palavra);
+    return retorno;
+  } catch (err) {
+    console.log(`obterImagemTry1 Erro na ${contador} tentativa da palavra ${palavra}`);
+    console.log(err);
+
+    var retorno = await obterImagemTry(palavra, ++contador);
+    return retorno;
+  }
+}
+
+async function obterImagem(palavra) {
+  palavra = palavra.replaceAll(' ', '+');
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  page.setDefaultTimeout(60000);
+  await page.goto('https://www.google.com/search?tbm=isch&q=' + palavra);
+
+  var nomeImagem = palavra + '.jpg';
+  await page.screenshot({
+    path: 'imagens/' + nomeImagem, type: 'jpeg',
+    clip: { width: 500, height: 180, x: 15, y: 200 },
+  });
+
+  await browser.close();
+
+  return 'http://localhost:3000/' + nomeImagem;
+}
+
+
+/*
+exports.obterContext = async (palavraIngles, palavraPortugues) => {
+  palavraIngles = palavraIngles.replaceAll(' ', '+');
+  palavraPortugues = palavraPortugues.replaceAll(' ', '+');
+
+  var palavraBusca = `${palavraIngles}#${palavraPortugues}`
+
+  var command = 'curl -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36" https://context.reverso.net/traducao/ingles-portugues/' + palavraBusca
+
+  const { stdout, stderr } = await exec(command, {maxBuffer: 1024 * tamanhoBuffer}) 
+  const $ = cheerio.load(stdout);
+
+  var el_traducoes = $('.reverse-search-content .translation');
+
+  console.log(stdout);
+
+  var sinonimos = '';
+  for (let i = 0; i < el_traducoes.length; i++) {
+    var traducao = $(el_traducoes[i]).text().trim();
+    sinonimos += traducao + ', ';
+  }
+
+  return sinonimos;
+}
+*/

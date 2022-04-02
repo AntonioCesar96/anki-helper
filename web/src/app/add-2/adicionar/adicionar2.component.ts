@@ -115,7 +115,7 @@ export class Adicionar2Component implements OnInit {
   async adicionar() {
     this.mostrarLoader = true;
 
-    let audiosSelecionados: Anexo[] = [];
+    let anexos: Anexo[] = [];
     let pronuncias = await this.adicionarService.obterPronuncias(this.listaI);
 
     for (let g = 0; g < pronuncias.length; g++) {
@@ -125,7 +125,7 @@ export class Adicionar2Component implements OnInit {
       anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.mp3';
       anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${pronuncia.palavra}`;
 
-      audiosSelecionados.push(anexo);
+      anexos.push(anexo);
 
       pronuncia.nome = anexo.nome;
     }
@@ -137,6 +137,10 @@ export class Adicionar2Component implements OnInit {
 
     for (let i = 0; i < linhas.length; i++) {
       let linha = linhas[i].trim();
+
+      if (linha === '') {
+        continue;
+      }
 
       card = {
         deckName: this.deckSelecionado,
@@ -157,17 +161,20 @@ export class Adicionar2Component implements OnInit {
         tags: []
       };
 
-      let traducao = await this.adicionarService.obterTraducao(linha);
+      let traducao1 = await this.adicionarService.obterTraducao(linha);
+
+      var linhaSemNegrito = linha.replace('<b>', '').replace('</b>', '');
+      let traducao2 = await this.adicionarService.obterTraducao(linhaSemNegrito);
 
       let split1 = linha.split('<b>');
       let split2 = split1[1].split('</b>');
-      let palavraEmIngles = split2[0];
+      let palavraEmIngles = split2[0].trim();
 
       let palavraEmPortugues = "";
-      if (traducao.includes("<b>")) {
-        split1 = traducao.split('<b>');
+      if (traducao1.includes("<b>")) {
+        split1 = traducao1.split('<b>');
         split2 = split1[1].split('</b>');
-        palavraEmPortugues = split2[0];
+        palavraEmPortugues = split2[0].trim();
       }
 
       // 
@@ -189,16 +196,85 @@ export class Adicionar2Component implements OnInit {
           pronuncia.palavra + '[sound:' + pronuncia.nome + ']');
       }
 
-      card.fields.Back = `${traducao}<br><br>`;
-      card.fields.Back += `<b>${palavraEmIngles}:</b> ${palavraEmPortugues}`;
+      let sinonimos = [];
+      let dicionarios = [];
+      let imagens = [];
+
+      const promises = [
+        this.adicionarService.obterContext(palavraEmIngles, palavraEmPortugues),
+        this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues),
+        this.adicionarService.obterDefinicao(palavraEmIngles),
+      ];
+
+      var promisesResult = await Promise.all(promises);
+      for (let w = 0; w < promisesResult.length; w++) {
+        const element = promisesResult[w];
+
+        if (element.dicionarios) {
+          dicionarios = element.dicionarios;
+        }
+        if (element.sinonimos) {
+          sinonimos = element.sinonimos;
+        }
+        if (element.imagens) {
+          imagens = element.imagens;
+        }
+      }
+
+      card.fields.Back = `${traducao1}<br>`;
+      card.fields.Back += `${traducao2}<br><br>`;
+
+      if (sinonimos) {
+        for (let l = 0; l < sinonimos.length; l++) {
+          const element = sinonimos[l];
+
+          card.fields.Back += `${element.sinonimos}<br>`;
+          card.fields.Back += `<b>${element.palavraIngles}:</b> ${element.palavraPortugues}<br><br>`;
+        }
+      }
+
+      if (dicionarios && dicionarios.length > 0 && dicionarios[0].significados
+        && dicionarios[0].significados.length > 0) {
+        for (let l = 0; l < dicionarios[0].significados.length; l++) {
+          const element = dicionarios[0].significados[l];
+
+          card.fields.Back += `<i>${element.definicao}:</i><br>`;
+          console.log(`<i>${element.definicao}:</i><br>`);
+
+          if (element.exemplos && element.exemplos.length > 0) {
+            for (let t = 0; t < (element.exemplos.length > 2 ? 2 : element.exemplos.length); t++) {
+              const element2 = element.exemplos[t];
+              card.fields.Back += `- ${element2.exemplo}:<br>`;
+              console.log(`- ${element2.exemplo}:<br>`);
+            }
+          }
+        }
+      }
+
+      if (imagens) {
+        card.fields.Back += `<br><br>`;
+        for (let u = 0; u < imagens.length; u++) {
+
+          let anexo = new Anexo();
+          anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.jpg';
+          anexo.url = imagens[u];
+
+          anexos.push(anexo);
+
+          card.fields.Back += `<img src="${anexo.nome}" />`;
+        }
+      }
 
       cards.push(card);
     }
 
     let anki = {
       cards: cards,
-      anexos: audiosSelecionados
+      anexos: anexos,
     }
+
+    console.log(cards);
+
 
     this.adicionarService.salvarNotas(anki).subscribe(res => {
       this.mostrarLoader = false;

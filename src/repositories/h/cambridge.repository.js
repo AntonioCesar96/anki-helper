@@ -23,8 +23,8 @@ exports.buscarDefinicaoCambridge = async palavra => {
   const $ = cheerio.load(stdout);
 
   var dicionarioBritanico = buscarPalavraSimples($, 'Britânico');
-  var dicionarioAmericano = buscarPalavraSimples($, 'Americano');
-  var dicionarios = [ dicionarioBritanico, dicionarioAmericano ];
+  // var dicionarioAmericano = buscarPalavraSimples($, 'Americano');
+  var dicionarios = [ dicionarioBritanico ];
 
   var pronuncias = agruparPronuncias(dicionarios);
   var dicionariosAgrupados = agruparDicionarios(dicionarios);

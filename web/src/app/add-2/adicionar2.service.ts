@@ -19,9 +19,25 @@ export class Adicionar2Service {
     return this.http.post<any>(`${this.URL_BASE}/anki/notas`, anki);
   }
 
-  obterDefinicao(palavra: string): Observable<RootObject> {
+  async obterContext(palavraIngles: string, palavraPortugues: string): Promise<any> {
     const headers = new HttpHeaders();
-    return this.http.get<any>(`${this.URL_BASE}/dicionario?palavra=${palavra}`, { headers: headers })
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/google/context?palavraIngles=${palavraIngles}&palavraPortugues=${palavraPortugues}`));
+
+    return res;
+  }
+
+  async obterDefinicao(palavra: string): Promise<any> {
+    const headers = new HttpHeaders();
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/dicionario?palavra=${palavra}`, { headers: headers }));
+
+    return res;
+  }
+
+  async obterImagem(palavraIngles: string, palavraPortugues: string): Promise<any> {
+    const headers = new HttpHeaders();
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/google/imagem?palavraIngles=${palavraIngles}&palavraPortugues=${palavraPortugues}`));
+
+    return res;
   }
 
   obterDecks(): Observable<string[]> {
@@ -41,10 +57,10 @@ export class Adicionar2Service {
       for (let i = 0; i < res[0].length; i++) {
         const element = res[0][i];
 
-        if(element[0]) {
+        if (element[0]) {
           traducao += element[0];
         }
-        
+
       }
       return traducao;
     }
