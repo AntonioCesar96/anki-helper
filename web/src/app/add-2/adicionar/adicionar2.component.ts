@@ -238,7 +238,7 @@ export class Adicionar2Component implements OnInit {
         for (let l = 0; l < dicionarios[0].significados.length; l++) {
           const element = dicionarios[0].significados[l];
 
-          card.fields.Back += `<i>${element.definicao}:</i><br>`;
+          card.fields.Back += `<br><i>${element.definicao}:</i><br>`;
           console.log(`<i>${element.definicao}:</i><br>`);
 
           if (element.exemplos && element.exemplos.length > 0) {

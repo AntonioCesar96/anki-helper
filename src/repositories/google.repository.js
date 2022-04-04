@@ -73,13 +73,14 @@ async function obterContext1(palavraIngles, palavraPortugues) {
       }
 
       var sin = el_sinonimos1[i].textContent.trim();
+      var freq = el_sinonimos1[i].getAttribute("data-freq");
 
       if (sin === pIngles) {
         continue;
       }
 
       if (sinonimos1 === '') {
-        sinonimos1 = sin;
+        sinonimos1 = `freq: ${freq} - ${sin}`;
         continue;
       }
       sinonimos1 += ', ' + sin;
@@ -119,19 +120,34 @@ async function obterContext2(palavraIngles, palavraPortugues) {
 
   var sinonimos = await page.evaluate(async (pIngles) => {
 
-    var traducoes = document.querySelectorAll('#translations-content .translation');
+    var traducoes = [...document.querySelectorAll('#translations-content .translation')];
+
+    var nouns = traducoes.filter(x => [...x.classList].some(y => y === 'n')).slice(0, 6);
+    var verbs = traducoes.filter(x => [...x.classList].some(y => y === 'v')).slice(0, 3);
+    var adjs = traducoes.filter(x => [...x.classList].some(y => y === 'adj')).slice(0, 3);
+    var advs = traducoes.filter(x => [...x.classList].some(y => y === 'adv')).slice(0, 3);
+    var noPos = traducoes.filter(x => [...x.classList].some(y => y === 'no-pos')).slice(0, 3);
+
+    traducoes = [];
+    traducoes.push(...nouns);
+    traducoes.push(...verbs);
+    traducoes.push(...adjs);
+    traducoes.push(...advs);
+    traducoes.push(...noPos);
+
     var lista = [];
 
     if (!traducoes) {
       return lista;
     }
 
-    for (let i = 0; i < (traducoes.length > 5 ? 5 : traducoes.length); i++) {
+    for (let i = 0; i < traducoes.length; i++) {
 
       var traducao = traducoes[i].textContent.trim();
 
       traducoes[i].click();
-
+      var freq = traducoes[i].getAttribute("data-freq");
+      
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       var sinonimos1 = '';
@@ -143,6 +159,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
         }
 
         var sin = el_sinonimos1[k].textContent.trim();
+        
         if (sinonimos1 === '') {
           sinonimos1 = sin;
           continue;
@@ -150,7 +167,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
         sinonimos1 += ', ' + sin;
       }
 
-      lista.push({ palavraIngles: pIngles, palavraPortugues: traducao, sinonimos: sinonimos1 });
+      lista.push({ palavraIngles: pIngles, palavraPortugues: traducao, sinonimos: sinonimos1 + `- freq: ${freq}` });
     }
 
     return lista;
