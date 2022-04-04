@@ -167,7 +167,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
         sinonimos1 += ', ' + sin;
       }
 
-      lista.push({ palavraIngles: pIngles, palavraPortugues: traducao, sinonimos: sinonimos1 + `- freq: ${freq}` });
+      lista.push({ palavraIngles: pIngles, palavraPortugues: traducao, sinonimos: sinonimos1 + ` - freq: ${freq}` });
     }
 
     return lista;

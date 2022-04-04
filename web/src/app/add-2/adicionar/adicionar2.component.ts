@@ -202,7 +202,7 @@ export class Adicionar2Component implements OnInit {
 
       const promises = [
         this.adicionarService.obterContext(palavraEmIngles, palavraEmPortugues),
-        this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues),
+        // this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues),
         this.adicionarService.obterDefinicao(palavraEmIngles),
       ];
 
