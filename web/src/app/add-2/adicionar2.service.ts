@@ -74,4 +74,8 @@ export class Adicionar2Service {
 
     return res;
   }
+
+  obterPronunciasObservable(palavras: any): Observable<any[]> {
+    return this.http.post<any>(`${this.URL_BASE}/google`, palavras);
+  }
 }

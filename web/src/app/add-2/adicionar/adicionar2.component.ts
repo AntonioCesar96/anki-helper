@@ -30,6 +30,8 @@ export class Adicionar2Component implements OnInit {
   mostrarContext = false;
   mostrarLoader = false;
 
+  anexos: Anexo[] = [];
+
   listaI: string[] = [];
 
   idSessao = 'aaaa';//'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '');
@@ -115,7 +117,7 @@ export class Adicionar2Component implements OnInit {
   async adicionar() {
     this.mostrarLoader = true;
 
-    let anexos: Anexo[] = [];
+
     let pronuncias = await this.adicionarService.obterPronuncias(this.listaI);
 
     for (let g = 0; g < pronuncias.length; g++) {
@@ -125,7 +127,7 @@ export class Adicionar2Component implements OnInit {
       anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.mp3';
       anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${pronuncia.palavra}`;
 
-      anexos.push(anexo);
+      this.anexos.push(anexo);
 
       pronuncia.nome = anexo.nome;
     }
@@ -137,6 +139,7 @@ export class Adicionar2Component implements OnInit {
 
     for (let i = 0; i < linhas.length; i++) {
       let linha = linhas[i].trim();
+      let ultimaLinha = i == (pronuncias.length - 1)
 
       if (linha === '') {
         continue;
@@ -239,13 +242,11 @@ export class Adicionar2Component implements OnInit {
           const element = dicionarios[0].significados[l];
 
           card.fields.Back += `<br><i>${element.definicao}:</i><br>`;
-          console.log(`<i>${element.definicao}:</i><br>`);
 
           if (element.exemplos && element.exemplos.length > 0) {
             for (let t = 0; t < (element.exemplos.length > 2 ? 2 : element.exemplos.length); t++) {
               const element2 = element.exemplos[t];
               card.fields.Back += `- ${element2.exemplo}:<br>`;
-              console.log(`- ${element2.exemplo}:<br>`);
             }
           }
         }
@@ -259,32 +260,24 @@ export class Adicionar2Component implements OnInit {
           anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.jpg';
           anexo.url = imagens[u];
 
-          anexos.push(anexo);
+          this.anexos.push(anexo);
 
           card.fields.Back += `<img src="${anexo.nome}" />`;
         }
       }
 
-      cards.push(card);
-    }
-
-    let anki = {
-      cards: cards,
-      anexos: anexos,
-    }
-
-    console.log(cards);
-
-
-    this.adicionarService.salvarNotas(anki).subscribe(res => {
-      this.mostrarLoader = false;
-      if (!res.error) {
-        this.mostrarLoader = false;
-        this.limpar();
+      let anki = {
+        cards: [card],
+        anexos: this.anexos,
       }
-    });
 
-
+      this.adicionarService.salvarNotas(anki).subscribe(res => {
+        this.anexos = [];
+        if (ultimaLinha) {
+          this.mostrarLoader = false;
+        }
+      });
+    }
   }
 
   getListaI() {

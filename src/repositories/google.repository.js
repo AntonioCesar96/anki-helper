@@ -127,6 +127,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
     var adjs = traducoes.filter(x => [...x.classList].some(y => y === 'adj')).slice(0, 3);
     var advs = traducoes.filter(x => [...x.classList].some(y => y === 'adv')).slice(0, 3);
     var noPos = traducoes.filter(x => [...x.classList].some(y => y === 'no-pos')).slice(0, 3);
+    var indications = traducoes.filter(x => [...x.classList].some(y => y === 'indication')).slice(0, 3);
 
     traducoes = [];
     traducoes.push(...nouns);
@@ -134,6 +135,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
     traducoes.push(...adjs);
     traducoes.push(...advs);
     traducoes.push(...noPos);
+    traducoes.push(...indications);
 
     var lista = [];
 
