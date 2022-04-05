@@ -1,7 +1,9 @@
 <div class="content">
   <!-- (paste)="onPaste($event)" -->
 
-  <span *ngFor="let item of listaI">{{ item }} - </span>
+  <div>
+    | <span *ngFor="let item of pronunciasGoogle">{{ item.palavra }} - </span>
+  </div>
 
   <textarea name="" id="textarea" [(ngModel)]="meuInput"></textarea>
 

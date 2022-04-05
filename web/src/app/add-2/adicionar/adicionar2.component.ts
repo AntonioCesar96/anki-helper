@@ -31,8 +31,7 @@ export class Adicionar2Component implements OnInit {
   mostrarLoader = false;
 
   anexos: Anexo[] = [];
-
-  listaI: string[] = [];
+  pronunciasGoogle: any[] = [];
 
   idSessao = 'aaaa';//'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '');
 
@@ -83,9 +82,7 @@ export class Adicionar2Component implements OnInit {
 
   inserirNegrito() {
     var textoSelecionado = window.getSelection()?.toString();
-    if (textoSelecionado) {
-      this.listaI.push(textoSelecionado);
-    }
+    this.buscarPronuncia(textoSelecionado);
 
     var cursorPos = $('#textarea').prop('selectionStart');
     var v = $('#textarea').val();
@@ -117,21 +114,6 @@ export class Adicionar2Component implements OnInit {
   async adicionar() {
     this.mostrarLoader = true;
 
-
-    let pronuncias = await this.adicionarService.obterPronuncias(this.listaI);
-
-    for (let g = 0; g < pronuncias.length; g++) {
-      const pronuncia = pronuncias[g];
-
-      let anexo = new Anexo();
-      anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.mp3';
-      anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${pronuncia.palavra}`;
-
-      this.anexos.push(anexo);
-
-      pronuncia.nome = anexo.nome;
-    }
-
     //
     let linhas = $('#textarea').val().split('\n');
     let cards = [];
@@ -139,7 +121,7 @@ export class Adicionar2Component implements OnInit {
 
     for (let i = 0; i < linhas.length; i++) {
       let linha = linhas[i].trim();
-      let ultimaLinha = i == (pronuncias.length - 1)
+      let ultimaLinha = i == (linhas.length - 1)
 
       if (linha === '') {
         continue;
@@ -183,8 +165,8 @@ export class Adicionar2Component implements OnInit {
       // 
       card.fields.Front = `${linha}<br>`;
 
-      for (let g = 0; g < pronuncias.length; g++) {
-        const pronuncia = pronuncias[g];
+      for (let g = 0; g < this.pronunciasGoogle.length; g++) {
+        const pronuncia = this.pronunciasGoogle[g];
 
         if (!card.fields.Front.includes(pronuncia.palavra)) {
           continue;
@@ -280,10 +262,6 @@ export class Adicionar2Component implements OnInit {
     }
   }
 
-  getListaI() {
-    return this.listaI;
-  }
-
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.ctrlKey && event.code === 'KeyB') {
@@ -292,10 +270,33 @@ export class Adicionar2Component implements OnInit {
 
     if (event.ctrlKey && event.code === 'KeyI') {
       var textoSelecionado = window.getSelection()?.toString();
+      this.buscarPronuncia(textoSelecionado);
+    }
+  }
 
-      if (textoSelecionado) {
-        this.listaI.push(textoSelecionado.trim());
-      }
+  buscarPronuncia(textoSelecionado: any) {
+    if (textoSelecionado) {
+      textoSelecionado = textoSelecionado.trim();
+
+      var existe = this.pronunciasGoogle.some(x => x.palavra === textoSelecionado)
+      if (existe) {
+        return;
+      } 
+
+      this.adicionarService.obterPronunciasObservable([textoSelecionado]).subscribe(pronuncias => {
+        for (let g = 0; g < pronuncias.length; g++) {
+          const pronuncia = pronuncias[g];
+
+          let anexo = new Anexo();
+          anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.mp3';
+          anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${pronuncia.palavra}`;
+
+          pronuncia.nome = anexo.nome;
+
+          this.anexos.push(anexo);
+          this.pronunciasGoogle.push(pronuncia);
+        }
+      });
     }
   }
 }
