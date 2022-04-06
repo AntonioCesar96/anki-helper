@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { slice } from 'cheerio/lib/api/traversing';
 import { firstValueFrom } from 'rxjs';
 import { Imagem, Pronuncia, RootObject, Significado, Traducao, Cartao, Anexo, Exemplo } from 'src/app/_common/models/models';
 import { Adicionar2Service } from '../adicionar2.service';
@@ -122,6 +123,7 @@ export class Adicionar2Component implements OnInit {
     for (let i = 0; i < linhas.length; i++) {
       let linha = linhas[i].trim();
       let ultimaLinha = i == (linhas.length - 1)
+      let linhasRestantes = linhas.slice((i + 1)).join('\n');
 
       if (linha === '') {
         continue;
@@ -145,6 +147,21 @@ export class Adicionar2Component implements OnInit {
         },
         tags: []
       };
+
+      let print;
+      if (linha.includes("[")) {
+        var split3 = linha.split('[');
+        var split4 = split3[1].split(']');
+        var imagem = split4[0].trim();
+
+        print = new Anexo();
+        print.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.jpg';
+        print.url = `http://localhost:3000/${imagem}.jpg`;
+
+        this.anexos.push(print);
+
+        linha = split3[0];
+      }
 
       let traducao1 = await this.adicionarService.obterTraducao(linha);
 
@@ -248,17 +265,22 @@ export class Adicionar2Component implements OnInit {
         }
       }
 
+      if (print) {
+        card.fields.Back += `<img src="${print.nome}" />`;
+      }
+
       let anki = {
         cards: [card],
         anexos: this.anexos,
       }
 
-      this.adicionarService.salvarNotas(anki).subscribe(res => {
-        this.anexos = [];
-        if (ultimaLinha) {
-          this.mostrarLoader = false;
-        }
-      });
+      var res = await this.adicionarService.salvarNotas(anki);
+      this.anexos = [];
+      $('#textarea').val(linhasRestantes);
+
+      if (ultimaLinha) {
+        this.mostrarLoader = false;
+      }
     }
   }
 
@@ -281,7 +303,7 @@ export class Adicionar2Component implements OnInit {
       var existe = this.pronunciasGoogle.some(x => x.palavra === textoSelecionado)
       if (existe) {
         return;
-      } 
+      }
 
       this.adicionarService.obterPronunciasObservable([textoSelecionado]).subscribe(pronuncias => {
         for (let g = 0; g < pronuncias.length; g++) {

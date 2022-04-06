@@ -15,9 +15,13 @@ export class Adicionar2Service {
     return this.http.post<any>(`${this.URL_BASE}/anki`, cartao);
   }
 
-  salvarNotas(anki: any): Observable<any> {
-    return this.http.post<any>(`${this.URL_BASE}/anki/notas`, anki);
+  async salvarNotas(anki: any): Promise<any> {
+    const headers = new HttpHeaders();
+    var res = await firstValueFrom(this.http.post<any>(`${this.URL_BASE}/anki/notas`, anki));
+
+    return res;
   }
+
 
   async obterContext(palavraIngles: string, palavraPortugues: string): Promise<any> {
     const headers = new HttpHeaders();
