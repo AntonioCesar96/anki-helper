@@ -137,6 +137,8 @@ async function obterContext2(palavraIngles, palavraPortugues) {
     traducoes.push(...noPos);
     traducoes.push(...indications);
 
+    traducoes = traducoes.sort(function (a, b) { return b.getAttribute("data-freq") - a.getAttribute("data-freq") });
+
     var lista = [];
 
     if (!traducoes) {
@@ -149,7 +151,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
 
       traducoes[i].click();
       var freq = traducoes[i].getAttribute("data-freq");
-      
+
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       var sinonimos1 = '';
@@ -161,7 +163,7 @@ async function obterContext2(palavraIngles, palavraPortugues) {
         }
 
         var sin = el_sinonimos1[k].textContent.trim();
-        
+
         if (sinonimos1 === '') {
           sinonimos1 = sin;
           continue;
@@ -214,30 +216,3 @@ async function obterImagem(palavra) {
 
   return 'http://localhost:3000/' + nomeImagem;
 }
-
-
-/*
-exports.obterContext = async (palavraIngles, palavraPortugues) => {
-  palavraIngles = palavraIngles.replaceAll(' ', '+');
-  palavraPortugues = palavraPortugues.replaceAll(' ', '+');
-
-  var palavraBusca = `${palavraIngles}#${palavraPortugues}`
-
-  var command = 'curl -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36" https://context.reverso.net/traducao/ingles-portugues/' + palavraBusca
-
-  const { stdout, stderr } = await exec(command, {maxBuffer: 1024 * tamanhoBuffer}) 
-  const $ = cheerio.load(stdout);
-
-  var el_traducoes = $('.reverse-search-content .translation');
-
-  console.log(stdout);
-
-  var sinonimos = '';
-  for (let i = 0; i < el_traducoes.length; i++) {
-    var traducao = $(el_traducoes[i]).text().trim();
-    sinonimos += traducao + ', ';
-  }
-
-  return sinonimos;
-}
-*/

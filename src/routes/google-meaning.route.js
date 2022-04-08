@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const controller = require('../controller/dicionario.controller');
+const controller = require('../controller/google-meaning.controller');
 
 router.get('/', controller.buscarPalavra);
 // router.post('/', authService.isAdmin, controller.post);

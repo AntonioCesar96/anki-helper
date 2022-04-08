@@ -30,9 +30,23 @@ export class Adicionar2Service {
     return res;
   }
 
-  async obterDefinicao(palavra: string): Promise<any> {
+  async obterDefinicaoCambridge(palavra: string): Promise<any> {
     const headers = new HttpHeaders();
-    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/dicionario?palavra=${palavra}`, { headers: headers }));
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/cambridge?palavra=${palavra}`, { headers: headers }));
+
+    return res;
+  }
+
+  async obterDefinicaoCollins(palavra: string): Promise<any> {
+    const headers = new HttpHeaders();
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/collins?palavra=${palavra}`, { headers: headers }));
+
+    return res;
+  }
+
+  async obterDefinicaoGoogleMeaning(palavra: string): Promise<any> {
+    const headers = new HttpHeaders();
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/google-meaning?palavra=${palavra}`, { headers: headers }));
 
     return res;
   }

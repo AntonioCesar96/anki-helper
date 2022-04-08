@@ -38,13 +38,17 @@ app.use((req, res, next) => {
 });
 
 //Rotas aplicação
-const mainRoute = require('./routes/dicionario.route');
+const cambridgeRoute = require('./routes/cambridge.route');
+const collinsRoute = require('./routes/collins.route');
+const googleMeaningRoute = require('./routes/google-meaning.route');
 const indexRoute = require('./routes/index.route');
 const ankiRoute = require('./routes/anki.route');
 const googleRoute = require('./routes/google.route');
 
 app.use('/', indexRoute);
-app.use('/dicionario', mainRoute);
+app.use('/cambridge', cambridgeRoute);
+app.use('/collins', collinsRoute);
+app.use('/google-meaning', googleMeaningRoute);
 app.use('/anki', ankiRoute);
 app.use('/google', googleRoute);
 
