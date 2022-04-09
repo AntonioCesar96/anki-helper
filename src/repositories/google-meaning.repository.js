@@ -26,7 +26,7 @@ exports.buscarDefinicaoGoogle = async palavra => {
         if (!definicao)
           continue;
 
-        definicoes.push({ origem: '- Google', definicao: definicao, exemplos: [] });
+        definicoes.push({ definicao: definicao, exemplos: [] });
       }
 
       return definicoes;
@@ -37,7 +37,7 @@ exports.buscarDefinicaoGoogle = async palavra => {
       let definicao = primeiroResultado.textContent.trim();
 
       let definicoes = [];
-      definicoes.push({ origem: '- Google',  definicao: definicao, exemplos: [] });
+      definicoes.push({ definicao: definicao, exemplos: [] });
 
       return definicoes;
     }

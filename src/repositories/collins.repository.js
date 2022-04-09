@@ -40,7 +40,7 @@ exports.buscarDefinicaoCollins = async palavra => {
       if (!definicao)
         continue;
 
-      definicoes.push({ origem: '- Collins', definicao: definicao, exemplos: [] });
+      definicoes.push({ definicao: definicao, exemplos: [] });
     }
 
     return definicoes;

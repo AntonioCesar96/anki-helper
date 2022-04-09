@@ -13,10 +13,10 @@ exports.buscarPalavra = async (req, res, next) => {
     //   return res.status(200).json(cache.get(palavra));
     // }
 
-    var retorno = { };
+    var retorno = { origem: '- Cambridge', ordem: 2 };
 
     var element = await repository.buscarDefinicaoCambridge(palavra);
-    retorno.cambridge = element;
+    retorno.dicionario = element;
 
     cache.set(palavra, retorno);
 

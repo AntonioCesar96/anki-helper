@@ -55,7 +55,7 @@ function buscarPalavraSimples($, dicionario) {
         exemplos.push({ exemplo: exemplo, id: 'e' + ((+new Date) + Math.random() * 100).toString(32) });
     }
 
-    definicoes.push({  origem: '- Cambridge', definicao: definicao, exemplos: exemplos });
+    definicoes.push({ definicao: definicao, exemplos: exemplos });
   }
 
   return definicoes;

@@ -186,7 +186,10 @@ export class Adicionar2Component implements OnInit {
       for (let g = 0; g < palavrasDaFrase.length; g++) {
         const pronuncia = this.pronunciasGoogle.find(x => x.palavra == palavrasDaFrase[g]);
         if (pronuncia) {
-          pronunciasOrdenadas.push(pronuncia);
+          const pronuncia2 = pronunciasOrdenadas.find(x => x.palavra == pronuncia.palavra);
+          if (!pronuncia2) {
+            pronunciasOrdenadas.push(pronuncia);
+          }
         }
       }
 
@@ -229,14 +232,8 @@ export class Adicionar2Component implements OnInit {
       for (let w = 0; w < promisesResult.length; w++) {
         const element = promisesResult[w];
 
-        if (element.cambridge) {
-          definicoes.push(...element.cambridge);
-        }
-        if (element.googleMeaning) {
-          definicoes.push(...element.googleMeaning);
-        }
-        if (element.collins) {
-          definicoes.push(...element.collins);
+        if (element.dicionario) {
+          definicoes.push(element);
         }
         if (element.sinonimos) {
           sinonimos = element.sinonimos;
@@ -258,17 +255,21 @@ export class Adicionar2Component implements OnInit {
         }
       }
 
+      definicoes = definicoes.sort(function (a, b) { return a.ordem - b.ordem });
       if (definicoes && definicoes.length > 0) {
-        for (let l = 0; l < definicoes.length; l++) {
-          const element = definicoes[l];
+        for (let w = 0; w < definicoes.length; w++) {
+          card.fields.Back += `<br>${definicoes[w].origem}`;
 
-          card.fields.Back += `<br>${element.origem}`;
-          card.fields.Back += `<br><i>${element.definicao}:</i><br>`;
+          for (let l = 0; l < definicoes[w].dicionario.length; l++) {
+            const element = definicoes[w].dicionario[l];
 
-          if (element.exemplos && element.exemplos.length > 0) {
-            for (let t = 0; t < (element.exemplos.length > 2 ? 2 : element.exemplos.length); t++) {
-              const element2 = element.exemplos[t];
-              card.fields.Back += `- ${element2.exemplo}:<br>`;
+            card.fields.Back += `<br><i>${element.definicao}:</i><br>`;
+
+            if (element.exemplos && element.exemplos.length > 0) {
+              for (let t = 0; t < (element.exemplos.length > 2 ? 2 : element.exemplos.length); t++) {
+                const element2 = element.exemplos[t];
+                card.fields.Back += `- ${element2.exemplo}:<br>`;
+              }
             }
           }
         }
