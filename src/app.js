@@ -10,6 +10,11 @@ const router = express.Router();
 
 app.use(express.static('imagens'))
 
+
+require('events').EventEmitter.prototype._maxListeners = 0;
+require('events').defaultMaxListeners = 0;
+process.on('warning', e => console.warn(e.stack));
+
 // BodyParser
 app.use(
   bodyParser.json({

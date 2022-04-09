@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { slice } from 'cheerio/lib/api/traversing';
+import { find, slice } from 'cheerio/lib/api/traversing';
 import { firstValueFrom } from 'rxjs';
 import { Imagem, Pronuncia, RootObject, Significado, Traducao, Cartao, Anexo, Exemplo } from 'src/app/_common/models/models';
 import { Adicionar2Service } from '../adicionar2.service';
@@ -117,7 +117,6 @@ export class Adicionar2Component implements OnInit {
 
     //
     let linhas = $('#textarea').val().split('\n');
-    let cards = [];
     let card: any = {};
 
     for (let i = 0; i < linhas.length; i++) {
@@ -182,8 +181,24 @@ export class Adicionar2Component implements OnInit {
       // 
       card.fields.Front = `${linha}<br>`;
 
+      let palavrasDaFrase = linha.replace('<b>', '').replace('</b>', '').replace(/[^\w\s]/gi, ' ').split(' ');
+      let pronunciasOrdenadas: any[] = [];
+      for (let g = 0; g < palavrasDaFrase.length; g++) {
+        const pronuncia = this.pronunciasGoogle.find(x => x.palavra == palavrasDaFrase[g]);
+        if (pronuncia) {
+          pronunciasOrdenadas.push(pronuncia);
+        }
+      }
+
       for (let g = 0; g < this.pronunciasGoogle.length; g++) {
-        const pronuncia = this.pronunciasGoogle[g];
+        const pronuncia = pronunciasOrdenadas.find(x => x.palavra == this.pronunciasGoogle[g].palavra);
+        if (!pronuncia) {
+          pronunciasOrdenadas.push(this.pronunciasGoogle[g]);
+        }
+      }
+
+      for (let g = 0; g < pronunciasOrdenadas.length; g++) {
+        const pronuncia = pronunciasOrdenadas[g];
 
         if (!card.fields.Front.includes(pronuncia.palavra)) {
           continue;
