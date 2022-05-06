@@ -2,7 +2,7 @@
   <!-- (paste)="onPaste($event)" -->
 
   <div>
-    | <span *ngFor="let item of pronunciasGoogle">{{ item.palavra }} - </span>
+    | <span *ngFor="let item of pronunciasGoogle" (click)="tocar(item.palavra)">{{ item.palavra }} - </span>
   </div>
 
   <textarea name="" id="textarea" [(ngModel)]="meuInput"></textarea>

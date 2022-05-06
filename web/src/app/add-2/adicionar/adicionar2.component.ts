@@ -222,7 +222,7 @@ export class Adicionar2Component implements OnInit {
 
       const promises = [
         this.adicionarService.obterContext(palavraEmIngles, palavraEmPortugues),
-        // this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues),
+        this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues),
         this.adicionarService.obterDefinicaoCambridge(palavraEmIngles),
         this.adicionarService.obterDefinicaoCollins(palavraEmIngles),
         this.adicionarService.obterDefinicaoGoogleMeaning(palavraEmIngles),
@@ -308,7 +308,7 @@ export class Adicionar2Component implements OnInit {
     }
   }
 
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('window:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.ctrlKey && event.code === 'KeyB') {
       this.inserirNegrito();
@@ -323,6 +323,7 @@ export class Adicionar2Component implements OnInit {
   buscarPronuncia(textoSelecionado: any) {
     if (textoSelecionado) {
       textoSelecionado = textoSelecionado.trim();
+      this.copyToClipboard(textoSelecionado);
 
       var existe = this.pronunciasGoogle.some(x => x.palavra === textoSelecionado)
       if (existe) {
@@ -345,4 +346,32 @@ export class Adicionar2Component implements OnInit {
       });
     }
   }
+
+  copyToClipboard(text: any) {
+    const elem = document.createElement('textarea');
+    elem.value = text;
+    document.body.appendChild(elem);
+    elem.select();
+    document.execCommand('copy');
+    document.body.removeChild(elem);
+  }
+
+  @HostListener('document:keydown.control.c', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) {
+    var textoSelecionado = window.getSelection()?.toString();
+
+    while (textoSelecionado?.includes('\n') || textoSelecionado?.includes('  ')) {
+      textoSelecionado = textoSelecionado.replace('\n', ' ');
+      textoSelecionado = textoSelecionado.replace('  ', ' ');
+    }
+    textoSelecionado = textoSelecionado?.trim();
+    this.copyToClipboard(textoSelecionado);
+
+    event.preventDefault();
+  }
+
+  tocar(palavra: any) {
+    var audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavra}`);
+    audio.play();
+  };
 }
