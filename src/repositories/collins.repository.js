@@ -36,10 +36,11 @@ exports.buscarDefinicaoCollins = async palavra => {
 
     for (let j = 0; j < el_definicoes.length; j++) {
       var definicao = el_definicoes[j].textContent.trim();
-
+      
       if (!definicao)
         continue;
 
+      definicao = definicao.replace(new RegExp('[:]', 'gm'), '');
       definicoes.push({ definicao: definicao, exemplos: [] });
     }
 

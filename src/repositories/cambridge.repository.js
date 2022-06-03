@@ -47,14 +47,15 @@ function buscarPalavraSimples($, dicionario) {
       continue;
 
     var exemplos = [];
-    var el_exemplos = $(el_definicoes[j]).find('.def-block .examp');
-    for (let n = 0; n < el_exemplos.length; n++) {
-      var exemplo = $(el_exemplos[n]).text().trim();
+    // var el_exemplos = $(el_definicoes[j]).find('.def-block .examp');
+    // for (let n = 0; n < el_exemplos.length; n++) {
+    //   var exemplo = $(el_exemplos[n]).text().trim();
 
-      if (exemplo && n < 10)
-        exemplos.push({ exemplo: exemplo, id: 'e' + ((+new Date) + Math.random() * 100).toString(32) });
-    }
+    //   if (exemplo && n < 10)
+    //     exemplos.push({ exemplo: exemplo, id: 'e' + ((+new Date) + Math.random() * 100).toString(32) });
+    // }
 
+    definicao = definicao.replace(new RegExp('[:]', 'gm'), '');
     definicoes.push({ definicao: definicao, exemplos: exemplos });
   }
 

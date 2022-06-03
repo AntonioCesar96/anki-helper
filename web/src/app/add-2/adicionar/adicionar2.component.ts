@@ -263,7 +263,7 @@ export class Adicionar2Component implements OnInit {
           for (let l = 0; l < definicoes[w].dicionario.length; l++) {
             const element = definicoes[w].dicionario[l];
 
-            card.fields.Back += `<br><i>${element.definicao}:</i><br>`;
+            card.fields.Back += `<br><i>${element.definicao}</i><br>`;
 
             if (element.exemplos && element.exemplos.length > 0) {
               for (let t = 0; t < (element.exemplos.length > 2 ? 2 : element.exemplos.length); t++) {
@@ -323,7 +323,7 @@ export class Adicionar2Component implements OnInit {
   buscarPronuncia(textoSelecionado: any) {
     if (textoSelecionado) {
       textoSelecionado = textoSelecionado.trim();
-      this.copyToClipboard(textoSelecionado);
+      // this.copyToClipboard(textoSelecionado);
 
       var existe = this.pronunciasGoogle.some(x => x.palavra === textoSelecionado)
       if (existe) {
@@ -358,8 +358,11 @@ export class Adicionar2Component implements OnInit {
 
   @HostListener('document:keydown.control.c', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
-    var textoSelecionado = window.getSelection()?.toString();
+    var textoSelecionado = window.getSelection()?.toString() ?? "";
 
+    const regex = new RegExp('\\d{2}[:]\\d{2}[:]\\d{2}[,]\\d{3} - \\d{2}[:]\\d{2}[:]\\d{2}[,]\\d{3}', 'gm')
+    textoSelecionado = textoSelecionado.replace(regex, ' ');
+    
     while (textoSelecionado?.includes('\n') || textoSelecionado?.includes('  ')) {
       textoSelecionado = textoSelecionado.replace('\n', ' ');
       textoSelecionado = textoSelecionado.replace('  ', ' ');

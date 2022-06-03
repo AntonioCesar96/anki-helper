@@ -35,16 +35,15 @@ exports.obterContext = async (req, res, next) => {
 
     var listaFinal = [];
 
-    var retorno = await repository.obterContext1(palavraIngles, palavraPortugues, 1);
     var retorno2 = await repository.obterContext2(palavraIngles, palavraPortugues, 1);
 
-    var jaExiste = retorno2.some(x => x.palavraIngles == retorno[0].palavraIngles
-      && x.palavraPortugues == retorno[0].palavraPortugues);
+    var existe = retorno2.find(x => x.palavraIngles == palavraIngles && x.palavraPortugues == palavraPortugues);
 
-    if (jaExiste) {
+    if (existe) {
+      retorno2 = retorno2.filter(x => x != existe);
+      listaFinal.push(existe);
       listaFinal.push(...retorno2);
     } else {
-      listaFinal.push(...retorno);
       listaFinal.push(...retorno2);
     }
 
@@ -73,8 +72,9 @@ exports.obterImagem = async (req, res, next) => {
 
     var retorno = await repository.obterImagem(palavraIngles, 1);
     var retorno2 = await repository.obterImagem(palavraPortugues, 1);
+    var retorno3 = await repository.obterImagem(palavraPortugues + ' significado', 1);
 
-    res.status(200).send({ imagens: [retorno, retorno2] });
+    res.status(200).send({ imagens: [retorno3, retorno, retorno2] });
   } catch (err) {
     console.log(err);
     handleError(res, err);

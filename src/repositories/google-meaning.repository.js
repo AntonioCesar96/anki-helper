@@ -35,7 +35,8 @@ exports.buscarDefinicaoGoogle = async palavra => {
     var primeiroResultado = document.querySelector('div[data-attrid="wa:/description"]');
     if (primeiroResultado) {
       let definicao = primeiroResultado.textContent.trim();
-
+      definicao = definicao.replace(new RegExp('[:]', 'gm'), '');
+      
       let definicoes = [];
       definicoes.push({ definicao: definicao, exemplos: [] });
 
@@ -45,7 +46,7 @@ exports.buscarDefinicaoGoogle = async palavra => {
     return []
   });
 
-  // await browser.close();
+  await browser.close();
 
   return definicoes;
 }
