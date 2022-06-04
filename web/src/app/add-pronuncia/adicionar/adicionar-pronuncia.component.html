@@ -1,0 +1,31 @@
+<div class="content">
+  <!-- (paste)="onPaste($event)" -->
+
+  <div>
+    | <span *ngFor="let item of pronunciasGoogle" (click)="tocar(item.palavra)">{{ item.palavra }} - </span>
+  </div>
+
+  <textarea name="" id="textarea" [(ngModel)]="meuInput"></textarea>
+
+  <button (click)="adicionar()" class="btn btn-success">Adicionar</button>
+  <span *ngIf="decks.length === 0"><b>*Anki esta fechado </b></span>
+  <select #Select (change)="changeDeck(Select.value)">
+    <option *ngFor="let i of decks" [selected]="i === deckSelecionado">{{i}}</option>
+  </select>
+
+  <div class="loader" *ngIf="mostrarLoader">
+    <div class="preloader-wrapper small active">
+      <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
