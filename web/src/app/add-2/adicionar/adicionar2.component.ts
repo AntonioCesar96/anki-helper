@@ -30,6 +30,7 @@ export class Adicionar2Component implements OnInit {
   mostrarTraducao = false;
   mostrarContext = false;
   mostrarLoader = false;
+  buscarImagens = true;
 
   anexos: Anexo[] = [];
   pronunciasGoogle: any[] = [];
@@ -96,6 +97,10 @@ export class Adicionar2Component implements OnInit {
   changeDeck(value: any) {
     this.deckSelecionado = value;
     localStorage.setItem('deck', value);
+  }
+
+  changeBuscarImagem(value: string) {
+    this.buscarImagens = value === 'true' ? true : false;
   }
 
   limpar() {
@@ -222,11 +227,14 @@ export class Adicionar2Component implements OnInit {
 
       const promises = [
         this.adicionarService.obterContext(palavraEmIngles, palavraEmPortugues),
-        this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues),
         this.adicionarService.obterDefinicaoCambridge(palavraEmIngles),
         this.adicionarService.obterDefinicaoCollins(palavraEmIngles),
         this.adicionarService.obterDefinicaoGoogleMeaning(palavraEmIngles),
       ];
+
+      if (this.buscarImagens) {
+        promises.push(this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues));
+      }
 
       var promisesResult = await Promise.all(promises);
       for (let w = 0; w < promisesResult.length; w++) {
@@ -301,11 +309,10 @@ export class Adicionar2Component implements OnInit {
       var res = await this.adicionarService.salvarNotas(anki);
       this.anexos = [];
       $('#textarea').val(linhasRestantes);
-
-      if (ultimaLinha) {
-        this.mostrarLoader = false;
-      }
     }
+
+    this.pronunciasGoogle = [];
+    this.mostrarLoader = false;
   }
 
   @HostListener('window:keypress', ['$event'])
@@ -362,7 +369,7 @@ export class Adicionar2Component implements OnInit {
 
     const regex = new RegExp('\\d{2}[:]\\d{2}[:]\\d{2}[,]\\d{3} - \\d{2}[:]\\d{2}[:]\\d{2}[,]\\d{3}', 'gm')
     textoSelecionado = textoSelecionado.replace(regex, ' ');
-    
+
     while (textoSelecionado?.includes('\n') || textoSelecionado?.includes('  ')) {
       textoSelecionado = textoSelecionado.replace('\n', ' ');
       textoSelecionado = textoSelecionado.replace('  ', ' ');

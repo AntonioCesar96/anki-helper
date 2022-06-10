@@ -12,6 +12,10 @@
   <select #Select (change)="changeDeck(Select.value)">
     <option *ngFor="let i of decks" [selected]="i === deckSelecionado">{{i}}</option>
   </select>
+  <select #Select2 (change)="changeBuscarImagem(Select2.value)">
+    <option [value]="true">Sim</option>
+    <option [value]="false">Não</option>
+  </select>
 
   <div class="loader" *ngIf="mostrarLoader">
     <div class="preloader-wrapper small active">
