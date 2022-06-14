@@ -2,10 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const controller = require('../controller/google-meaning.controller');
+const controller = require('../controller/dicio.controller');
 
-router.get('/ingles', controller.buscarPalavraEn);
-router.get('/portugues', controller.buscarPalavraPt);
+router.get('/', controller.buscarPalavra);
 // router.post('/', authService.isAdmin, controller.post);
 // router.put('/:id',authService.isAdmin, controller.put);
 // router.delete('/', authService.isAdmin, controller.delete);

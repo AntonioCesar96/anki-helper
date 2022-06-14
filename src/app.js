@@ -46,6 +46,7 @@ app.use((req, res, next) => {
 const cambridgeRoute = require('./routes/cambridge.route');
 const collinsRoute = require('./routes/collins.route');
 const googleMeaningRoute = require('./routes/google-meaning.route');
+const dicioRoute = require('./routes/dicio.route');
 const indexRoute = require('./routes/index.route');
 const ankiRoute = require('./routes/anki.route');
 const googleRoute = require('./routes/google.route');
@@ -54,6 +55,7 @@ app.use('/', indexRoute);
 app.use('/cambridge', cambridgeRoute);
 app.use('/collins', collinsRoute);
 app.use('/google-meaning', googleMeaningRoute);
+app.use('/dicio', dicioRoute);
 app.use('/anki', ankiRoute);
 app.use('/google', googleRoute);
 

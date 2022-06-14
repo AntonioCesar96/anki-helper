@@ -2,9 +2,9 @@
 
 const puppeteer = require('puppeteer');
 
-exports.buscarDefinicaoGoogle = async palavra => {
+exports.buscarDefinicaoGoogle = async (palavra, param) => {
   var palavraBusca = palavra.replaceAll(' ', '+');
-  palavraBusca += '+meaning';
+  palavraBusca += param;
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();

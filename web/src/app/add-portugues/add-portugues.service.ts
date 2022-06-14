@@ -4,7 +4,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { Cartao, RootObject } from '../_common/models/models';
 
 @Injectable()
-export class Adicionar2Service {
+export class AdicionarPortuguesService {
   URL_BASE = 'http://localhost:3000';
 
   constructor(
@@ -46,7 +46,14 @@ export class Adicionar2Service {
 
   async obterDefinicaoGoogleMeaning(palavra: string): Promise<any> {
     const headers = new HttpHeaders();
-    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/google-meaning/ingles?palavra=${palavra}`, { headers: headers }));
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/google-meaning/portugues?palavra=${palavra}`, { headers: headers }));
+
+    return res;
+  }
+
+  async obterDefinicaoDicio(palavra: string): Promise<any> {
+    const headers = new HttpHeaders();
+    var res = await firstValueFrom(this.http.get<any>(`${this.URL_BASE}/dicio?palavra=${palavra}`, { headers: headers }));
 
     return res;
   }

@@ -1,10 +1,6 @@
 <div class="content">
   <!-- (paste)="onPaste($event)" -->
 
-  <div>
-    | <span *ngFor="let item of pronunciasGoogle" (click)="tocar(item.palavra)">{{ item.palavra }} - </span>
-  </div>
-
   <textarea name="" id="textarea" [(ngModel)]="meuInput"></textarea>
 
   <button (click)="adicionar()" class="btn btn-success">Adicionar</button>

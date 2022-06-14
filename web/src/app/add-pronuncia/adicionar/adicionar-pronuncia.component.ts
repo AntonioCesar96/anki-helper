@@ -47,13 +47,7 @@ export class AdicionarPronunciaComponent implements OnInit {
         this.mostrarLoader = false;
         if (res && res.length > 0) {
           this.decks = res;
-
-          var deckStorage = localStorage.getItem('deck');
-          if (deckStorage) {
-            this.changeDeck(deckStorage);
-            return;
-          }
-          this.changeDeck(res[0]);
+          this.changeDeck("99 - Pronunciation");
         }
       });
 
@@ -95,7 +89,6 @@ export class AdicionarPronunciaComponent implements OnInit {
 
   changeDeck(value: any) {
     this.deckSelecionado = value;
-    localStorage.setItem('deck', value);
   }
 
   limpar() {

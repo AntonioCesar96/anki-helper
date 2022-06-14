@@ -1,0 +1,35 @@
+ .content {
+    max-width: 95%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-right: auto;
+    margin-left: auto;
+ }
+
+ textarea {
+   width: 100%;
+   min-height: 400px;
+   display: block;
+   margin-bottom: 10px;
+ }
+
+ .notepad {
+    display: block;
+    margin-bottom: 10px;
+    padding: 15px 10px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #000;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #aaaaaa;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+ }
+
+ .btn {
+    margin-right: 10px;
+ }

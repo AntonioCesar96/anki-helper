@@ -3,16 +3,16 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { find, slice } from 'cheerio/lib/api/traversing';
 import { firstValueFrom } from 'rxjs';
 import { Imagem, Pronuncia, RootObject, Significado, Traducao, Cartao, Anexo, Exemplo } from 'src/app/_common/models/models';
-import { Adicionar2Service } from '../adicionar2.service';
+import { AdicionarPortuguesService } from '../add-portugues.service';
 declare var $: any;
 
 @Component({
-  selector: 'app-adicionar-2',
-  templateUrl: './adicionar2.component.html',
-  styleUrls: ['./adicionar2.component.scss'],
+  selector: 'app-adicionar-portugues',
+  templateUrl: './add-portugues.component.html',
+  styleUrls: ['./add-portugues.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class Adicionar2Component implements OnInit {
+export class AdicionarPortuguesComponent implements OnInit {
   @ViewChild('audioEl') audioEl!: ElementRef<HTMLAudioElement>;
 
   @ViewChild('ankiUnidade') ankiUnidade!: ElementRef;
@@ -39,32 +39,16 @@ export class Adicionar2Component implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private adicionarService: Adicionar2Service) { }
+    private adicionarService: AdicionarPortuguesService) { }
 
   ngOnInit(): void {
     this.mostrarLoader = true;
-    var buscarImagem = sessionStorage.getItem('buscarImagem');
-    if (buscarImagem) {
-      this.changeBuscarImagem(buscarImagem);
-    }
-
     this.adicionarService.obterDecks()
       .subscribe(res => {
         this.mostrarLoader = false;
         if (res && res.length > 0) {
-
-          this.decks = res.filter(x => 
-            !x.startsWith('01') && 
-            !x.startsWith('02') && 
-            !x.startsWith('99 - Pronunciation') && 
-            !x.startsWith('00'));
-
-          var deckStorage = localStorage.getItem('deck');
-          if (deckStorage) {
-            this.changeDeck(deckStorage);
-            return;
-          }
-          this.changeDeck(res[0]);
+          this.decks = res;
+          this.changeDeck("00 - Português");
         }
       });
 
@@ -94,7 +78,6 @@ export class Adicionar2Component implements OnInit {
 
   inserirNegrito() {
     var textoSelecionado = window.getSelection()?.toString();
-    this.buscarPronuncia(textoSelecionado);
 
     var cursorPos = $('#textarea').prop('selectionStart');
     var v = $('#textarea').val();
@@ -106,18 +89,6 @@ export class Adicionar2Component implements OnInit {
 
   changeDeck(value: any) {
     this.deckSelecionado = value;
-    localStorage.setItem('deck', value);
-
-    if(value === '99 - Excessos') {
-      this.changeBuscarImagem('false');
-      return;
-    }
-    this.changeBuscarImagem('true');
-  }
-
-  changeBuscarImagem(value: string) {
-    this.buscarImagens = value === 'true' ? true : false;
-    sessionStorage.setItem('buscarImagem', value);
   }
 
   limpar() {
@@ -184,21 +155,9 @@ export class Adicionar2Component implements OnInit {
         linha = split3[0];
       }
 
-      let traducao1 = await this.adicionarService.obterTraducao(linha);
-
-      var linhaSemNegrito = linha.replace('<b>', '').replace('</b>', '');
-      let traducao2 = await this.adicionarService.obterTraducao(linhaSemNegrito);
-
       let split1 = linha.split('<b>');
       let split2 = split1[1].split('</b>');
       let palavraEmIngles = split2[0].trim();
-
-      let palavraEmPortugues = "";
-      if (traducao1.includes("<b>")) {
-        split1 = traducao1.split('<b>');
-        split2 = split1[1].split('</b>');
-        palavraEmPortugues = split2[0].trim();
-      }
 
       // 
       card.fields.Front = `${linha}<br>`;
@@ -243,15 +202,9 @@ export class Adicionar2Component implements OnInit {
       let imagens = [];
 
       const promises = [
-        this.adicionarService.obterContext(palavraEmIngles, palavraEmPortugues),
-        this.adicionarService.obterDefinicaoCambridge(palavraEmIngles),
-        this.adicionarService.obterDefinicaoCollins(palavraEmIngles),
         this.adicionarService.obterDefinicaoGoogleMeaning(palavraEmIngles),
+        this.adicionarService.obterDefinicaoDicio(palavraEmIngles),
       ];
-
-      if (this.buscarImagens) {
-        promises.push(this.adicionarService.obterImagem(palavraEmIngles, palavraEmPortugues));
-      }
 
       var promisesResult = await Promise.all(promises);
       for (let w = 0; w < promisesResult.length; w++) {
@@ -268,8 +221,7 @@ export class Adicionar2Component implements OnInit {
         }
       }
 
-      card.fields.Back = `${traducao1}<br>`;
-      card.fields.Back += `${traducao2}<br><br>`;
+      card.fields.Back = ``;
 
       if (sinonimos) {
         for (let l = 0; l < sinonimos.length; l++) {
@@ -288,7 +240,7 @@ export class Adicionar2Component implements OnInit {
           for (let l = 0; l < definicoes[w].dicionario.length; l++) {
             const element = definicoes[w].dicionario[l];
 
-            card.fields.Back += `<br><i>${element.definicao}</i><br>`;
+            card.fields.Back += `<br>${element.definicao}<br>`;
 
             if (element.exemplos && element.exemplos.length > 0) {
               for (let t = 0; t < (element.exemplos.length > 2 ? 2 : element.exemplos.length); t++) {
@@ -297,20 +249,6 @@ export class Adicionar2Component implements OnInit {
               }
             }
           }
-        }
-      }
-
-      if (imagens) {
-        card.fields.Back += `<br><br>`;
-        for (let u = 0; u < imagens.length; u++) {
-
-          let anexo = new Anexo();
-          anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.jpg';
-          anexo.url = imagens[u];
-
-          this.anexos.push(anexo);
-
-          card.fields.Back += `<img src="${anexo.nome}" />`;
         }
       }
 
@@ -337,38 +275,6 @@ export class Adicionar2Component implements OnInit {
     if (event.ctrlKey && event.code === 'KeyB') {
       this.inserirNegrito();
     }
-
-    if (event.ctrlKey && event.code === 'KeyI') {
-      var textoSelecionado = window.getSelection()?.toString();
-      this.buscarPronuncia(textoSelecionado);
-    }
-  }
-
-  buscarPronuncia(textoSelecionado: any) {
-    if (textoSelecionado) {
-      textoSelecionado = textoSelecionado.trim();
-      // this.copyToClipboard(textoSelecionado);
-
-      var existe = this.pronunciasGoogle.some(x => x.palavra === textoSelecionado)
-      if (existe) {
-        return;
-      }
-
-      this.adicionarService.obterPronunciasObservable([textoSelecionado]).subscribe(pronuncias => {
-        for (let g = 0; g < pronuncias.length; g++) {
-          const pronuncia = pronuncias[g];
-
-          let anexo = new Anexo();
-          anexo.nome = 'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '') + '.mp3';
-          anexo.url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${pronuncia.palavra}`;
-
-          pronuncia.nome = anexo.nome;
-
-          this.anexos.push(anexo);
-          this.pronunciasGoogle.push(pronuncia);
-        }
-      });
-    }
   }
 
   copyToClipboard(text: any) {
@@ -379,26 +285,4 @@ export class Adicionar2Component implements OnInit {
     document.execCommand('copy');
     document.body.removeChild(elem);
   }
-
-  @HostListener('document:keydown.control.c', ['$event'])
-  onKeydownHandler(event: KeyboardEvent) {
-    var textoSelecionado = window.getSelection()?.toString() ?? "";
-
-    const regex = new RegExp('\\d{2}[:]\\d{2}[:]\\d{2}[,]\\d{3} - \\d{2}[:]\\d{2}[:]\\d{2}[,]\\d{3}', 'gm')
-    textoSelecionado = textoSelecionado.replace(regex, ' ');
-
-    while (textoSelecionado?.includes('\n') || textoSelecionado?.includes('  ')) {
-      textoSelecionado = textoSelecionado.replace('\n', ' ');
-      textoSelecionado = textoSelecionado.replace('  ', ' ');
-    }
-    textoSelecionado = textoSelecionado?.trim();
-    this.copyToClipboard(textoSelecionado);
-
-    event.preventDefault();
-  }
-
-  tocar(palavra: any) {
-    var audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavra}`);
-    audio.play();
-  };
 }
