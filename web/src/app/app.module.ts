@@ -3,12 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AdicionarModule } from './add/adicionar.module';
 import { AnkiHelperCommonModule } from './_common/common.module';
 import { AdicionarGramaticaModule } from './add-gramatica/adicionar.module';
 import { Adicionar2Module } from './add-2/adicionar.module';
 import { AdicionarPronunciaModule } from './add-pronuncia/adicionar-pronuncia.module';
 import { AdicionarPortuguesModule } from './add-portugues/add-portugues.module';
+import { AnotacoesModule } from './lista-anotacoes-kindle/anotacoes.module';
+import { LeitorModule } from './leitor/leitor.module';
 
 @NgModule({
   declarations: [
@@ -16,12 +17,13 @@ import { AdicionarPortuguesModule } from './add-portugues/add-portugues.module';
   ],
   imports: [
     AnkiHelperCommonModule,
-    AdicionarModule,
+    AnotacoesModule,
     AdicionarGramaticaModule,
     Adicionar2Module,
     AppRoutingModule,
     AdicionarPronunciaModule,
-    AdicionarPortuguesModule
+    AdicionarPortuguesModule,
+    LeitorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

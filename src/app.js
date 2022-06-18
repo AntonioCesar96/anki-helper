@@ -9,6 +9,7 @@ const app = express();
 const router = express.Router();
 
 app.use(express.static('imagens'))
+app.use(express.static('html'))
 
 
 require('events').EventEmitter.prototype._maxListeners = 0;
@@ -18,7 +19,7 @@ process.on('warning', e => console.warn(e.stack));
 // BodyParser
 app.use(
   bodyParser.json({
-    limit: '5mb'
+    limit: '50mb'
   })
 );
 
@@ -50,6 +51,7 @@ const dicioRoute = require('./routes/dicio.route');
 const indexRoute = require('./routes/index.route');
 const ankiRoute = require('./routes/anki.route');
 const googleRoute = require('./routes/google.route');
+const kindleRoute = require('./routes/kindle.route');
 
 app.use('/', indexRoute);
 app.use('/cambridge', cambridgeRoute);
@@ -58,5 +60,6 @@ app.use('/google-meaning', googleMeaningRoute);
 app.use('/dicio', dicioRoute);
 app.use('/anki', ankiRoute);
 app.use('/google', googleRoute);
+app.use('/kindle', kindleRoute);
 
 module.exports = app;

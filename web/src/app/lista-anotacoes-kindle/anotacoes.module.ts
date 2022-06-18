@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdicionarComponent } from './adicionar/adicionar.component';
 import { AnkiHelperCommonModule } from '../_common/common.module';
-import { AdicionarService } from './adicionar.service';
+import { AnotacoesService } from './anotacoes.service';
+import { AnotacoesComponent } from './anotacoes/anotacoes.component';
 
 @NgModule({
   declarations: [
-    AdicionarComponent
+    AnotacoesComponent
   ],
   imports: [
     AnkiHelperCommonModule
   ],
-  providers: [AdicionarService]
+  providers: [AnotacoesService]
 })
-export class AdicionarModule { }
+export class AnotacoesModule { }

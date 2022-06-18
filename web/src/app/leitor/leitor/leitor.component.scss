@@ -1,0 +1,28 @@
+@font-face {
+    font-family: Bookerly;
+    src: url('./../../../assets/fonts/bookerly/Bookerly.ttf');
+}
+
+.ebook {
+    padding: 0 16%;
+    background-color: #ffffff;
+    color: #000;
+    font-family: Bookerly;
+    line-height: 20px;
+    overflow-x: hidden;
+    font-size: 22px;
+    line-height: 42px;
+}
+
+mark {
+    background-color: #fff7af;
+}
+
+.mark {
+    background-color: #fff7af;
+}
+
+body  {
+    padding: 0 !important;
+    background-color:#fff !important;
+}
