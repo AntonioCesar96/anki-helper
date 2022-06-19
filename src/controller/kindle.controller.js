@@ -28,20 +28,22 @@ exports.buscar = async (req, res, next) => {
 exports.leitor = async (req, res, next) => {
 
   try {
-    var ebookFile = obterConteudoArquivo('html/soft-skills', 'index1.html');
+    var livro = req.query.livro;
+
+    var ebookFile = obterConteudoArquivo(`html/${livro}`, 'index1.html');
     var $ebookFile = cheerio.load(ebookFile);
 
     var todasImagens = $ebookFile('img');
     for (let i = 0; i < todasImagens.length; i++) {
       var splits = todasImagens[i].attribs.src.split('/');
-      todasImagens[i].attribs.src = "http://localhost:3000/soft-skills/" + splits[splits.length - 1];
+      todasImagens[i].attribs.src = `http://localhost:3000/${livro}/${splits[splits.length - 1]}`;
     }
 
     var filesCss = ['stylesheet.css', 'page_styles.css', 'calibreHtmlOutBasicCss.css'];
 
     var conteudoArquivosCss = [];
     for (let i = 0; i < filesCss.length; i++) {
-      var css = obterConteudoArquivo('html/soft-skills', filesCss[i]);
+      var css = obterConteudoArquivo(`html/${livro}`, filesCss[i]);
       conteudoArquivosCss.push(css);
     }
 
@@ -67,20 +69,21 @@ exports.salvarHtml = async (req, res, next) => {
 
   try {
     var html = req.body.innerHTML;
+    var livro = req.body.livro;
 
-    var ebookFile = obterConteudoArquivo('html/soft-skills', 'index1.html');
+    var ebookFile = obterConteudoArquivo(`html/${livro}`, 'index1.html');
     var $ebookFile = cheerio.load(ebookFile);
 
     $ebookFile('body').empty()
     $ebookFile('body').append(html);;
 
     var novoHtml = $ebookFile.html();
-    fs.writeFile('html/soft-skills/index1.html', novoHtml, function (err) {
+    fs.writeFile(`html/${livro}/index1.html`, novoHtml, function (err) {
       if (err) {
         return console.log(err);
       }
 
-      console.log("The file was saved!");
+      console.log(`${livro} atualizado`);
     });
 
     var ebook = {

@@ -12,9 +12,9 @@ export class LeitorService {
     private http: HttpClient
   ) { }
 
-  obterKindle(): Observable<any> {
+  obterKindle(livro: any): Observable<any> {
     const headers = new HttpHeaders();
-    return this.http.get<any>(`${this.URL_BASE}/kindle/leitor`, { headers: headers })
+    return this.http.get<any>(`${this.URL_BASE}/kindle/leitor?livro=${livro.nome}`, { headers: headers })
   }
 
   obterTraducao(frase: any): Observable<any> {
@@ -24,8 +24,29 @@ export class LeitorService {
     return this.http.get<any>(`${url}${frase}`, { headers: headers });
   }
 
-  salvarHtml(innerHTML: any): Observable<any> {
-    return this.http.post<any>(`${this.URL_BASE}/kindle/leitor`, { innerHTML: innerHTML });
+  salvarHtml(obj: any): Observable<any> {
+    return this.http.post<any>(`${this.URL_BASE}/kindle/leitor`, obj);
   }
 
+  salvarParametro(livro: any, campo: any, valor: any) {
+    let dadosLivro = localStorage.getItem(livro.nome);
+    let dados = JSON.parse(dadosLivro);
+    if (!dados) {
+      dados = {};
+    }
+
+    dados[campo] = valor;
+
+    localStorage.setItem(livro.nome, JSON.stringify(dados));
+  }
+
+  obterParametro(livro: any, campo: any) {
+    let dadosLivro = localStorage.getItem(livro.nome);
+    let dados = JSON.parse(dadosLivro);
+    if (!dados) {
+      dados = {};
+    }
+
+    return dados[campo];
+  }
 }

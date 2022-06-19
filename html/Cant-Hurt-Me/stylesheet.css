@@ -1,0 +1,409 @@
+.calibre {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0
+    }
+.calibre1 {
+    display: block
+    }
+.calibre2 {
+    display: list-item
+    }
+.calibre3 {
+    line-height: 1.2
+    }
+.caption_s4y {
+    -webkit-hyphens: auto;
+    display: block;
+    font-family: FiraSans, sans-serif;
+    font-size: 0.75em;
+    hyphens: auto;
+    margin-bottom: 1em;
+    text-align: center
+    }
+.caption_sfa {
+    -webkit-hyphens: auto;
+    display: block;
+    font-family: FiraSans, sans-serif;
+    font-size: 0.75em;
+    hyphens: auto;
+    text-align: center
+    }
+.class {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center
+    }
+.class_s {
+    display: block;
+    margin-top: 6.4em
+    }
+.class_s1 {
+    display: block;
+    font-family: "Sfmono Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-weight: bold;
+    margin-bottom: 1em
+    }
+.class_s1d {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    margin-left: 3.125%;
+    margin-top: 1.65em
+    }
+.class_s1f {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    margin-left: 3.125%;
+    margin-top: 0.5em
+    }
+.class_s1r {
+    height: auto;
+    width: 30%
+    }
+.class_s1rm {
+    font-style: italic
+    }
+.class_s1rn {
+    font-weight: bold
+    }
+.class_s1rs {
+    color: #757575;
+    font-size: 0.29167em
+    }
+.class_s1rz {
+    font-family: "FiraSans Bold", sans-serif;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    text-transform: uppercase
+    }
+.class_s1s {
+    font-variant: small-caps
+    }
+.class_s1tm {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    margin-bottom: 1em;
+    text-align: center
+    }
+.class_s1tm1 {
+    height: auto;
+    max-width: 600px;
+    width: 87.891%
+    }
+.class_s1tn {
+    height: auto;
+    max-width: 600px;
+    width: 79.102%
+    }
+.class_s1tp {
+    height: auto;
+    max-width: 259.333pt;
+    width: 87.891%
+    }
+.class_s1tr {
+    height: auto;
+    max-width: 800px;
+    width: 100%
+    }
+.class_s1ts {
+    height: auto;
+    max-width: 720px;
+    width: 100%
+    }
+.class_s1tu {
+    height: auto;
+    max-width: 600px;
+    width: 75%
+    }
+.class_s1ty {
+    height: auto;
+    max-width: 230.667pt;
+    width: 87.891%
+    }
+.class_s2 {
+    display: block;
+    font-family: "Sfmono Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-weight: bold
+    }
+.class_s2a {
+    display: list-item;
+    margin-bottom: 1em
+    }
+.class_s2e {
+    display: block;
+    font-weight: bold
+    }
+.class_s2h {
+    display: list-item;
+    margin-bottom: 1em;
+    margin-left: 3.125%
+    }
+.class_s2p {
+    display: list-item;
+    margin-left: 3.125%
+    }
+.class_s2x {
+    display: block;
+    font-family: "Sfmono Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    list-style-type: decimal;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 1em
+    }
+.class_s2x1 {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    list-style-type: disc;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 1em;
+    text-align: justify
+    }
+.class_s3 {
+    display: block;
+    margin-bottom: 1em
+    }
+.class_s3d {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    margin-bottom: 1em
+    }
+.class_s3g {
+    display: block;
+    margin-bottom: 1em;
+    text-align: justify
+    }
+.class_s4 {
+    height: auto;
+    width: 25%
+    }
+.class_s7f {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto
+    }
+.class_s7f1 {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    text-align: justify
+    }
+.class_s7h {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 1.41667em;
+    hyphens: auto;
+    letter-spacing: 0.5em;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+    margin-top: 1em;
+    text-align: center
+    }
+.class_s8u {
+    border-top-style: solid;
+    border-top-width: 4px;
+    display: block;
+    font-family: "League Gothic", sans-serif;
+    font-size: 1.66667em;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    padding-bottom: 1em;
+    padding-left: 4.688%;
+    padding-right: 4.688%;
+    padding-top: 1em;
+    text-align: center;
+    text-transform: uppercase
+    }
+.class_s9b {
+    height: auto;
+    width: 100%
+    }
+.class_saz {
+    -webkit-hyphens: auto;
+    display: block;
+    font-weight: bold;
+    hyphens: auto;
+    margin-bottom: 1em
+    }
+.class_scg {
+    -webkit-hyphens: auto;
+    display: block;
+    font-style: italic;
+    hyphens: auto;
+    margin-bottom: 1em
+    }
+.class_scg1 {
+    -webkit-hyphens: auto;
+    display: block;
+    font-style: italic;
+    hyphens: auto;
+    margin-bottom: 1em;
+    text-align: justify
+    }
+.class_sh {
+    height: auto;
+    width: 39.286%
+    }
+.class_sk {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 0.75em;
+    font-variant: small-caps;
+    hyphens: auto;
+    margin-top: 4em
+    }
+.class_sn {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 0.75em;
+    font-style: italic;
+    hyphens: auto
+    }
+.class_sr {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 0.75em;
+    hyphens: auto
+    }
+.class_st {
+    display: block;
+    margin-left: 3.516%;
+    margin-right: 3.516%;
+    padding-bottom: 1.125em;
+    padding-top: 1.125em
+    }
+.class_sz {
+    -webkit-hyphens: auto;
+    display: block;
+    font-family: "Sfmono Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    hyphens: auto;
+    margin-bottom: 1em;
+    margin-left: 4.688%;
+    text-align: left
+    }
+.class1 {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 0.75em;
+    font-style: italic;
+    hyphens: auto;
+    margin-bottom: 0;
+    margin-left: 5pt;
+    margin-right: 5pt;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center
+    }
+.class2 {
+    display: block;
+    font-family: "League Gothic", sans-serif;
+    font-size: 1em;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left;
+    text-transform: uppercase
+    }
+.class3 {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 1em;
+    hyphens: auto;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left
+    }
+.class4 {
+    display: block;
+    list-style-type: upper-alpha;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0
+    }
+.class5 {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 1em;
+    hyphens: auto;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: justify
+    }
+.class6 {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: justify
+    }
+.class7 {
+    -webkit-hyphens: auto;
+    display: block;
+    font-size: 1em;
+    hyphens: auto;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0
+    }
+.heading_s1b {
+    display: block;
+    font-size: 2em;
+    line-height: 1.2;
+    text-align: center
+    }
+.heading_s3b {
+    -webkit-hyphens: none;
+    display: block;
+    font-family: "League Gothic", sans-serif;
+    font-size: 2em;
+    hyphens: none;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+    text-align: center;
+    text-transform: uppercase
+    }
+.heading_s4d {
+    display: block;
+    font-family: "FiraSans Bold", sans-serif;
+    font-size: 1.41667em;
+    letter-spacing: 0.2em;
+    line-height: 1.2;
+    margin-bottom: 1em;
+    margin-top: 5.81818em;
+    text-align: center;
+    text-transform: uppercase
+    }
+.pcalibre1 {
+    -webkit-hyphens: auto;
+    display: block;
+    hyphens: auto;
+    margin-bottom: 1em;
+    text-align: justify
+    }
+.pcalibre:first-line {
+    font-variant: small-caps
+    }

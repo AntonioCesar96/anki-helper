@@ -1,0 +1,17 @@
+@page {
+    margin-bottom: 5pt;
+    margin-top: 5pt
+    }
+@font-face {
+    font-family: "FiraSans Bold";
+    font-weight: bold;
+    src: url(OEBPS/font_rsrc1U2.ttf)
+    }
+@font-face {
+    font-family: "League Gothic";
+    src: url(OEBPS/font_rsrc1U4.ttf)
+    }
+@font-face {
+    font-family: FiraSans;
+    src: url(OEBPS/font_rsrc1U3.ttf)
+    }

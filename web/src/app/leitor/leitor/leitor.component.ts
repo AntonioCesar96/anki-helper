@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LeitorService } from '../leitor.service';
+import { LivrosClasse } from './livros';
 
 @Component({
   selector: 'app-leitor',
@@ -13,9 +14,12 @@ export class LeitorComponent implements OnInit {
   mostrarCapitulos = false;
   capitulos: any[] = [];
 
-  constructor(private adicionarService: LeitorService) {
+  livro: any;
 
-    let pageYOffset = localStorage.getItem('pageYOffset');
+  constructor(private adicionarService: LeitorService) {
+    this.livro = new LivrosClasse().livros[0];
+
+    let pageYOffset = adicionarService.obterParametro(this.livro, 'pageYOffset');
     if (pageYOffset) {
       this.pageYOffset = Number.parseInt(pageYOffset);
     }
@@ -23,7 +27,7 @@ export class LeitorComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.adicionarService.obterKindle().subscribe(ebook => {
+    this.adicionarService.obterKindle(this.livro).subscribe(ebook => {
       const elemento = this.elementoAnotacao.nativeElement;
       elemento.innerHTML = ebook.conteudo; // + '<br><br>';
 
@@ -41,7 +45,7 @@ export class LeitorComponent implements OnInit {
       }
 
       setTimeout(() => {
-        let capitulo = localStorage.getItem('capitulo');
+        let capitulo = this.adicionarService.obterParametro(this.livro, 'capitulo');
         this.mostrarCapitulo(capitulo);
         window.scrollTo(0, this.pageYOffset);
       }, 1000);
@@ -50,13 +54,16 @@ export class LeitorComponent implements OnInit {
   }
 
   createPaginacao(elemento: any) {
-    let tableContents = elemento.querySelectorAll('a[href^="#calibre_link"]');
+    let tableContents = elemento.querySelectorAll(this.livro.seletorPaginacao);
 
     for (let i = 0; i < tableContents.length; i++) {
       let element = tableContents[i];
       let href = (element.attributes as any).href.value;
 
       let capituloConteudo = elemento.querySelector(href);
+      if (!capituloConteudo) {
+        continue;
+      }
 
       this.capitulos.push({
         href: href,
@@ -75,7 +82,7 @@ export class LeitorComponent implements OnInit {
 
   mostrarCapitulo(href: any) {
     const elemento = this.elementoAnotacao.nativeElement;
-    localStorage.setItem('capitulo', href);
+    this.adicionarService.salvarParametro(this.livro, 'capitulo', href);
 
     for (let i = 0; i < this.capitulos.length; i++) {
       let element = this.capitulos[i];
@@ -83,19 +90,18 @@ export class LeitorComponent implements OnInit {
       let capituloConteudo = elemento.querySelector(element.href);
       if (element.href === href) {
         capituloConteudo.classList.remove("hide");
-        this.proximoIrmao(capituloConteudo.nextElementSibling, false);
+        //this.proximoIrmao(capituloConteudo.nextElementSibling, false);
         continue;
       }
 
       capituloConteudo.classList.add("hide");
-      this.proximoIrmao(capituloConteudo.nextElementSibling, true);
+      //this.proximoIrmao(capituloConteudo.nextElementSibling, true);
     }
 
-    elemento.querySelector('.calibreMeta')?.classList.add("hide");
-    elemento.querySelector('.calibreEbookContent')?.classList.add("hide");
-    elemento.querySelector('#calibre_link-0')?.classList.add("hide");
-    elemento.querySelector('#calibre_link-4')?.classList.add("hide");
-    elemento.querySelector('#calibre_link-13')?.classList.add("hide");
+    for (let i = 0; i < this.livro.idsEsconder.length; i++) {
+      let element = this.livro.idsEsconder[i];
+      elemento.querySelector(element)?.classList.add("hide");
+    }
 
     this.mostrarCapitulos = false;
   }
@@ -116,8 +122,8 @@ export class LeitorComponent implements OnInit {
   salvarHtml() {
     setTimeout(() => {
       const elemento = this.elementoAnotacao.nativeElement;
-
-      this.adicionarService.salvarHtml(elemento.innerHTML)
+      var obj = { livro: this.livro.nome, innerHTML: elemento.innerHTML }
+      this.adicionarService.salvarHtml(obj)
         .subscribe(res => {
 
         });
@@ -165,7 +171,7 @@ export class LeitorComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any) {
-    localStorage.setItem('pageYOffset', window.pageYOffset.toString());
+    this.adicionarService.salvarParametro(this.livro, 'pageYOffset', window.pageYOffset.toString());
   }
 
   /*
@@ -294,9 +300,9 @@ this.renderer.listen(div, 'click', (event) => {
     let focusNodeId = (selection.focusNode.parentElement.attributes as any).id.value;
     let focusOffset = selection.focusOffset;
 
-    let bancoString = localStorage.getItem('banco');
-    let banco = JSON.parse(bancoString);
-    if (!banco) {
+    let bancoString = this.adicionarService.obterParametro(this.livro, 'banco');
+    let banco = JSON.parse(bancoString || '{}');
+    if (!banco.lista) {
       banco = { lista: [] };
     }
 
@@ -307,7 +313,7 @@ this.renderer.listen(div, 'click', (event) => {
     }
     banco.lista.push(highlight);
 
-    localStorage.setItem('banco', JSON.stringify(banco));
+    this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
 
     return highlight;
   }
