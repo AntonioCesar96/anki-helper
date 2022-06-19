@@ -12,9 +12,12 @@ export class LeitorComponent implements OnInit {
   @ViewChild('elementoAnotacao') elementoAnotacao!: ElementRef;
   pageYOffset = 0;
   mostrarCapitulos = false;
+  mostrarNote = true;
+  textarea = '';
   capitulos: any[] = [];
 
   livro: any;
+  highlight: any;
 
   constructor(private adicionarService: LeitorService) {
     this.livro = new LivrosClasse().livros[0];
@@ -262,8 +265,17 @@ this.renderer.listen(div, 'click', (event) => {
       let selection = window.getSelection();
       let range = document.createRange();
 
-      range.setEnd(selection.anchorNode, selection.anchorOffset);
-      range.setStart(selection.focusNode, selection.focusOffset);
+      range.setStart(selection.focusNode, 0);
+      range.setEnd(selection.anchorNode, (selection.anchorNode as any).wholeText.length);
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      let selection = window.getSelection();
+      let range = document.createRange();
+
+      range.setStart(selection.anchorNode, 0);
+      range.setEnd(selection.focusNode, (selection.focusNode as any).wholeText.length);
 
       selection.removeAllRanges();
       selection.addRange(range);
@@ -275,24 +287,6 @@ this.renderer.listen(div, 'click', (event) => {
 
   }
 
-  removerAnotacaoAux(selection: any): void {
-    let parentElement = (selection.anchorNode.parentElement.attributes as any);
-    if (parentElement && parentElement['data-pai1']) {
-      let dataPai1 = parentElement['data-pai1'].value;
-      let dataPai2 = parentElement['data-pai2'].value;
-
-      this.removerAnotacao(dataPai1, dataPai2);
-    }
-
-    parentElement = (selection.focusNode.parentElement.attributes as any);
-    if (parentElement && parentElement['data-pai1']) {
-      let dataPai1 = parentElement['data-pai1'].value;
-      let dataPai2 = parentElement['data-pai2'].value;
-
-      this.removerAnotacao(dataPai1, dataPai2);
-    }
-  }
-
   salvarHighlight(selection: any) {
     let anchorNodeId = (selection.anchorNode.parentElement.attributes as any).id.value;
     let anchorOffset = selection.anchorOffset
@@ -300,22 +294,32 @@ this.renderer.listen(div, 'click', (event) => {
     let focusNodeId = (selection.focusNode.parentElement.attributes as any).id.value;
     let focusOffset = selection.focusOffset;
 
+    this.highlight = {
+      anchorNodeId: anchorNodeId, anchorOffset: anchorOffset,
+      focusNodeId: focusNodeId, focusOffset: focusOffset,
+      highlight: selection?.toString(),
+      comentario: this.highlight?.comentario
+    }
+
+    this.salvarParametro();
+
+    return this.highlight;
+  }
+
+  obterComentarios() {
     let bancoString = this.adicionarService.obterParametro(this.livro, 'banco');
     let banco = JSON.parse(bancoString || '{}');
     if (!banco.lista) {
       banco = { lista: [] };
     }
 
-    let highlight = {
-      anchorNodeId: anchorNodeId, anchorOffset: anchorOffset,
-      focusNodeId: focusNodeId, focusOffset: focusOffset,
-      highlight: selection?.toString()
-    }
-    banco.lista.push(highlight);
+    return banco;
+  }
 
+  salvarParametro() {
+    let banco = this.obterComentarios();
+    banco.lista.push(this.highlight);
     this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
-
-    return highlight;
   }
 
   colocarHighlight(selection: any) {
@@ -390,41 +394,41 @@ this.renderer.listen(div, 'click', (event) => {
     node.parentNode.setAttribute("data-pai2", highlight.focusNodeId);
   }
 
+  getMarksNodesBetween(rootNode: any, startNode: any, endNode: any) {
+    if (startNode === endNode) {
+      return [];
+    }
+
+    let pastStartNode = false, reachedEndNode = false, textNodes: any = [startNode, endNode];
+
+    function getTextNodes(node: any) {
+      if (node == startNode) {
+        pastStartNode = true;
+      } else if (node == endNode) {
+        reachedEndNode = true;
+      } else if (node.className == "mark") {
+        //if (pastStartNode && !reachedEndNode && !/^\s*$/.test(node.nodeValue)) {
+        if (pastStartNode && !reachedEndNode) {
+          textNodes.push(node);
+        }
+      } else {
+        for (let i = 0, len = node.childNodes.length; !reachedEndNode && i < len; ++i) {
+          getTextNodes(node.childNodes[i]);
+        }
+      }
+    }
+
+    getTextNodes(rootNode);
+    return textNodes;
+  }
+
   removerAnotacao(anchorNodeId: any, focusNodeId: any) {
 
     const elemento = this.elementoAnotacao.nativeElement;
     let pai1 = elemento.querySelector(`#${anchorNodeId}`);
     let pai2 = elemento.querySelector(`#${focusNodeId}`);
 
-    function getTextNodesBetween(rootNode: any, startNode: any, endNode: any) {
-      if (startNode === endNode) {
-        return [];
-      }
-
-      let pastStartNode = false, reachedEndNode = false, textNodes: any = [startNode, endNode];
-
-      function getTextNodes(node: any) {
-        if (node == startNode) {
-          pastStartNode = true;
-        } else if (node == endNode) {
-          reachedEndNode = true;
-        } else if (node.className == "mark") {
-          //if (pastStartNode && !reachedEndNode && !/^\s*$/.test(node.nodeValue)) {
-          if (pastStartNode && !reachedEndNode) {
-            textNodes.push(node);
-          }
-        } else {
-          for (let i = 0, len = node.childNodes.length; !reachedEndNode && i < len; ++i) {
-            getTextNodes(node.childNodes[i]);
-          }
-        }
-      }
-
-      getTextNodes(rootNode);
-      return textNodes;
-    }
-
-    let marks = getTextNodesBetween(document.body, pai1, pai2);
+    let marks = this.getMarksNodesBetween(document.body, pai1, pai2);
 
     for (let i = 0; i < marks.length; i++) {
       let mark = marks[i];
@@ -432,8 +436,6 @@ this.renderer.listen(div, 'click', (event) => {
       mark.removeAttribute('data-pai1');
       mark.removeAttribute('data-pai2');
     }
-
-
 
     this.salvarHtml();
   }
@@ -443,11 +445,100 @@ this.renderer.listen(div, 'click', (event) => {
     if (event.code === 'Space') {
       event.preventDefault();
       this.marcarTexto();
+      this.mostrarNote = true;
     }
     if (event.code === 'Backquote') {
       let selection = window.getSelection();
 
       this.removerAnotacaoAux(selection);
     }
+    if (event.code === 'Numpad0') {
+      this.recuperarComentario();
+    }
+  }
+
+  recuperarComentario() {
+    let selection = window.getSelection();
+
+    let banco = this.obterComentarios();
+    let lista = banco.lista as any[];
+    let pai01 = (selection.anchorNode.parentElement.attributes as any)['data-pai1']?.value;
+    this.highlight = lista.find(x => x.anchorNodeId === pai01);
+
+    this.mostrarNote = true;
+  }
+
+  removerAnotacaoDoMeio(selection: any): void {
+
+    let marks = this.getMarksNodesBetween(document.body, selection.anchorNode, selection.focusNode);
+
+    for (let i = 0; i < marks.length; i++) {
+      let mark = marks[i];
+
+      let attributes = (mark.attributes as any);
+      if (attributes && attributes['data-pai1']) {
+        this.removerMarcacoes(attributes['data-pai1'].value, attributes['data-pai2'].value);
+      }
+
+      if (mark.className == "mark") {
+        mark.classList.remove("mark");
+        mark.removeAttribute('data-pai1');
+        mark.removeAttribute('data-pai2');
+      }
+    }
+  }
+
+  removerAnotacaoAux(selection: any): void {
+
+    this.removerAnotacaoDoMeio(selection);
+
+    let parentElement = (selection.anchorNode.parentElement.attributes as any);
+    let dataPai1: any;
+    let dataPai2: any;
+    if (parentElement && parentElement['data-pai1']) {
+      dataPai1 = parentElement['data-pai1'].value;
+      dataPai2 = parentElement['data-pai2'].value;
+
+      this.removerMarcacoes(dataPai1, dataPai2);
+      this.removerAnotacao(dataPai1, dataPai2);
+    }
+
+    parentElement = (selection.focusNode.parentElement.attributes as any);
+    if (parentElement && parentElement['data-pai1']) {
+      dataPai1 = parentElement['data-pai1'].value;
+      dataPai2 = parentElement['data-pai2'].value;
+
+      this.removerMarcacoes(dataPai1, dataPai2);
+      this.removerAnotacao(dataPai1, dataPai2);
+    }
+  }
+
+  removerMarcacoes(dataPai1: any, dataPai2: any) {
+    let banco = this.obterComentarios();
+
+    let lista = banco.lista as any[];
+    this.highlight = lista.find(x => x.anchorNodeId === dataPai1 || x.anchorNodeId === dataPai2);
+
+    if (this.highlight) {
+      banco.lista = lista.filter(x => x.anchorNodeId !== this.highlight.anchorNodeId);
+      this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
+    }
+  }
+
+  fecharNote() {
+    this.mostrarNote = false;
+    this.highlight = null;
+  }
+
+  salvarNote() {
+    let banco = this.obterComentarios();
+    let lista = banco.lista as any[];
+    let highlightAux = lista.find(x => x.anchorNodeId === this.highlight.anchorNodeId);
+
+    highlightAux.comentario = this.highlight.comentario
+
+    this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
+
+    this.fecharNote();
   }
 }

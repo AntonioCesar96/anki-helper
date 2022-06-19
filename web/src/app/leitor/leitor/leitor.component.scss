@@ -120,3 +120,44 @@ span[id^="span"] {
 .hide {
     display: none !important;
 }
+
+
+.note-wrap {
+    position: fixed;
+    background-color: #39322b;
+    color: #fff;
+    padding: 10px 15px;
+    width: 500px;
+    height: 300px;
+    left: 50%;
+    bottom: 0;
+    margin-left: -250px;
+    z-index: 2;
+
+    .fechar {
+        font-weight: 900;
+        font-size: 30px;
+        text-align: right;
+        
+        span {
+            cursor: pointer;
+        }
+    }
+
+    .salvar {
+        font-weight: 900;
+        font-size: 30px;
+        text-align: right;
+
+        span {
+            cursor: pointer;
+        }
+    }
+
+    textarea {
+        width: 100%;
+        height: 200px;
+    }
+
+
+}

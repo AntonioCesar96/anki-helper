@@ -19,3 +19,17 @@
         X
     </div>
 </div>
+
+<div class="note-wrap" *ngIf="mostrarNote && highlight">
+    <div class="fechar">
+        <span (click)="fecharNote()">X</span>
+    </div>
+    <div class="note">
+        <textarea name="" id="textarea" [(ngModel)]="highlight.comentario"></textarea>
+    </div>
+
+    <div class="salvar">
+        <span (click)="salvarNote()">SALVAR</span>
+    </div>
+</div>
+
