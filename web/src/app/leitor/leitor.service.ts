@@ -28,6 +28,10 @@ export class LeitorService {
     return this.http.post<any>(`${this.URL_BASE}/kindle/leitor`, obj);
   }
 
+  obterPronunciasObservable(palavras: any): Observable<any[]> {
+    return this.http.post<any>(`${this.URL_BASE}/google`, palavras);
+  }
+
   salvarParametro(livro: any, campo: any, valor: any) {
     let dadosLivro = localStorage.getItem(livro.nome);
     let dados = JSON.parse(dadosLivro);

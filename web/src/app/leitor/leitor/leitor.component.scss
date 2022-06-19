@@ -10,7 +10,7 @@
     font-family: Bookerly;
     overflow-x: hidden;
     font-size: 29px;
-    line-height: 48px;
+    line-height: 52px;
 }
 
 mark {
@@ -26,8 +26,23 @@ body {
     background-color: #fff !important;
 }
 
-span[id^="span"] {
+span[data-pro] {
     position: relative;
+
+    &::after {
+        content: attr(data-pro);
+        display: block;
+        position: absolute;
+        top: -26px;
+        left: 60%;
+        margin-left: -50%;
+        font-size: 15px;
+        user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+    }
 }
 
 .cores-wrapper {
@@ -138,7 +153,7 @@ span[id^="span"] {
         font-weight: 900;
         font-size: 30px;
         text-align: right;
-        
+
         span {
             cursor: pointer;
         }

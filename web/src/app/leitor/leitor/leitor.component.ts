@@ -18,6 +18,7 @@ export class LeitorComponent implements OnInit {
 
   livro: any;
   highlight: any;
+  pronunciasGoogle: any[] = [];
 
   constructor(private adicionarService: LeitorService) {
     this.livro = new LivrosClasse().livros[0];
@@ -26,6 +27,8 @@ export class LeitorComponent implements OnInit {
     if (pageYOffset) {
       this.pageYOffset = Number.parseInt(pageYOffset);
     }
+
+    this.pronunciasGoogle = JSON.parse(localStorage.getItem('pronuncias') || '[]');
   }
 
   ngOnInit(): void {
@@ -123,6 +126,8 @@ export class LeitorComponent implements OnInit {
   }
 
   salvarHtml() {
+    this.removerPronuncias();
+    
     setTimeout(() => {
       const elemento = this.elementoAnotacao.nativeElement;
       var obj = { livro: this.livro.nome, innerHTML: elemento.innerHTML }
@@ -177,68 +182,36 @@ export class LeitorComponent implements OnInit {
     this.adicionarService.salvarParametro(this.livro, 'pageYOffset', window.pageYOffset.toString());
   }
 
-  /*
-  @HostListener('window:mouseup', ['$event'])
-  handleKeyboardEventMouseup(ev: KeyboardEvent) {
-    console.log(ev);
-    let palavraMarcada = window.getSelection()?.toString() ?? "";
-    if (!palavraMarcada) {
-      return;
-    }
-
-    let spanId = window.getSelection().focusNode.parentElement;
-
-    let div = this.renderer.createElement('div'); //dynamically create element
-
-    div.classList.add("cores-wrapper");
-
-    div.innerHTML = `
-        <div class="cores">
-          <div class="cor amarelo"></div>
-          <div class="cor azul"></div>
-        </div>`;
-
-    this.renderer.appendChild(spanId, div);
-
-this.renderer.listen(div, 'click', (event) => {
-  console.log("test");
-});
-
-    // setTimeout(() => {
-    //   let thisThis = this;
-    //   let amarelo = document.querySelector('.cores .amarelo') as any;
-    //   amarelo.addEventListener('click', function () { thisThis.marcarTexto(); });
-    // }, 1000);
-
-
-  }
-*/
-
   @HostListener('window:mousedown', ['$event'])
   handleKeyboardEvent(ev: KeyboardEvent) {
-    let wrappers = document.querySelectorAll('.cores-wrapper');
-    for (let i = 0; i < wrappers.length; i++) {
-      wrappers[i].parentElement.removeChild(wrappers[i]);
-    }
 
-    if (ev.which == 2) {
+    if (ev.which == 3) {
       ev.preventDefault();
 
-      if (ev.which == 2) {
-        let palavraMarcada = window.getSelection()?.toString() ?? "";
-        let palavraClicada = (ev.target as any).textContent;
+      this.removerPronuncias();
 
-        if (palavraMarcada) {
-          let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraMarcada}`);
-          audio.play();
-          return;
-        }
+      let palavraMarcada = window.getSelection()?.toString() ?? "";
+      let palavraClicada = (ev.target as any).textContent;
 
-        if (palavraClicada) {
-          let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraClicada}`);
-          audio.play();
-        }
+      this.mostrarPronuncia(ev, palavraClicada);
+
+      if (palavraMarcada) {
+        let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraMarcada}`);
+        audio.play();
+        return;
       }
+
+      if (palavraClicada) {
+        let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraClicada}`);
+        audio.play();
+      }
+    }
+  }
+
+  removerPronuncias(): void {
+    let wrappers = document.querySelectorAll('span[data-pro]');
+    for (let i = 0; i < wrappers.length; i++) {
+      wrappers[i].removeAttribute('data-pro');
     }
   }
 
@@ -307,9 +280,9 @@ this.renderer.listen(div, 'click', (event) => {
   }
 
   obterComentarios() {
-    let bancoString = this.adicionarService.obterParametro(this.livro, 'banco');
-    let banco = JSON.parse(bancoString || '{}');
-    if (!banco.lista) {
+    let banco = this.adicionarService.obterParametro(this.livro, 'banco');
+    // let banco = JSON.parse(bancoString || '{}');
+    if (!banco) {
       banco = { lista: [] };
     }
 
@@ -319,7 +292,7 @@ this.renderer.listen(div, 'click', (event) => {
   salvarParametro() {
     let banco = this.obterComentarios();
     banco.lista.push(this.highlight);
-    this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
+    this.adicionarService.salvarParametro(this.livro, 'banco', banco);
   }
 
   colocarHighlight(selection: any) {
@@ -521,7 +494,7 @@ this.renderer.listen(div, 'click', (event) => {
 
     if (this.highlight) {
       banco.lista = lista.filter(x => x.anchorNodeId !== this.highlight.anchorNodeId);
-      this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
+      this.adicionarService.salvarParametro(this.livro, 'banco', banco);
     }
   }
 
@@ -537,8 +510,32 @@ this.renderer.listen(div, 'click', (event) => {
 
     highlightAux.comentario = this.highlight.comentario
 
-    this.adicionarService.salvarParametro(this.livro, 'banco', JSON.stringify(banco));
+    this.adicionarService.salvarParametro(this.livro, 'banco', banco);
 
     this.fecharNote();
   }
+
+  mostrarPronuncia(ev: KeyboardEvent, palavraMarcada: any) {
+    var existe = this.pronunciasGoogle.find(x => x.palavra === palavraMarcada)
+    if (existe) {
+      (ev.target as any).setAttribute("data-pro", existe.pronuncia);
+      return;
+    }
+
+    this.pronunciasGoogle.push({ palavra: palavraMarcada, pronuncia: '' });
+
+    this.adicionarService.obterPronunciasObservable([palavraMarcada]).subscribe(pronuncias => {
+      for (let g = 0; g < pronuncias.length; g++) {
+        const pronuncia = pronuncias[g];
+
+        var existe = this.pronunciasGoogle.find(x => x.palavra === palavraMarcada) as any;
+        existe.pronuncia = pronuncia.pronuncia2;
+
+        localStorage.setItem('pronuncias', JSON.stringify(this.pronunciasGoogle));
+
+        (ev.target as any).setAttribute("data-pro", existe.pronuncia);
+      }
+    });
+  }
+
 }

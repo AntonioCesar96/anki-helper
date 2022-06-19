@@ -20,13 +20,15 @@ exports.buscarPronuncias = async palavras => {
     const $ = cheerio.load(stdout);
 
     var pronuncia = $('.TQ7enb').text();
+    var pronuncia2 = $('.TQ7enb').text();
     var estresse = $('.TQ7enb .BBwThe').text();
 
     if (pronuncia != '') {
       pronuncia = pronuncia.replaceAll(estresse, `<b>${estresse}</b>`)
+      pronuncia2 = pronuncia2.replaceAll(estresse, `${estresse.toUpperCase()}`);
     }
 
-    var pron = { palavra: palavras[i], pronuncia: pronuncia };
+    var pron = { palavra: palavras[i], pronuncia: pronuncia, pronuncia2: pronuncia2 };
     lista.push(pron);
   }
 
