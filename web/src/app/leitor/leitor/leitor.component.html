@@ -1,3 +1,21 @@
-<div class="ebook" >
+<div class="ebook">
     <div [contentEditable]="false" #elementoAnotacao></div>
+</div>
+
+<div class="menu" (click)="mostrarCapitulos = !mostrarCapitulos">
+    <div class="linha"></div>
+    <div class="linha"></div>
+    <div class="linha"></div>
+</div>
+
+<div class="capitulos-wrap" *ngIf="mostrarCapitulos">
+    <div class="capitulos">
+        <div *ngFor="let item of capitulos">
+            <span (click)="mostrarCapituloAux(item.href)">{{ item.capitulo }}</span>
+        </div>
+    </div>
+
+    <div class="fechar" (click)="mostrarCapitulos = !mostrarCapitulos">
+        X
+    </div>
 </div>

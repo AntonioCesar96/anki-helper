@@ -8,21 +8,114 @@
     background-color: #ffffff;
     color: #000;
     font-family: Bookerly;
-    line-height: 20px;
     overflow-x: hidden;
-    font-size: 22px;
-    line-height: 42px;
+    font-size: 29px;
+    line-height: 48px;
 }
 
 mark {
-    background-color: #fff7af;
+    background-color: #fff5a0;
 }
 
 .mark {
+    background-color: #fff5a0;
+}
+
+body {
+    padding: 0 !important;
+    background-color: #fff !important;
+}
+
+span[id^="span"] {
+    position: relative;
+}
+
+.cores-wrapper {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 10;
+    width: 50px;
+}
+
+.cores {
+    background-color: #000000;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.cores .cor {
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    float: left;
+    cursor: pointer;
+}
+
+.cores .cor:first-child {
+    margin-right: 3px;
+}
+
+.amarelo {
     background-color: #fff7af;
 }
 
-body  {
-    padding: 0 !important;
-    background-color:#fff !important;
+.azul {
+    background-color: aqua;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    color: #fff;
+    width: 40px;
+    z-index: 1;
+    cursor: pointer;
+
+    .linha {
+        width: 100%;
+        height: 5px;
+        background-color: #39322b;
+        margin-bottom: 8px;
+    }
+}
+
+.capitulos-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #39322b;
+    color: #fff;
+    padding: 10px 15px;
+    height: 100%;
+    z-index: 2;
+
+    .fechar {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-weight: 900;
+        cursor: pointer;
+        font-size: 30px;
+    }
+}
+
+.capitulos {
+
+    div {
+        margin: 3px 0;
+    }
+
+    span {
+        cursor: pointer;
+    }
+}
+
+.hide {
+    display: none !important;
 }
