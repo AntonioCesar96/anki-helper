@@ -5,12 +5,18 @@
 
 .ebook {
     padding: 0 16%;
-    background-color: #ffffff;
+    background-color: #ededed;
     color: #000;
     font-family: Bookerly;
     overflow-x: hidden;
     font-size: 29px;
     line-height: 52px;
+    padding: 0 14%;
+
+    >div {
+        background-color: #ffffff;
+        padding: 0 4%;
+    }
 }
 
 mark {
@@ -26,17 +32,20 @@ body {
     background-color: #fff !important;
 }
 
-span[data-pro] {
+span[data-note] {
     position: relative;
 
     &::after {
-        content: attr(data-pro);
+        content: "A";
         display: block;
         position: absolute;
-        top: -26px;
-        left: 60%;
-        margin-left: -50%;
+        padding: 1px 3px;
+        top: 0;
+        left: -16px;
         font-size: 15px;
+        line-height: 17px;
+        color: #ffffff;
+        background-color: #39322b;
         user-select: none;
         -moz-user-select: none;
         -khtml-user-select: none;
@@ -45,48 +54,31 @@ span[data-pro] {
     }
 }
 
-.cores-wrapper {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 10;
-    width: 50px;
-}
 
-.cores {
-    background-color: #000000;
-    padding: 5px 8px;
-    border-radius: 6px;
-    border-radius: 5px;
-    overflow: hidden;
-}
+span[data-pro] {
+    position: relative;
 
-.cores .cor {
-    display: block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    float: left;
-    cursor: pointer;
-}
-
-.cores .cor:first-child {
-    margin-right: 3px;
-}
-
-.amarelo {
-    background-color: #fff7af;
-}
-
-.azul {
-    background-color: aqua;
+    &::after {
+        content: attr(data-pro);
+        display: block;
+        position: absolute;
+        top: -27px;
+        left: 60%;
+        margin-left: -50%;
+        font-size: 15px;
+        color: #777a7b;
+        user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+    }
 }
 
 .menu {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #fff;
     color: #fff;
     width: 40px;
     z-index: 1;

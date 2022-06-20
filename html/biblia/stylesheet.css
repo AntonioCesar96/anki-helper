@@ -1,0 +1,28 @@
+.label {
+    padding: inherit;
+    font-size: 1.1rem;
+    background-color: transparent;
+    color: inherit;
+    display: inherit;
+    margin-right: 0.28571rem;
+    color: #777a7b;
+    position: absolute;
+    left: -25px;
+}
+
+.reader .note {
+    display: none;
+} 
+
+.reader .verse {
+    display: block;
+    position: relative;
+} 
+
+.reader .heading {
+    font-size: 1.03em;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 7px;
+    display: block;
+}

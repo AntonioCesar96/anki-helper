@@ -21,7 +21,7 @@ export class LeitorComponent implements OnInit {
   pronunciasGoogle: any[] = [];
 
   constructor(private adicionarService: LeitorService) {
-    this.livro = new LivrosClasse().livros[0];
+    this.livro = new LivrosClasse().livros[1];
 
     let pageYOffset = adicionarService.obterParametro(this.livro, 'pageYOffset');
     if (pageYOffset) {
@@ -127,7 +127,7 @@ export class LeitorComponent implements OnInit {
 
   salvarHtml() {
     this.removerPronuncias();
-    
+
     setTimeout(() => {
       const elemento = this.elementoAnotacao.nativeElement;
       var obj = { livro: this.livro.nome, innerHTML: elemento.innerHTML }
@@ -416,6 +416,10 @@ export class LeitorComponent implements OnInit {
   @HostListener('window:keypress', ['$event'])
   handleKeyboardEventKeypress(event: KeyboardEvent) {
     if (event.code === 'Space') {
+      if (!window.getSelection()?.toString()) {
+        return;
+      }
+
       event.preventDefault();
       this.marcarTexto();
       this.mostrarNote = true;
@@ -495,6 +499,13 @@ export class LeitorComponent implements OnInit {
     if (this.highlight) {
       banco.lista = lista.filter(x => x.anchorNodeId !== this.highlight.anchorNodeId);
       this.adicionarService.salvarParametro(this.livro, 'banco', banco);
+
+      const elemento = this.elementoAnotacao.nativeElement;
+      let pai1 = elemento.querySelector(`#${this.highlight.anchorNodeId}`);
+
+      pai1?.removeAttribute("data-note");
+
+      this.salvarHtml();
     }
   }
 
@@ -508,11 +519,18 @@ export class LeitorComponent implements OnInit {
     let lista = banco.lista as any[];
     let highlightAux = lista.find(x => x.anchorNodeId === this.highlight.anchorNodeId);
 
-    highlightAux.comentario = this.highlight.comentario
+    highlightAux.comentario = this.highlight.comentario;
 
     this.adicionarService.salvarParametro(this.livro, 'banco', banco);
 
     this.fecharNote();
+
+    const elemento = this.elementoAnotacao.nativeElement;
+    let pai1 = elemento.querySelector(`#${highlightAux.anchorNodeId}`);
+
+    pai1?.setAttribute("data-note", highlightAux.comentario);
+
+    this.salvarHtml();
   }
 
   mostrarPronuncia(ev: KeyboardEvent, palavraMarcada: any) {

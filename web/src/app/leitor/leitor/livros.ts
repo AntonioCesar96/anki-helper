@@ -1,6 +1,11 @@
 export class LivrosClasse {
     public livros: any = [
         {
+            nome: 'biblia',
+            seletorPaginacao: 'a[href^="#calibre_link"]',
+            idsEsconder: []
+        },
+        {
             nome: 'soft-skills',
             seletorPaginacao: 'a[href^="#calibre_link"]',
             idsEsconder: ['#calibre_link-0', '#calibre_link-4', '#calibre_link-13', '.calibreToc', '.calibreEbNav',
