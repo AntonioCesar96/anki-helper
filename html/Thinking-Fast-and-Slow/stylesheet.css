@@ -92,7 +92,8 @@
     }
 .class_s2 {
     display: block;
-    text-indent: 4.625%
+    text-indent: 4.625%;
+    margin-top: 30px !important;
     }
 .class_s2c {
     display: block;

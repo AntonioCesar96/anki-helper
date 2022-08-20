@@ -1,0 +1,52 @@
+@page {
+    margin-bottom: 5pt;
+    margin-top: 5pt
+    }
+@font-face {
+    font-family: "Lora";
+    src: url(fonts/00001.ttf) format("truetype");
+    font-weight: bold;
+    font-style: normal
+    }
+@font-face {
+    font-family: "Lora";
+    src: url(fonts/00002.ttf) format("truetype");
+    font-weight: bold;
+    font-style: italic
+    }
+@font-face {
+    font-family: "Lora";
+    src: url(fonts/00003.ttf) format("truetype");
+    font-weight: normal;
+    font-style: italic
+    }
+@font-face {
+    font-family: "Lora";
+    src: url(fonts/00004.ttf) format("truetype");
+    font-weight: normal;
+    font-style: normal
+    }
+@font-face {
+    font-family: "Cormorant Garamond";
+    src: url(fonts/00005.ttf) format("truetype");
+    font-weight: bold;
+    font-style: normal
+    }
+@font-face {
+    font-family: "Cormorant Garamond";
+    src: url(fonts/00006.ttf) format("truetype");
+    font-weight: bold;
+    font-style: italic
+    }
+@font-face {
+    font-family: "Cormorant Garamond";
+    src: url(fonts/00007.ttf) format("truetype");
+    font-weight: normal;
+    font-style: italic
+    }
+@font-face {
+    font-family: "Cormorant Garamond";
+    src: url(fonts/00008.ttf) format("truetype");
+    font-weight: normal;
+    font-style: normal
+    }

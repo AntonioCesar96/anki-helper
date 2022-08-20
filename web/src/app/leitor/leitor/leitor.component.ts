@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LeitorService } from '../leitor.service';
 import { LivrosClasse } from './livros';
 
@@ -16,22 +17,33 @@ export class LeitorComponent implements OnInit {
   textarea = '';
   capitulos: any[] = [];
 
+  livros: any[] = [];
   livro: any;
   highlight: any;
   pronunciasGoogle: any[] = [];
 
-  constructor(private adicionarService: LeitorService) {
-    this.livro = new LivrosClasse().livros[1];
+  constructor(
+    private adicionarService: LeitorService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,) {
 
-    let pageYOffset = adicionarService.obterParametro(this.livro, 'pageYOffset');
-    if (pageYOffset) {
-      this.pageYOffset = Number.parseInt(pageYOffset);
+    var livro = (this.activatedRoute.snapshot.queryParams as any).livro;
+    if (livro) {
+      localStorage.setItem('livroSelecionado', livro);
     }
 
+    this.livros = new LivrosClasse().livros;
     this.pronunciasGoogle = JSON.parse(localStorage.getItem('pronuncias') || '[]');
   }
 
   ngOnInit(): void {
+    let livroSelecionado = localStorage.getItem('livroSelecionado');
+    this.livro = livroSelecionado ? this.livros.find(x => x.nome === livroSelecionado) : new LivrosClasse().livros[0];
+
+    let pageYOffset = this.adicionarService.obterParametro(this.livro, 'pageYOffset');
+    if (pageYOffset) {
+      this.pageYOffset = Number.parseInt(pageYOffset);
+    }
 
     this.adicionarService.obterKindle(this.livro).subscribe(ebook => {
       const elemento = this.elementoAnotacao.nativeElement;
@@ -54,14 +66,38 @@ export class LeitorComponent implements OnInit {
         let capitulo = this.adicionarService.obterParametro(this.livro, 'capitulo');
         this.mostrarCapitulo(capitulo);
         window.scrollTo(0, this.pageYOffset);
-      }, 1000);
+      }, 4000);
 
     });
+  }
+
+  obterLivros(biblia: boolean) {
+    if(!biblia) {
+      return this.livros.filter(x => x.biblia === false || !x.biblia);
+    }
+
+    return this.livros.filter(x => x.biblia === biblia);
+  }
+
+  changeLivro(value: any) {
+    const queryParams: Params = { livro: value };
+
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.activatedRoute,
+        queryParams: queryParams,
+      });
+
+    setTimeout(() => {
+      location.reload();
+    }, 100);
   }
 
   createPaginacao(elemento: any) {
     let tableContents = elemento.querySelectorAll(this.livro.seletorPaginacao);
 
+    // console.log(tableContents);
     for (let i = 0; i < tableContents.length; i++) {
       let element = tableContents[i];
       let href = (element.attributes as any).href.value;
@@ -126,8 +162,6 @@ export class LeitorComponent implements OnInit {
   }
 
   salvarHtml() {
-    this.removerPronuncias();
-
     setTimeout(() => {
       const elemento = this.elementoAnotacao.nativeElement;
       var obj = { livro: this.livro.nome, innerHTML: elemento.innerHTML }
@@ -182,13 +216,11 @@ export class LeitorComponent implements OnInit {
     this.adicionarService.salvarParametro(this.livro, 'pageYOffset', window.pageYOffset.toString());
   }
 
-  @HostListener('window:mousedown', ['$event'])
-  handleKeyboardEvent(ev: KeyboardEvent) {
+  // @HostListener('window:mousedown', ['$event'])
+  handleKeyboardEvent(ev: any) {
 
     if (ev.which == 3) {
       ev.preventDefault();
-
-      this.removerPronuncias();
 
       let palavraMarcada = window.getSelection()?.toString() ?? "";
       let palavraClicada = (ev.target as any).textContent;
@@ -432,6 +464,9 @@ export class LeitorComponent implements OnInit {
     if (event.code === 'Numpad0') {
       this.recuperarComentario();
     }
+    if (event.code === 'Numpad1') {
+      this.removerPronuncias();
+    }
   }
 
   recuperarComentario() {
@@ -537,6 +572,7 @@ export class LeitorComponent implements OnInit {
     var existe = this.pronunciasGoogle.find(x => x.palavra === palavraMarcada)
     if (existe) {
       (ev.target as any).setAttribute("data-pro", existe.pronuncia);
+      this.mostrarEmTodasAsPalavras(palavraMarcada, existe.pronuncia);
       return;
     }
 
@@ -552,8 +588,36 @@ export class LeitorComponent implements OnInit {
         localStorage.setItem('pronuncias', JSON.stringify(this.pronunciasGoogle));
 
         (ev.target as any).setAttribute("data-pro", existe.pronuncia);
+
+        this.mostrarEmTodasAsPalavras(palavraMarcada, existe.pronuncia);
       }
     });
+  }
+
+  mostrarEmTodasAsPalavras(palavra: any, pronuncia: any) {
+    const spans = document.querySelectorAll("span");
+    const spansAux: any = [];
+    for (let i = 0; i < spans.length; i++) {
+      var text = spans[i].textContent.trim().replace('“', '').replace('”', '')
+        .replace('.', '').replace(',', '').replace('—', '').replace(':', '').replace(';', '')
+        .replace('!', '').replace('?', '').replace('"', '')
+        .toLocaleLowerCase();
+      palavra = palavra.replace('“', '').replace('”', '')
+        .replace('.', '').replace(',', '').replace('—', '').replace(':', '').replace(';', '')
+        .replace('!', '').replace('?', '').replace('"', '')
+        .toLocaleLowerCase();
+
+      if (text === palavra) {
+        spansAux.push(spans[i]);
+        console.log(text);
+      }
+    }
+
+    for (let i = 0; i < spansAux.length; i++) {
+      spansAux[i].setAttribute("data-pro", pronuncia);
+    }
+
+    console.log(spansAux);
   }
 
 }

@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Cartao, RootObject } from '../_common/models/models';
+import { ServerHelper } from '../server';
 
 @Injectable()
 export class LeitorService {
 
-  URL_BASE = 'http://localhost:3000';
+  URL_BASE = `http://${ServerHelper.ip}:3000`;
 
   constructor(
     private http: HttpClient

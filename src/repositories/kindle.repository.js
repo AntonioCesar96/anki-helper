@@ -34,7 +34,7 @@ exports.buscar = async palavra => {
 
     var listaExclusoes = [
       "The Art of Communicating",
-      "O código da inteligência: Inteligência socioemocional aplicada (Portuguese Edition)",
+      // "O código da inteligência: Inteligência socioemocional aplicada (Portuguese Edition)",
       "Soft Skills for Hard People: A Practical Guide to Emotional Intelligence for Rational Leaders",
       "Thinking, Fast and Slow",
       "Never Split the Difference: Negotiating As If Your Life Depended On It",
@@ -43,7 +43,7 @@ exports.buscar = async palavra => {
       "Level 5: The Body KPF with Integrated Audio (Pearson English Graded Readers)",
       "Mais Esperto que o Diabo: O mistério revelado da liberdade e do sucesso (Portuguese Edition)",
       "Inteligência emocional: A teoria revolucionária que redefine o que é ser inteligente (Portuguese Edition)",
-      // "Como convencer alguém em 90 segundos (Portuguese Edition)",
+      "Como convencer alguém em 90 segundos (Portuguese Edition)",
     ];
     var pararWhile = false
     var livros = $('.kp-notebook-library-each-book .a-declarative');

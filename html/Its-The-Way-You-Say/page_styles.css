@@ -1,0 +1,28 @@
+@page {
+    margin-bottom: 5pt;
+    margin-top: 5pt
+    }
+@font-face {
+    font-family: "Charis";
+    src: url(OEBPS/Fonts/CharisSILR.ttf);
+    font-style: normal;
+    font-weight: normal
+    }
+@font-face {
+    font-family: "Charis";
+    src: url(OEBPS/Fonts/CharisSILB.ttf);
+    font-style: normal;
+    font-weight: bold
+    }
+@font-face {
+    font-family: "Charis";
+    src: url(OEBPS/Fonts/CharisSILI.ttf);
+    font-style: italic;
+    font-weight: normal
+    }
+@font-face {
+    font-family: "Charis";
+    src: url(OEBPS/Fonts/CharisSILBI.ttf);
+    font-style: italic;
+    font-weight: bold
+    }

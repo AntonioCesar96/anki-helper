@@ -56,7 +56,7 @@ export class Adicionar2Component implements OnInit {
           this.decks = res.filter(x => 
             !x.startsWith('01') && 
             !x.startsWith('02') && 
-            !x.startsWith('99 - Pronunciation') && 
+            !x.startsWith('99') && 
             !x.startsWith('00'));
 
           var deckStorage = localStorage.getItem('deck');
@@ -108,7 +108,7 @@ export class Adicionar2Component implements OnInit {
     this.deckSelecionado = value;
     localStorage.setItem('deck', value);
 
-    if(value === '99 - Excessos') {
+    if(value === '03 - Excessos') {
       this.changeBuscarImagem('false');
       return;
     }
@@ -136,6 +136,7 @@ export class Adicionar2Component implements OnInit {
 
   async adicionar() {
     this.mostrarLoader = true;
+    this.mudarIcon();
 
     //
     let linhas = $('#textarea').val().split('\n');
@@ -330,6 +331,23 @@ export class Adicionar2Component implements OnInit {
 
     this.pronunciasGoogle = [];
     this.mostrarLoader = false;
+    this.mudarIcon();
+  }
+
+  mudarIcon() {
+    var link = document.querySelector("link[rel~='icon']") as any;
+    if (!link) {
+        link = document.createElement('link') as any;
+        link.rel = 'icon';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    if(!this.mostrarLoader) {
+      link.href = './../../../favicon.ico';
+    }
+
+    if(this.mostrarLoader) {
+      link.href = './../../assets/loading.gif';
+    }
   }
 
   @HostListener('window:keypress', ['$event'])
