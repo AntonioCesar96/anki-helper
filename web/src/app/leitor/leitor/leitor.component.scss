@@ -8,13 +8,19 @@
 .calibre1,
 .calibre2,
 .paft,
-section p {
+section p,
+.content,
+.indented {
     text-indent: initial !important;
     margin-bottom: 25px !important;
     font-family: Bookerly !important;
 
     word-wrap: break-word;
     hyphens: auto;
+}
+
+.indented {
+text-align: justify;
 }
 
 .ebook {
@@ -93,6 +99,8 @@ span[data-pro] {
         -khtml-user-select: none;
         -webkit-user-select: none;
         -o-user-select: none;
+
+        white-space: nowrap;
     }
 }
 
@@ -208,4 +216,8 @@ span[data-pro] {
 .select-biblia {
     display: block;
     margin-top: 34px;
+}
+
+.reader .verse {
+    margin-bottom: 15px;
 }

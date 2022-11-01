@@ -24,7 +24,9 @@
             ],
             "js": [
                 "html2canvas.min.js",
-                "content-script.js"
+                "content-script-prime.js",
+                "content-script-hbo.js",
+                "content-script-youtube.js"
             ]
         }
     ]

@@ -31,6 +31,11 @@ export class LivrosClasse {
             seletorPaginacao: 'a[href^="#--calibre_link"]',
             idsEsconder: []
         },
+        {
+            nome: 'The-Mist',
+            seletorPaginacao: 'a[href^="#--calibre_link"]',
+            idsEsconder: []
+        },
         // {
         //     nome: 'How-to-Stop-Worrying-and-Start',
         //     seletorPaginacao: 'a[href^="#calibre_link"]',
@@ -107,6 +112,31 @@ export class LivrosClasse {
         {
             biblia: true,
             nome: 'biblia-comentario\\84-Ephesians',
+            seletorPaginacao: 'a[href^="#-calibre_link"]',
+            idsEsconder: []
+        },
+
+        {
+            biblia: true,
+            nome: 'biblia-comentario\\86-Philippians',
+            seletorPaginacao: 'a[href^="#-calibre_link"]',
+            idsEsconder: []
+        },
+        {
+            biblia: true,
+            nome: 'biblia-comentario\\87-Colossians',
+            seletorPaginacao: 'a[href^="#-calibre_link"]',
+            idsEsconder: []
+        },
+        {
+            biblia: true,
+            nome: 'biblia-comentario\\88-1-Thessalonians',
+            seletorPaginacao: 'a[href^="#-calibre_link"]',
+            idsEsconder: []
+        },
+        {
+            biblia: true,
+            nome: 'biblia-comentario\\88-2-Thessalonians',
             seletorPaginacao: 'a[href^="#-calibre_link"]',
             idsEsconder: []
         }
