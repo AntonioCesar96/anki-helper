@@ -1,8 +1,8 @@
 if (location.host === "play.hbomax.com") {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', afterDOMLoaded);
+        document.addEventListener('DOMContentLoaded', afterDOMLoadedHbo);
     } else {
-        afterDOMLoaded();
+        afterDOMLoadedHbo();
     }
 }
 
@@ -129,7 +129,7 @@ function pularIntro2(tentativas) {
     }, (1000 * 60 * 1));
 }
 
-function afterDOMLoaded() {
+function afterDOMLoadedHbo() {
 
     setInterval(() => {
         var legenda = pegarLegendaHbo();

@@ -17,16 +17,25 @@
     "host_permissions": [
         "https://*/"
     ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "youtube.html"
+            ],
+            "matches": [
+                "https://*/*"
+            ]
+        }
+    ],
     "content_scripts": [
         {
             "matches": [
                 "https://*/*"
             ],
             "js": [
-                "html2canvas.min.js",
+                "content-script-youtube.js",
                 "content-script-prime.js",
-                "content-script-hbo.js",
-                "content-script-youtube.js"
+                "content-script-hbo.js"
             ]
         }
     ]

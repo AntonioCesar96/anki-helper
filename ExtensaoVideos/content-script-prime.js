@@ -10,12 +10,14 @@ site = {
 };
 
 var legendas = [];
+var usarLowercase = false;
+var nomeSerie = '';
 
 if (location.host === "www.primevideo.com") {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', afterDOMLoaded);
+        document.addEventListener('DOMContentLoaded', afterDOMLoadedPrime);
     } else {
-        afterDOMLoaded();
+        afterDOMLoadedPrime();
     }
 }
 
@@ -57,6 +59,22 @@ function fonePrime() {
         return false;
     }
 
+    // navigator.mediaSession.setActionHandler("play", function () {
+    //     var video = getVideo();
+    //     video.play();
+    // });
+
+    navigator.mediaSession.setActionHandler("pause", function () {
+        var video = getVideo();
+        video.pause();
+
+        var legenda = pegarLegendaPrime2222();
+        if (!legenda) {
+            return;
+        }
+
+        console.log(legenda);
+    });
 
     navigator.mediaSession.setActionHandler('previoustrack', function () {
         if (pularIntro()) {
@@ -117,7 +135,7 @@ function pularIntroducao(tentativas) {
 
     if (!pular) {
         setTimeout(() => {
-            console.log(new Date() + "Tentando pular INTRODUÇÃO... Tentativa: " + tentativas);
+            //console.log(new Date() + "Tentando pular INTRODUÇÃO... Tentativa: " + tentativas);
             pularIntroducao(++tentativas)
         }, 3000);
 
@@ -126,9 +144,9 @@ function pularIntroducao(tentativas) {
 
     pular.click();
 
-    console.log("INTRODUÇÃO pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
+    //console.log("INTRODUÇÃO pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
     setTimeout(() => {
-        console.log(new Date() + "Iniciando processo de tentativas - INTRODUÇÃO");
+        //console.log(new Date() + "Iniciando processo de tentativas - INTRODUÇÃO");
         pularIntroducao(1);
     }, (1000 * 60 * 5));
 }
@@ -139,7 +157,7 @@ function pularPropaganda(tentativas) {
 
     if (!pular) {
         setTimeout(() => {
-            console.log(new Date() + "Tentando pular PROPAGANDA... Tentativa: " + tentativas);
+            //console.log(new Date() + "Tentando pular PROPAGANDA... Tentativa: " + tentativas);
             pularPropaganda(++tentativas)
         }, 3000);
 
@@ -148,9 +166,9 @@ function pularPropaganda(tentativas) {
 
     pular.click();
 
-    console.log("PROPAGANDA pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
+    //console.log("PROPAGANDA pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
     setTimeout(() => {
-        console.log(new Date() + "Iniciando processo de tentativas - PROPAGANDA");
+        //console.log(new Date() + "Iniciando processo de tentativas - PROPAGANDA");
         pularPropaganda(1);
     }, (1000 * 60 * 5));
 }
@@ -160,7 +178,7 @@ function pularFim(tentativas) {
 
     if (!pular) {
         setTimeout(() => {
-            console.log(new Date() + "Tentando pular FIM... Tentativa: " + tentativas);
+            //console.log(new Date() + "Tentando pular FIM... Tentativa: " + tentativas);
             pularFim(++tentativas)
         }, 3000);
 
@@ -169,21 +187,20 @@ function pularFim(tentativas) {
 
     pular.click();
 
-    console.log("FIM pulado, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
+    //console.log("FIM pulado, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
     setTimeout(() => {
-        console.log(new Date() + "Iniciando processo de tentativas - FIM");
+        //console.log(new Date() + "Iniciando processo de tentativas - FIM");
         pularFim(1);
     }, (1000 * 60 * 5));
 }
 
-function afterDOMLoaded() {
+function afterDOMLoadedPrime() {
     pularIntroducao(1);
     pularPropaganda(1);
 
     setInterval(() => {
         var legenda = pegarLegendaPrime();
         if (!legenda) {
-            console.log('Nada!');
             return;
         }
 
@@ -212,14 +229,16 @@ function afterDOMLoaded() {
     }, (1000 * 60 * 1));
 
     setInterval(() => {
-        console.log('Fone Helper Rodando! - www.primevideo.com');
+        //console.log('Fone Helper Rodando! - www.primevideo.com');
 
         fonePrime();
+
+        nomeSerie = document.querySelector('.atvwebplayersdk-title-text').textContent;
 
     }, 5000);
 
     setTimeout(() => {
-        console.log('Video Helper Rodando! - www.primevideo.com');
+        //console.log('Video Helper Rodando! - www.primevideo.com');
         var title = document.title;
 
         var playbackRate = false ? 0.1 : 0.05;
@@ -335,29 +354,14 @@ function afterDOMLoaded() {
             }
 
 
+            if (e.keyCode == '194') { // .
+                usarLowercase = !usarLowercase;
+            }
+
             if (e.keyCode == '192') { // . /
-                var legenda = pegarLegendaPrime();
+                var legenda = pegarLegendaPrime2222();
                 if (!legenda) {
-                    console.log('Nada!');
                     return;
-                }
-
-                var achou = legendas.filter(x => x == legenda);
-                if (achou.length > 0) {
-                    legenda = '';
-                    var index = legendas.indexOf(achou[0]);
-
-                    for (let i = 5; i >= 0; i--) {
-                        if ((index - i) >= 0) {
-                            legenda += legendas[index - i] + ' ';
-                        }
-                    }
-
-                    for (let i = 1; i <= 3; i++) {
-                        if (legendas.length > (index + i)) {
-                            legenda += legendas[index + i] + ' ';
-                        }
-                    }
                 }
 
                 console.log(legenda);
@@ -378,6 +382,33 @@ function afterDOMLoaded() {
 }
 
 
+function pegarLegendaPrime2222() {
+    var legenda = pegarLegendaPrime();
+    if (!legenda) {
+        return;
+    }
+
+    var achou = legendas.filter(x => x == legenda);
+    if (achou.length > 0) {
+        legenda = '';
+        var index = legendas.indexOf(achou[0]);
+
+        for (let i = 5; i >= 0; i--) {
+            if ((index - i) >= 0) {
+                legenda += legendas[index - i] + ' ';
+            }
+        }
+
+        for (let i = 1; i <= 3; i++) {
+            if (legendas.length > (index + i)) {
+                legenda += legendas[index + i] + ' ';
+            }
+        }
+    }
+
+    return legenda;
+}
+
 function pegarLegendaPrime() {
     var elemento = document.querySelector('div p span');
     if (!elemento) {
@@ -395,7 +426,9 @@ function pegarLegendaPrime() {
     legenda = legenda.replaceAll(']', ')');
     legenda = legenda.trim();
 
-    legenda = legenda.charAt(0) + legenda.substring(1).toLowerCase();
+    if (nomeSerie === 'The Office' || usarLowercase) {
+        legenda = legenda.charAt(0) + legenda.substring(1).toLowerCase();
+    }
 
     return legenda
 }
