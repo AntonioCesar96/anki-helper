@@ -1,6 +1,49 @@
-if (location.host === "www.youtube.com") {
-    document.body.style.opacity = 0;
+var sitesHome = [
+    {
+        host: "twitter.com",
+        href: "https://twitter.com/explore",
+        seletor: 'body'
+    },
+    {
+        host: "www.instagram.com",
+        href: "https://www.instagram.com/",
+        seletor: 'body'
+    },
+    {
+        host: "g1.globo.com",
+        href: "https://g1.globo.com/",
+        seletor: 'body'
+    },
+    {
+        host: "ge.globo.com",
+        href: "https://ge.globo.com/",
+        seletor: 'body'
+    },
+    {
+        host: "www.campograndenews.com.br",
+        href: "https://www.campograndenews.com.br/",
+        seletor: 'body'
+    },
+    {
+        host: "midiamax.uol.com.br",
+        href: "https://midiamax.uol.com.br/",
+        seletor: 'body'
+    },
+    {
+        host: "www.youtube.com",
+        href: "https://www.youtube.com/",
+        seletor: 'ytd-browse[page-subtype="home"]'
+    }
+]
 
+var siteHome = sitesHome.filter(x => x.host === location.host)[0];
+
+if (siteHome) {
+    console.log('Home');
+    document.body.style.opacity = 0;
+}
+
+if (siteHome) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMLoadedHome);
     } else {
@@ -32,8 +75,8 @@ function readTextFile() {
 
 function replaceHtml(html) {
 
-    if (document.querySelector('ytd-browse[page-subtype="home"]')) {
-        document.querySelector('ytd-browse').innerHTML = html;
+    if (document.querySelector(siteHome?.seletor)) {
+        document.querySelector(siteHome?.seletor).innerHTML = html;
     }
 
     var index = Number(localStorage.getItem('indexImagens'));
@@ -97,10 +140,9 @@ function tratamentoTelaInicial() {
 
     observer.observe(bodyList, config);
 
-    if (document.querySelector('ytd-browse')) {
-        document.querySelector('ytd-browse').innerHTML = '';
+    if (document.querySelector(siteHome?.seletor)) {
+        document.querySelector(siteHome?.seletor).innerHTML = '';
     }
-
 }
 
 function afterDOMLoadedHome() {
@@ -129,13 +171,10 @@ function afterDOMLoadedHome() {
     setTimeout(() => {
         var title = document.title;
 
-        document.onkeydown = checkKey;
-
-        function checkKey(e) {
+        document.addEventListener('keydown', function (e) {
             e = e || window.event;
-            var video = getVideo();
 
-            if (location.href === "https://www.youtube.com/") {
+            if (siteHome) {
                 if (e.keyCode == '37') { // <
                     var index = Number(localStorage.getItem('indexImagens'));
                     index--;
@@ -158,7 +197,7 @@ function afterDOMLoadedHome() {
                     trocarImagemBotao();
                 }
             }
-        }
+        });
     }, 5000);
 }
 
@@ -197,6 +236,7 @@ function randomIntFromIntervalGenerate(indexAtual) {
 }
 
 var links = [
+    { imagem: 'https://drive.google.com/uc?export=view&id=1cQEGIj8tPHRDu9Kv5xNBenjVC5eYBBr0' },
     { imagem: 'https://drive.google.com/uc?export=view&id=1Jd4zDqgSLui3NKS7yOR8VDZJ1ooHxBrP' },
     { imagem: 'https://drive.google.com/uc?export=view&id=1GIwP7JtZd1gvcWeCQ6Nrfa6wrhAwxl48' },
     { imagem: 'https://drive.google.com/uc?export=view&id=1r_Ls62rQEAIF-1_9HhNYpZgy3pzPD_6u' },

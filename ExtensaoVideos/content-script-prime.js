@@ -73,7 +73,12 @@ function fonePrime() {
             return;
         }
 
-        console.log(legenda);
+        var tempoElemento = document.querySelector('.atvwebplayersdk-timeindicator-text');
+        if(!tempoElemento) {
+            return;
+        }
+        
+        console.log(`${tempoElemento.textContent} - ` + legenda);
     });
 
     navigator.mediaSession.setActionHandler('previoustrack', function () {
@@ -231,7 +236,7 @@ function afterDOMLoadedPrime() {
     setInterval(() => {
         //console.log('Fone Helper Rodando! - www.primevideo.com');
 
-        fonePrime();
+        //fonePrime();
 
         nomeSerie = document.querySelector('.atvwebplayersdk-title-text').textContent;
 
@@ -243,7 +248,7 @@ function afterDOMLoadedPrime() {
 
         var playbackRate = false ? 0.1 : 0.05;
 
-        fonePrime();
+         fonePrime();
 
         document.onkeydown = checkKey;
 
