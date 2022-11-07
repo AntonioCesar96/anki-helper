@@ -33,6 +33,7 @@
                 "https://*/*"
             ],
             "js": [
+                "content-script-home.js",
                 "content-script-youtube.js",
                 "content-script-prime.js",
                 "content-script-hbo.js"
