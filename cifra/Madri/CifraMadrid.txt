@@ -1,0 +1,100 @@
+<h1 class="t1">Madri</h1>
+<h2 class="t3">Fernando e Sorocaba</h2>
+
+<pre style="line-height: 1;">
+[Intro] <b>E5</b>  <b>B4</b>  <b>A9</b>  <b>C#m</b>
+        <b>E5</b>  <b>B4</b>  <b>A9</b>  <b>C#m</b>
+
+[Primeira Parte]
+
+<b>E5</b>         <b>B5</b>
+  Que saudade amor
+<b>C#m7</b>                           
+    Estou sabendo que aí
+      <b>A9</b>
+Na Espanha tudo é lindo
+<b>E5</b>             <b>B5</b>
+  Você me deixou
+<b>C#m7</b>                        
+    E aqui dentro meu
+    <b>A9</b>
+Coração ficou partido
+
+[Segunda Parte]
+
+<b>C#m7</b>         <b>B/D#</b>          <b>A9</b>
+    Nessa cidade, não vou mais sorrir
+<b>C#m7</b>           <b>B/D#</b>        <b>A9</b>                        
+    Que bom seria, se São Paulo
+                    <b>E5</b>
+Fosse do lado de Madri
+    <b>B5</b>      <b>A9</b>
+Iêêêê, uôôôôô
+
+[Refrão]
+
+<b>E5</b>              <b>B5</b>         <b>A9</b>       
+  No puedo más    mi corazón 
+    <b>C#m7</b>       <b>B/D#</b>
+Tá doendo aqui na solidão
+<b>E5</b>              <b>B/D#</b>           <b>A9</b>
+  No puedo más     vivir sin ti 
+
+Volta logo pra São Paulo
+
+Ou eu vou pra Madri
+
+( <b>E5</b>  <b>B4</b>  <b>A9</b>  <b>C#m</b> )
+
+[Primeira Parte]
+
+<b>E5</b>         <b>B5</b>
+  Que saudade amor
+<b>C#m7</b>                     <b>A9</b>
+    Volta logo pro hemisfério sul do mundo
+<b>E5</b>            <b>B5</b>
+  Ficar sem você
+<b>C#m7</b>                       <b>A9</b>
+    Me mostrou o quanto é bom estarmos juntos
+
+[Segunda Parte]
+
+<b>C#m7</b>           <b>B/D#</b>          <b>A9</b>
+    Sonho tão lindo é ter você aqui
+<b>C#m7</b>           <b>B/D#</b>        <b>A9</b>                       
+    Que bom seria, se São Paulo
+                    <b>E5</b>
+Fosse do lado de Madri
+    <b>B5</b>      <b>A9</b>
+Iêêêê, uôôôôô
+
+[Refrão]
+
+<b>E5</b>              <b>B5</b>         <b>A9</b>       
+    No puedo más   mi corazón 
+    <b>C#m7</b>       <b>B/D#</b>
+Tá doendo aqui na solidão
+<b>E5</b>              <b>B/D#</b>           <b>A9</b>
+    No puedo más    vivir sin ti 
+
+Volta logo pra São Paulo
+
+Ou eu vou pra Madri
+
+[Solo] <b>C#m7</b> <b>B/D#</b>  <b>A9</b>  
+      <b>C#m7</b> <b>B/D#</b>  <b>A9</b>  <b>E</b>
+
+[Refrão]
+
+<b>E5</b>              <b>B5</b>         <b>A9</b>       
+    No puedo más   mi corazón 
+    <b>C#m7</b>       <b>B/D#</b>
+Tá doendo aqui na solidão
+<b>E5</b>              <b>B/D#</b>           <b>A9</b>
+    No puedo más    vivir sin ti 
+
+Volta logo pra São Paulo
+
+Ou eu vou pra Madri
+
+</pre>

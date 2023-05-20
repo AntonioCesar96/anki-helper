@@ -1,0 +1,78 @@
+<div class="cifra-view-content" [ngClass]="{'celular': mobileAndTabletCheck() }">
+  <div class="menu" (click)="mostrarMenu = !mostrarMenu">
+    <div class="linha"></div>
+    <div class="linha"></div>
+    <div class="linha"></div>
+  </div>
+
+  <div class="cifra_cnt"></div>
+
+  <div class="botoes-container" [ngClass]="{'abrir': mostrarMenu }">
+    <div class="fechar" (click)="mostrarMenu = !mostrarMenu">
+      X
+    </div>
+
+    <div class="botoes-content">
+      <div class="botoes-wrap">
+        <div>
+          <button class="btn-texto" (click)="fonteMais()">Fonte +</button>
+          <button class="btn-texto" (click)="fonteMenos()">Fonte -</button>
+          {{ this.fontSize }}
+        </div>
+
+        <div>
+          <button class="btn-texto" (click)="espacoMais()">Espaço +</button>
+          <button class="btn-texto" (click)="espacoMenos()">Espaço -</button>
+          {{ this.lineHeight }}
+        </div>
+
+        <div>
+          <button class="btn-texto" (click)="resetar()">Resetar</button>
+          <button class="btn-texto" (click)="scroll()">Scroll</button>
+          <div class="slidecontainer">
+            <input type="range" min="1" max="150" id="myRange" (change)="valueChanged($event)"
+              [(ngModel)]="tempoScroll">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div>
+          <input type="hidden" id="pontoA" value="" />
+          <input type="hidden" id="pontoB" value="" />
+          <input type="hidden" id="audioId" value="" />
+
+          <div *ngFor="let audio of cifra?.audios">
+            <video controls class="video-audio" id="{{audio.audioId}}" (play)="videoPlay(audio)">
+              <source [src]="'https://drive.google.com/uc?export=view&id=' + audio.id" type="audio/mpeg">
+            </video>
+
+            <div>
+              <button class="btn-texto" (click)="pontoA(audio)" [ngClass]="{'mask': pontoAVideo }">A</button>
+              <button class="btn-texto" (click)="pontoB(audio)" [ngClass]="{'mask': pontoBVideo }">B</button>
+              <button class="btn-texto" (click)="salvarPontos(audio)">Salvar</button>
+              <button class="btn-texto" (click)="removerPontos(audio)">Del</button>
+            </div>
+
+            <div>
+              <div *ngFor="let ponto of audio.pontos">
+                <div>
+                  <button class="btn-texto" (click)="tocar(audio, ponto)">Play</button>
+                  <button class="btn-texto" (click)="parar(audio, ponto)">Parar</button>
+                  <button class="btn-texto" (click)="removerPonto(audio, ponto)">Del</button>
+                  {{ ponto.pontoA.toFixed(0) }}s - {{ ponto.pontoB.toFixed(0) }}s
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button class="btn-texto" (click)="avancarAudio(audio)">Avançar +</button>
+              <button class="btn-texto" (click)="voltarAudio(audio)">Voltar -</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

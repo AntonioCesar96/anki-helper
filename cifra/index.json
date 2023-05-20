@@ -1,0 +1,140 @@
+[
+    {
+        "id": "FernandoSorocaba",
+        "artista": "Fernando e Sorocaba",
+        "musicas": [
+            {
+                "id": "FernandoSorocabaMadri",
+                "artista": "Fernando e Sorocaba",
+                "musica": "Madri",
+                "audios": [
+                    {
+                        "id": "1D8ETfAHm--SVdBrHeLWMkEm4vsWPW1ku",
+                        "audioId": "FernandoSorocabaMadriA1",
+                        "pontos": [
+                            {
+                                "pontoA": 2,
+                                "pontoB": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1D8ETfAHm--SVdBrHeLWMkEm4vsWPW1ku",
+                        "audioId": "FernandoSorocabaMadriA2",
+                        "pontos": [
+                            {
+                                "id": "a1gmbdni87e4o",
+                                "pontoA": 61.309391,
+                                "pontoB": 69.727922
+                            }
+                        ]
+                    }
+                ],
+                "cifra": "Madri/CifraMadrid.txt",
+                "cifraBase64": "FernandoSorocabaMadri"
+            },
+            {
+                "id": "FernandoSorocabaMadri2",
+                "artista": "Fernando e Sorocaba",
+                "musica": "Madri",
+                "audios": [
+                    {
+                        "id": "1D8ETfAHm--SVdBrHeLWMkEm4vsWPW1ku",
+                        "audioId": "FernandoSorocabaMadriA1",
+                        "pontos": []
+                    },
+                    {
+                        "id": "1D8ETfAHm--SVdBrHeLWMkEm4vsWPW1ku",
+                        "audioId": "FernandoSorocabaMadriA2",
+                        "pontos": [
+                            {
+                                "id": "a1gmbdni87e4o",
+                                "pontoA": 61.309391,
+                                "pontoB": 69.727922
+                            }
+                        ]
+                    }
+                ],
+                "cifra": "Madri/CifraMadrid.txt",
+                "cifraBase64": "FernandoSorocabaMadri"
+            },
+            {
+                "id": "FernandoSorocabaMadri3",
+                "artista": "Fernando e Sorocaba",
+                "musica": "Madri",
+                "audios": [
+                    {
+                        "id": "1D8ETfAHm--SVdBrHeLWMkEm4vsWPW1ku",
+                        "audioId": "FernandoSorocabaMadriA1",
+                        "pontos": [
+                            {
+                                "pontoA": 2,
+                                "pontoB": 4
+                            },
+                            {
+                                "id": "a1gmbq4n5lufo",
+                                "pontoA": 15.503086,
+                                "pontoB": 51.51899
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1D8ETfAHm--SVdBrHeLWMkEm4vsWPW1ku",
+                        "audioId": "FernandoSorocabaMadriA2",
+                        "pontos": [
+                            {
+                                "id": "a1gmbdni87e4o",
+                                "pontoA": 61.309391,
+                                "pontoB": 69.727922
+                            }
+                        ]
+                    }
+                ],
+                "cifra": "Madri/CifraMadrid.txt",
+                "cifraBase64": "FernandoSorocabaMadri"
+            }
+        ]
+    },
+    {
+        "id": "MariliaMendonca",
+        "artista": "Marília Mendonça",
+        "musicas": [
+            {
+                "id": "MariliaMendoncaTrocaDeCalcada",
+                "artista": "Marília Mendonça",
+                "musica": "Troca de Calçada",
+                "audios": [
+                    {
+                        "id": "1ZphCPlJstyv6vmLELM_jrGprrHZIeQQD",
+                        "audioId": "MariliaMendoncaTrocaDeCalcadaA1",
+                        "pontos": [
+                            {
+                                "id": "a1gme26ppq0k",
+                                "pontoA": 27.719346,
+                                "pontoB": 34.25757
+                            },
+                            {
+                                "id": "a1gmecq0usoo8",
+                                "pontoA": 20.348617,
+                                "pontoB": 44.835673
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1aAeZSvct801TFt0nB4N70ID4ILZ5hZQa",
+                        "audioId": "MariliaMendoncaTrocaDeCalcadaA2",
+                        "pontos": [
+                            {
+                                "id": "a1gmegudacas",
+                                "pontoA": 26.259548,
+                                "pontoB": 44.523696
+                            }
+                        ]
+                    }
+                ],
+                "cifra": "TrocaDeCalcada/CifraTrocaDeCalcada.txt",
+                "cifraBase64": "MariliaMendoncaTrocaDeCalcada"
+            }
+        ]
+    }
+]

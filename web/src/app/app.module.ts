@@ -10,6 +10,7 @@ import { AdicionarPronunciaModule } from './add-pronuncia/adicionar-pronuncia.mo
 import { AdicionarPortuguesModule } from './add-portugues/add-portugues.module';
 import { AnotacoesModule } from './lista-anotacoes-kindle/anotacoes.module';
 import { LeitorModule } from './leitor/leitor.module';
+import { CifraModule } from './cifra/cifra.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { LeitorModule } from './leitor/leitor.module';
     AppRoutingModule,
     AdicionarPronunciaModule,
     AdicionarPortuguesModule,
-    LeitorModule
+    LeitorModule,
+    CifraModule
   ],
   providers: [],
   bootstrap: [AppComponent]

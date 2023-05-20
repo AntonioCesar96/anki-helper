@@ -1,6 +1,8 @@
 'use strict';
 
 const app = require('../src/app');
+const appWs = require('../src/app-ws');
+
 const http = require('http');
 const debug = require('debug')('rebatedor:server');
 
@@ -8,6 +10,8 @@ const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 const server = http.createServer(app);
+
+appWs(server);
 
 server.listen(port);
 server.on('error', onError);

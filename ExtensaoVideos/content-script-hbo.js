@@ -35,7 +35,7 @@ function foneHbo() {
         return false;
     }
 
-    if(!mediaSession) {
+    if (!mediaSession) {
         return;
     }
 
@@ -48,7 +48,8 @@ function foneHbo() {
         console.log('previoustrack');
 
         var video = getVideo();
-        video.currentTime = video.currentTime - 5;
+        video.currentTime = video.currentTime - 7;
+        // voltarNoTempo(7);
     });
 
     // navigator.mediaSession
@@ -113,7 +114,7 @@ function pularIntro2(tentativas) {
     var pular = document.querySelector('div[aria-label="Pular abertura"]');
     if (!pular) {
         setTimeout(() => {
-            console.log(new Date() + "Tentando pular intro... Tentativa: " + tentativas);
+            //console.log(new Date() + "Tentando pular intro... Tentativa: " + tentativas);
             pularIntro2(++tentativas)
         }, 3000);
 
@@ -124,7 +125,7 @@ function pularIntro2(tentativas) {
 
     console.log("Abertura pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 10))));
     setTimeout(() => {
-        console.log(new Date() + "Iniciando processo de tentativas");
+        //console.log(new Date() + "Iniciando processo de tentativas");
         pularIntro2(1);
     }, (1000 * 60 * 1));
 }
@@ -132,9 +133,25 @@ function pularIntro2(tentativas) {
 function afterDOMLoadedHbo() {
 
     setInterval(() => {
+        let fundo = document.querySelector('div[aria-label="Ignorar Controles"]');
+        if (fundo) {
+            fundo.previousSibling.style.height = '0px'
+            fundo.previousSibling.previousSibling.style.height = '0px'
+        }
+
+        let descricao = document.querySelector('.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv');
+        if (descricao) {
+            descricao.remove();
+        }
+
+    }, (100));
+
+
+
+    setInterval(() => {
         var legenda = pegarLegendaHbo();
         if (!legenda) {
-            console.log('Nada!');
+            //console.log('Nada!');
             return;
         }
 
@@ -187,10 +204,63 @@ function afterDOMLoadedHbo() {
 
             console.log(e.keyCode);
 
+            if (e.keyCode == '78') { // N
+
+                proxy(() => {
+                    console.log("Trocar audio e legenda");
+
+                    document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
+
+                    // audio
+                    var portugues = document.querySelector('div[aria-label="Áudio"] div[aria-label="Português (Brasil)"]');
+
+                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    if (!ingles) {
+                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                    }
+
+                    if (ingles) {
+
+                        if (ingles.querySelector('img')) {
+                            portugues.click()
+                        } else {
+                            ingles.click()
+                        }
+                    }
+
+                    // legenda
+                    var ingles = document.querySelector('div[aria-label="Legendas"] div[aria-label="Inglês CC"]');
+                    if (!ingles) {
+                        ingles = document.querySelector('div[aria-label="Legendas"] div[aria-label="Inglês"]');
+                    }
+
+                    var portugues = document.querySelector('div[aria-label="Legendas"] div[aria-label="Português (Brasil)"]');
+                    if (!portugues) {
+                        portugues = document.querySelector('div[aria-label="Legendas"] div[aria-label="Português"]');
+                        if (!portugues) {
+                            portugues = document.querySelector('div[aria-label="Legendas"] div[aria-label="Português (Brasil) CC"]');
+                        }
+                    }
+
+                    if (ingles) {
+
+                        if (ingles.querySelector('img')) {
+                            portugues.click()
+                        } else {
+                            ingles.click()
+                        }
+                    }
+
+                    document.querySelector('div[aria-label="Fechar diálogo Áudio e legendas CC"]')?.click();
+                });
+
+            }
 
 
             if (e.keyCode == '86') { // V     
-                setTimeout(() => {
+                proxy(() => {
+                    console.log("Trocar legenda ingles");
+
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
                     var ingles = document.querySelector('div[aria-label="Legendas"] div[aria-label="Inglês CC"]');
@@ -210,13 +280,15 @@ function afterDOMLoadedHbo() {
 
                         // video.currentTime = video.currentTime - 1;
                     }
-                }, 300);
+                });
             }
 
 
 
             if (e.keyCode == '80') { // P      
-                setTimeout(() => {
+                proxy(() => {
+                    console.log("Trocar legenda português");
+
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
                     var portugues = document.querySelector('div[aria-label="Legendas"] div[aria-label="Português (Brasil)"]');
@@ -236,20 +308,22 @@ function afterDOMLoadedHbo() {
 
                         // video.currentTime = video.currentTime - 1;
                     }
-                }, 300);
+                });
             }
 
 
 
             if (e.keyCode == '66') { // B    
-                setTimeout(() => {
+                proxy(() => {
+                    console.log("Trocar audio");
+
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
                     var portugues = document.querySelector('div[aria-label="Áudio"] div[aria-label="Português (Brasil)"]');
 
-                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
                     if (!ingles) {
-                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
                     }
 
                     if (ingles) {
@@ -264,17 +338,19 @@ function afterDOMLoadedHbo() {
 
                         // video.currentTime = video.currentTime - 1;
                     }
-                }, 300);
+                });
             }
 
 
 
             if (e.keyCode == '96') { // 0
+                // voltarNoTempo(skipTime)
                 video.currentTime = video.currentTime - skipTime;
             }
 
             if (e.keyCode == '110') { // ` '
-                video.currentTime = video.currentTime - 6;
+                // voltarNoTempo(7)
+                video.currentTime = video.currentTime - 7;
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -
@@ -374,6 +450,34 @@ function afterDOMLoadedHbo() {
     }, 5000);
 }
 
+function proxy(funcao) {
+
+    let contadorTempo = 0;
+    let idInterval = setInterval(() => {
+        let botaoVoltar = document.querySelector('div[aria-label="Retroceder 15 segundos"]');
+        if (!botaoVoltar) {
+            contadorTempo += 5;
+            console.log("botão nulo: " + contadorTempo);
+            return;
+        }
+        clearInterval(idInterval);
+
+        funcao();
+    }, 5);
+}
+
+function voltarNoTempo(tempo) {
+    proxy(() => {
+        let botaoVoltar = document.querySelector('div[aria-label="Retroceder 15 segundos"]');
+        botaoVoltar.click();
+
+        setTimeout(() => {
+            var video = getVideo();
+            video.currentTime = video.currentTime + (15 - tempo);
+        }, 100);
+    });
+}
+
 async function sleep(msec) {
     return new Promise(resolve => setTimeout(resolve, msec));
 }
@@ -382,14 +486,18 @@ async function sleep(msec) {
 function pegarLegendaHbo() {
     var elemento = document.querySelector('div[data-testid="CueBoxContainer"]');
     if (!elemento) {
-        elemento = document.querySelector('.css-175oi2r .css-175oi2r');
-        if (!elemento) {
-            elemento = document.querySelector('.css-1rynq56').parentElement;;
-            if (!elemento) {
-                return '';
-            }
-        }
+        return '';
     }
+
+    // if (!elemento) {
+    //     elemento = document.querySelector('.css-175oi2r .css-175oi2r');
+    //     if (!elemento) {
+    //         elemento = document.querySelector('.css-1rynq56').parentElement;;
+    //         if (!elemento) {
+    //             return '';
+    //         }
+    //     }
+    // }
 
     var legenda = elemento.innerText;
     if (!legenda) {

@@ -185,6 +185,14 @@ export class Adicionar2Component implements OnInit {
         linha = split3[0];
       }
 
+      let backkkk = '';
+      if (linha.includes("\\")) {
+        let split5 = linha.split("\\");
+
+        linha = split5[0];
+        backkkk = split5[1];
+      }
+
       let traducao1 = await this.adicionarService.obterTraducao(linha);
 
       var linhaSemNegrito = linha.replace('<b>', '').replace('</b>', '');
@@ -200,39 +208,42 @@ export class Adicionar2Component implements OnInit {
         split2 = split1[1].split('</b>');
         palavraEmPortugues = split2[0].trim();
       }
-
+      
       // 
       card.fields.Front = `${linha}<br>`;
 
-      let palavrasDaFrase = linha.replace('<b>', '').replace('</b>', '').replace(/[^\w\s]/gi, ' ').split(' ');
-      let pronunciasOrdenadas: any[] = [];
-      for (let g = 0; g < palavrasDaFrase.length; g++) {
-        const pronuncia = this.pronunciasGoogle.find(x => x.palavra == palavrasDaFrase[g]);
-        if (pronuncia) {
-          const pronuncia2 = pronunciasOrdenadas.find(x => x.palavra == pronuncia.palavra);
-          if (!pronuncia2) {
-            pronunciasOrdenadas.push(pronuncia);
-          }
-        }
-      }
+      // let palavrasDaFrase = linha.replace('<b>', '').replace('</b>', '').replace(/[^\w\s]/gi, ' ').split(' ');
+      // let pronunciasOrdenadas: any[] = [];
+      // for (let g = 0; g < palavrasDaFrase.length; g++) {
+      //   const pronuncia = this.pronunciasGoogle.find(x => x.palavra == palavrasDaFrase[g]);
+      //   if (pronuncia) {
+      //     const pronuncia2 = pronunciasOrdenadas.find(x => x.palavra == pronuncia.palavra);
+      //     if (!pronuncia2) {
+      //       pronunciasOrdenadas.push(pronuncia);
+      //     }
+      //   }
+      // }
+
+      // for (let g = 0; g < this.pronunciasGoogle.length; g++) {
+      //   const pronuncia = pronunciasOrdenadas.find(x => x.palavra == this.pronunciasGoogle[g].palavra);
+      //   if (!pronuncia) {
+      //     pronunciasOrdenadas.push(this.pronunciasGoogle[g]);
+      //   }
+      // }
 
       for (let g = 0; g < this.pronunciasGoogle.length; g++) {
-        const pronuncia = pronunciasOrdenadas.find(x => x.palavra == this.pronunciasGoogle[g].palavra);
-        if (!pronuncia) {
-          pronunciasOrdenadas.push(this.pronunciasGoogle[g]);
-        }
-      }
-
-      for (let g = 0; g < pronunciasOrdenadas.length; g++) {
-        const pronuncia = pronunciasOrdenadas[g];
+        const pronuncia = this.pronunciasGoogle[g];
 
         if (!card.fields.Front.includes(pronuncia.palavra)) {
           continue;
         }
 
         if (pronuncia.pronuncia != '') {
-          card.fields.Front += `<br>${pronuncia.pronuncia} [sound:${pronuncia.nome}]`;
-          continue;
+          // card.fields.Front += `<br>${pronuncia.pronuncia} [sound:${pronuncia.nome}]`;
+ 
+          card.fields.Front += `<br> ${pronuncia.palavra} (${pronuncia.pronuncia}) [sound:${pronuncia.nome}]`;
+
+          continue; 
         }
 
         card.fields.Front = card.fields.Front.replace(pronuncia.palavra,
@@ -271,6 +282,7 @@ export class Adicionar2Component implements OnInit {
 
       card.fields.Back = `${traducao1}<br>`;
       card.fields.Back += `${traducao2}<br><br>`;
+      card.fields.Back += `${backkkk}<br><br>`;
 
       if (sinonimos) {
         for (let l = 0; l < sinonimos.length; l++) {

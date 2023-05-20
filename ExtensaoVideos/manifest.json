@@ -36,7 +36,9 @@
                 "content-script-home.js",
                 "content-script-youtube.js",
                 "content-script-prime.js",
-                "content-script-hbo.js"
+                "content-script-hbo.js",
+                "content-script-cifraclub.js",
+                "content-script-disney.js"
             ]
         }
     ]

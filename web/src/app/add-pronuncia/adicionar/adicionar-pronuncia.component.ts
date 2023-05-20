@@ -36,18 +36,27 @@ export class AdicionarPronunciaComponent implements OnInit {
 
   idSessao = 'aaaa';//'a' + ((+new Date) + Math.random() * 100).toString(32).replace('.', '');
 
+  allPronuncias: any[] = [];
+  allPronunciasPorFinal: Map<any, any[]>;
+
   constructor(
     private fb: FormBuilder,
     private adicionarService: AdicionarPronunciaService) { }
 
   ngOnInit(): void {
+    let allPronuncias = JSON.parse(localStorage.getItem('pronuncias') || '[]');
+
+    this.allPronuncias = allPronuncias;
+    this.criarMapComMensagensOrdenadasPorData();
+
+
     this.mostrarLoader = true;
     this.adicionarService.obterDecks()
       .subscribe(res => {
         this.mostrarLoader = false;
         if (res && res.length > 0) {
           this.decks = res;
-          this.changeDeck("99 - Pronunciation");
+          this.changeDeck("02 - italk - pt -> en - bkp");
         }
       });
 
@@ -77,7 +86,7 @@ export class AdicionarPronunciaComponent implements OnInit {
 
   inserirNegrito() {
     var textoSelecionado = window.getSelection()?.toString();
-    this.buscarPronuncia(textoSelecionado);
+    // this.buscarPronuncia(textoSelecionado);
 
     var cursorPos = $('#textarea').prop('selectionStart');
     var v = $('#textarea').val();
@@ -86,6 +95,16 @@ export class AdicionarPronunciaComponent implements OnInit {
 
     $('#textarea').val(textBefore + '<b>' + textoSelecionado + '</b>' + textAfter);
   }
+
+  inserirBR() {
+    var cursorPos = $('#textarea').prop('selectionStart');
+    var v = $('#textarea').val();
+    var textBefore = v.substring(0, cursorPos);
+    var textAfter = v.substring(cursorPos, v.length);
+
+    $('#textarea').val(textBefore + '<br>' + textAfter);
+  }
+
 
   changeDeck(value: any) {
     this.deckSelecionado = value;
@@ -140,23 +159,36 @@ export class AdicionarPronunciaComponent implements OnInit {
         tags: []
       };
 
-      card.fields.Front = `${linha}<br>`;
+      let backkkk = '';
+      if (linha.includes("\\")) {
+        let split5 = linha.split("\\");
+
+        linha = split5[0];
+        backkkk = split5[1];
+      }
+
+      card.fields.Front = `${linha}`;
+      card.fields.Back = `${backkkk}<br>`;
 
       await this.buscarPronunciaAsync(linha);
 
       for (let g = 0; g < this.pronunciasGoogle.length; g++) {
         const pronuncia = this.pronunciasGoogle[g];
- 
-        if (!card.fields.Front.includes(pronuncia.palavra)) {
+
+        if (!card.fields.Back.includes(pronuncia.palavra)) {
           continue;
         }
 
         if (pronuncia.pronuncia != '') {
-          card.fields.Front += `<br>${pronuncia.pronuncia} [sound:${pronuncia.nome}]`;
+
+          // card.fields.Back += `<br>${pronuncia.pronuncia} [sound:${pronuncia.nome}]`;
+
+          card.fields.Back += `<br> ${pronuncia.palavra} (${pronuncia.pronuncia}) [sound:${pronuncia.nome}]`;
+
           continue;
         }
 
-        card.fields.Front = card.fields.Front.replace(pronuncia.palavra,
+        card.fields.Back = card.fields.Back.replace(pronuncia.palavra,
           pronuncia.palavra + '[sound:' + pronuncia.nome + ']');
       }
 
@@ -169,10 +201,10 @@ export class AdicionarPronunciaComponent implements OnInit {
       this.anexos = [];
       $('#textarea').val(linhasRestantes);
 
-      if (ultimaLinha) {
-        this.mostrarLoader = false;
-      }
     }
+
+    this.pronunciasGoogle = [];
+    this.mostrarLoader = false;
   }
 
   @HostListener('window:keypress', ['$event'])
@@ -184,6 +216,10 @@ export class AdicionarPronunciaComponent implements OnInit {
     if (event.ctrlKey && event.code === 'KeyI') {
       var textoSelecionado = window.getSelection()?.toString();
       this.buscarPronuncia(textoSelecionado);
+    }
+
+    if (event.ctrlKey && event.code === 'KeyM') {
+      this.inserirBR()
     }
   }
 
@@ -242,5 +278,79 @@ export class AdicionarPronunciaComponent implements OnInit {
         this.pronunciasGoogle.push(pronuncia);
       }
     }
+  }
+
+  //////////////////////////////////////////
+  criarMapComMensagensOrdenadasPorData() {
+    this.allPronuncias.forEach(x => {
+      x.palavra = x.palavra.replace('“', '').replace('”', '')
+        .replace('.', '').replace(',', '').replace('—', '').replace(':', '').replace(';', '')
+        .replace('!', '').replace('?', '').replace('"', '').replace(')', '').replace('(', '')
+        .replace('-', '').replace('."', '').replace('.', '')
+        .toLocaleLowerCase();
+
+
+      let splits = x.pronuncia.split('·');
+      for (let i = 0; i < splits.length; i++) {
+        const element = splits[i];
+
+        if (element === element.toUpperCase()) {
+          x.pronuncia = x.pronuncia.replace(element, `<b>${element.toLowerCase()}</b>`)
+        }
+      }
+
+      x.pronuncia = `(${x.pronuncia})`;
+    });
+
+    let listaNegra = ['', "80/20", "109", "1920s", "7581280", "40", "$2416", "$1650", "74", "0934"];
+
+    this.allPronuncias = this.allPronuncias.filter(x => !listaNegra.some(y => y === x.palavra));
+
+    this.allPronunciasPorFinal = new Map<string, any[]>();
+    const finaisPalavras = this.obterFinaisDasPalavras();
+
+    finaisPalavras.forEach(finalPalavra => {
+      const mensagens = this.obterPalavrasPorFinaisDasPalavras(finalPalavra);
+      // const key = this.criarKeyParaMapMensagensPorData(finalPalavra);
+
+      this.allPronunciasPorFinal.set(finalPalavra, mensagens);
+    });
+  }
+
+  obterFinaisDasPalavras() {
+    let aux = this.allPronuncias.map(x =>
+      x.palavra.substring(x.palavra.length - 3, x.palavra.length)
+    );
+    aux = aux.filter((item, i, ar) => ar.indexOf(item) === i);
+    aux = aux.sort((d1, d2) => d1.localeCompare(d2));
+
+    return aux;
+  }
+
+  obterPalavrasPorFinaisDasPalavras(finalPalavra: string) {
+    return this.allPronuncias.filter(x => x.palavra.substring(x.palavra.length - 3, x.palavra.length) === finalPalavra)
+      .sort((d1, d2) => d1.palavra.localeCompare(d2.palavra));
+  }
+
+  // criarKeyParaMapMensagensPorData(finalPalavra: string) {
+  //   const diferencaEmDias = moment().diff(moment(data), 'days');
+  //   let dataDescricao = moment(data).format('L');
+
+  //   if (diferencaEmDias < 2) {
+  //     dataDescricao = moment(data).calendar(null, {
+  //       lastDay: '[ontem]',
+  //       sameDay: '[hoje]',
+  //     })
+  //   } else if (diferencaEmDias < 7) {
+  //     dataDescricao = moment(data).format('dddd');
+  //   }
+
+  //   return { dataDescricao, data: moment(data).format('L') };
+  // }
+
+
+  pronunciar(item: any) {
+    let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${item.palavra}`);
+    audio.play();
   }
 }

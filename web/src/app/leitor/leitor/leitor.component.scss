@@ -7,6 +7,11 @@
 .class_s3b ,
 .calibre1,
 .calibre2,
+.calibre7,
+.calibre_1,
+.calibre_2,
+.calibre_3,
+.calibre_8,
 .paft,
 section p,
 .content,
@@ -105,13 +110,13 @@ span[data-pro] {
 }
 
 .menu {
-    position: fixed;
-    top: 0;
-    left: 0;
     color: #fff;
     width: 40px;
     z-index: 1;
     cursor: pointer;
+    position: fixed;
+    left: 0;
+    top: 0;
 
     .linha {
         width: 100%;

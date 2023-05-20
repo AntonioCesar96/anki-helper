@@ -114,6 +114,8 @@ function replaceHtml(html) {
     document.body.style.opacity = 1;
 }
 
+var intervaloLimparHome = 0;
+
 function tratamentoTelaInicial() {
     var oldHref = document.location.href;
     var bodyList = document.querySelector("body")
@@ -149,10 +151,25 @@ function afterDOMLoadedHome() {
 
     tratamentoTelaInicial();
 
+    if (document.location.href.includes('https://www.youtube.com')) {
+        setInterval(() => {
+            if (document.querySelector(siteHome?.seletor)) {
+                document.querySelector(siteHome?.seletor).innerHTML = '';
+            }
+        }, 1000);
+
+        for (let i = 0; i < 10; i++) {
+            setTimeout(() => {
+                if (document.querySelector(siteHome?.seletor)) {
+                    document.querySelector(siteHome?.seletor).innerHTML = '';
+                }
+            }, (50 * i));
+        }
+    }
+
     setTimeout(() => {
         readTextFile();
     }, 500);
-
 
     setTimeout(() => {
         for (let i = 0; i < links.length; i++) {

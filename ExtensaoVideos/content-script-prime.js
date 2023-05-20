@@ -1,7 +1,7 @@
 site = {
     host: "www.primevideo.com",
-    seletorAudioIngles: '.atvwebplayersdk-audiomenu-container [aria-label="English [Audio Description]"]',
-    seletorAudioIngles2: '.atvwebplayersdk-audiomenu-container [aria-label="English"]',
+    seletorAudioIngles: '.atvwebplayersdk-audiomenu-container [aria-label="English"]',
+    seletorAudioIngles2: '.atvwebplayersdk-audiomenu-container [aria-label="English [Audio Description]"]',
     seletorAudioPortugues: '.atvwebplayersdk-audiomenu-container [aria-label="Português"]',
     seletorLegendaIngles: '.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="English [CC]"]',
     seletorLegendaOff: '.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="Off"]',
@@ -68,16 +68,18 @@ function fonePrime() {
         var video = getVideo();
         video.pause();
 
+        var tempoElemento = document.querySelector('.atvwebplayersdk-timeindicator-text');
+        if (!tempoElemento) {
+            return;
+        }
+
+        console.log(`Possível legenda: ${tempoElemento.textContent} - `);
+
         var legenda = pegarLegendaPrime2222();
         if (!legenda) {
             return;
         }
 
-        var tempoElemento = document.querySelector('.atvwebplayersdk-timeindicator-text');
-        if(!tempoElemento) {
-            return;
-        }
-        
         console.log(`${tempoElemento.textContent} - ` + legenda);
     });
 
@@ -87,7 +89,7 @@ function fonePrime() {
         }
 
         var video = getVideo();
-        video.currentTime = video.currentTime - skipTime;
+        video.currentTime = video.currentTime - 6;
     });
 
     navigator.mediaSession.setActionHandler('nexttrack', function () {
@@ -108,7 +110,7 @@ function fonePrime() {
             }
 
             var video = getVideo();
-            video.currentTime = video.currentTime - skipTime;
+            video.currentTime = video.currentTime - 7;
         }
     });
 }
@@ -127,12 +129,13 @@ function acelerarVideoPrime() {
     var acelerar = localStorage.getItem("acelerar") === "false" ? false : true;
     if (acelerar) {
         playbackRate = Number(localStorage.getItem("playbackRate"))
-
     }
 
     var video = getVideo();
-    video.playbackRate = playbackRate;
-    document.title = video.playbackRate + ' - ' + tituloPagina;
+    if (video) {
+        video.playbackRate = playbackRate;
+        document.title = video.playbackRate + ' - ' + tituloPagina;
+    }
 }
 
 function pularIntroducao(tentativas) {
@@ -148,6 +151,7 @@ function pularIntroducao(tentativas) {
     }
 
     pular.click();
+    reativarLegenda();
 
     //console.log("INTRODUÇÃO pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
     setTimeout(() => {
@@ -170,6 +174,7 @@ function pularPropaganda(tentativas) {
     }
 
     pular.click();
+    reativarLegenda();
 
     //console.log("PROPAGANDA pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 5))));
     setTimeout(() => {
@@ -199,9 +204,27 @@ function pularFim(tentativas) {
     }, (1000 * 60 * 5));
 }
 
+function reativarLegenda() {
+    setTimeout(() => {
+        document.querySelector(site.seletorLegendaOff)?.parentElement?.querySelector('label')?.click()
+    }, 1000);
+
+    setTimeout(() => {
+        document.querySelector(site.seletorLegendaIngles)?.parentElement?.querySelector('label')?.click()
+    }, 2000);
+}
+
 function afterDOMLoadedPrime() {
     pularIntroducao(1);
     pularPropaganda(1);
+
+    setInterval(() => {
+        let fundo = document.querySelector('.atvwebplayersdk-overlays-container .fkpovp9.f8hspre');
+        if(fundo) {
+            fundo.style.display = 'none';
+        }
+
+    }, (5000));
 
     setInterval(() => {
         var legenda = pegarLegendaPrime();
@@ -215,7 +238,6 @@ function afterDOMLoadedPrime() {
         }
 
     }, 250);
-
 
     setInterval(() => {
         pularFim(1);
@@ -236,9 +258,9 @@ function afterDOMLoadedPrime() {
     setInterval(() => {
         //console.log('Fone Helper Rodando! - www.primevideo.com');
 
-        //fonePrime();
+        fonePrime();
 
-        nomeSerie = document.querySelector('.atvwebplayersdk-title-text').textContent;
+        nomeSerie = document.querySelector('.atvwebplayersdk-title-text')?.textContent;
 
     }, 5000);
 
@@ -248,7 +270,7 @@ function afterDOMLoadedPrime() {
 
         var playbackRate = false ? 0.1 : 0.05;
 
-         fonePrime();
+        fonePrime();
 
         document.onkeydown = checkKey;
 
@@ -257,6 +279,31 @@ function afterDOMLoadedPrime() {
             var video = getVideo();
 
             console.log(e.keyCode);
+
+            if (e.keyCode == '78') { // N
+                var ingles = document.querySelector(site.seletorLegendaIngles);
+                if (ingles.checked) {
+                    var portugues = document.querySelector(site.seletorLegendaPortugues);
+                    if (!portugues) {
+                        portugues = document.querySelector(site.seletorLegendaPortuguesBr);
+                    }
+                    portugues.parentElement.querySelector('label').click();
+                } else {
+                    document.querySelector(site.seletorLegendaIngles)
+                        .parentElement.querySelector('label').click()
+                }
+
+                var audioIngles = document.querySelector(site.seletorAudioIngles);
+                if (!audioIngles) {
+                    audioIngles = document.querySelector(site.seletorAudioIngles2);
+                }
+                if (audioIngles.checked) {
+                    document.querySelector(site.seletorAudioPortugues)
+                        .parentElement.querySelector('label').click();
+                } else {
+                    audioIngles.parentElement.querySelector('label').click();
+                }
+            }
 
             var ingles = document.querySelector(site.seletorLegendaIngles);
             if (e.keyCode == '86' && ingles) { // V
@@ -301,6 +348,10 @@ function afterDOMLoadedPrime() {
 
             if (e.keyCode == '96') { // 0
                 video.currentTime = video.currentTime - skipTime;
+            }
+
+            if (e.keyCode == '110') { // ` '
+                video.currentTime = video.currentTime - 6;
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -

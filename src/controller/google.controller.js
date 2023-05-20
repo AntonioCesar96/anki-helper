@@ -3,6 +3,8 @@
 const repository = require('../repositories/google.repository');
 const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: 600 }); // segundos
+const request = require("request-promise");
+var fs = require('fs');
 
 exports.buscarPalavra = async (req, res, next) => {
 
@@ -89,3 +91,22 @@ function handleError(res, err) {
   });
 }
 
+
+
+exports.obterPronunciationAudio = async (req, res, next) => {
+
+  try {
+
+    res.type('audio/mpeg');
+
+    var request = require('request');
+    var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=' + req.query.palavra;
+    request.get(url).pipe(res);
+
+    //res.send(result);
+
+  } catch (err) {
+    console.log(err);
+    handleError(res, err);
+  }
+};

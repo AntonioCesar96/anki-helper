@@ -8,14 +8,6 @@ const cors = require('cors');
 const app = express();
 const router = express.Router();
 
-app.use(express.static('imagens'))
-app.use(express.static('html'))
-
-
-require('events').EventEmitter.prototype._maxListeners = 0;
-require('events').defaultMaxListeners = 0;
-process.on('warning', e => console.warn(e.stack));
-
 // BodyParser
 app.use(
   bodyParser.json({
@@ -23,14 +15,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  //Qual site tem permissão de realizar a conexão, no exemplo abaixo está o "*" indicando que qualquer site pode fazer a conexão
-  res.header("Access-Control-Allow-Origin", "*");
-  //Quais são os métodos que a conexão pode realizar na API
-  res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
-  app.use(cors());
-  next();
-});
 
 // Cors
 app.use((req, res, next) => {
@@ -43,6 +27,18 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.use(express.static('imagens'))
+app.use(express.static('html'))
+app.use(express.static('cifra'))
+
+
+require('events').EventEmitter.prototype._maxListeners = 0;
+require('events').defaultMaxListeners = 0;
+process.on('warning', e => console.warn(e.stack));
+
+
+
 //Rotas aplicação
 const cambridgeRoute = require('./routes/cambridge.route');
 const collinsRoute = require('./routes/collins.route');
@@ -52,6 +48,7 @@ const indexRoute = require('./routes/index.route');
 const ankiRoute = require('./routes/anki.route');
 const googleRoute = require('./routes/google.route');
 const kindleRoute = require('./routes/kindle.route');
+const cifraRoute = require('./routes/cifra.route');
 
 app.use('/', indexRoute);
 app.use('/cambridge', cambridgeRoute);
@@ -61,5 +58,6 @@ app.use('/dicio', dicioRoute);
 app.use('/anki', ankiRoute);
 app.use('/google', googleRoute);
 app.use('/kindle', kindleRoute);
+app.use('/cifra', cifraRoute);
 
 module.exports = app;

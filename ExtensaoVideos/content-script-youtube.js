@@ -51,7 +51,7 @@ function fone() {
         }
 
         var video = getVideo();
-        video.currentTime = video.currentTime - skipTime;
+        video.currentTime = video.currentTime - 7;
     });
 
     navigator.mediaSession.setActionHandler('nexttrack', function () {
@@ -65,10 +65,24 @@ var tempoInicial = 0;
 var tempoFinal = 0;
 var tempo = 0;
 var timer = 0;
+var legendas = [];
 
 function afterDOMLoadedYoutube() {
+    setInterval(() => {
+        // document.querySelectorAll('.ytp-panel-menu [role="menuitem"] .ytp-menuitem-content')
 
-    tratamentoTelaInicial();
+        var legenda = pegarLegendaYoutube();
+        if (!legenda) {
+            //console.log('Nada!');
+            return;
+        }
+
+        var achou = legendas.filter(x => x == legenda);
+        if (achou.length === 0) {
+            legendas.push(legenda);
+        }
+
+    }, 250);
 
     setTimeout(() => {
         readTextFile();
@@ -96,7 +110,42 @@ function afterDOMLoadedYoutube() {
             }
 
             if (e.keyCode == '192') { // aspas simples '
-                video.currentTime = video.currentTime - skipTime;
+                var legenda = pegarLegendaYoutube();
+                if (!legenda) {
+                    console.log('Nada!');
+                    return;
+                }
+
+                var achou = legendas.filter(x => x == legenda);
+                if (achou.length > 0) {
+                    legenda = '';
+                    var index = legendas.indexOf(achou[0]);
+
+                    for (let i = 5; i >= 0; i--) {
+                        if ((index - i) >= 0) {
+                            legenda += legendas[index - i] + ' ';
+                        }
+                    }
+
+                    for (let i = 1; i <= 3; i++) {
+                        if (legendas.length > (index + i)) {
+                            legenda += legendas[index + i] + ' ';
+                        }
+                    }
+                }
+
+                console.log(legenda);
+
+                copyToClipboard(legenda)
+
+                function copyToClipboard(text) {
+                    const elem = document.createElement('textarea');
+                    elem.value = text;
+                    document.body.appendChild(elem);
+                    elem.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(elem);
+                }
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -
@@ -144,6 +193,10 @@ function afterDOMLoadedYoutube() {
                 console.log("Interval cancelado!")
             }
 
+            if (e.keyCode == '220' || e.keyCode == '221') { // ] [
+                window.open(location.href.replace('youtube.com', 'youtubezz.com'));
+            }
+
             if (e.keyCode == '194' || e.keyCode == '111') { // . /
                 document.querySelector('button[aria-label="More actions"]').click();
 
@@ -182,5 +235,38 @@ function afterDOMLoadedYoutube() {
                 }, 300);
             }
         });
-    }, 5000);
+    }, 3000);
+}
+
+function pegarLegendaYoutube() {
+    var elemento = document.querySelector('.caption-window.ytp-caption-window-bottom')
+
+    if (!elemento) {
+        return '';
+    }
+
+    // if (!elemento) {
+    //     elemento = document.querySelector('.css-175oi2r .css-175oi2r');
+    //     if (!elemento) {
+    //         elemento = document.querySelector('.css-1rynq56').parentElement;;
+    //         if (!elemento) {
+    //             return '';
+    //         }
+    //     }
+    // }
+
+    var legenda = elemento.innerText;
+    if (!legenda) {
+        return '';
+    }
+
+    legenda = legenda.replaceAll('\n', ' ');
+    legenda = legenda.replaceAll('>> ', '');
+    legenda = legenda.replaceAll('[', '(');
+    legenda = legenda.replaceAll(']', ')');
+    legenda = legenda.trim();
+
+    // legenda = legenda.charAt(0) + legenda.substring(1).toLowerCase();
+
+    return legenda
 }

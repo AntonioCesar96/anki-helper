@@ -27,15 +27,35 @@ export class LivrosClasse {
         //     idsEsconder: []
         // },
         {
-            nome: 'Cant-Hurt-Me',
+            nome: 'Man-Search-for-Meaning',
             seletorPaginacao: 'a[href^="#--calibre_link"]',
             idsEsconder: []
         },
         {
-            nome: 'The-Mist',
+            nome: 'Lord-of-the-flies',
             seletorPaginacao: 'a[href^="#--calibre_link"]',
             idsEsconder: []
         },
+        // {
+        //     nome: 'Animal-Farm',
+        //     seletorPaginacao: 'a[href^="#--calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'The-7-Habits-Of-Highly-Effective-People',
+        //     seletorPaginacao: 'a[href^="#--calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'Cant-Hurt-Me',
+        //     seletorPaginacao: 'a[href^="#--calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'The-Mist',
+        //     seletorPaginacao: 'a[href^="#--calibre_link"]',
+        //     idsEsconder: []
+        // },
         // {
         //     nome: 'How-to-Stop-Worrying-and-Start',
         //     seletorPaginacao: 'a[href^="#calibre_link"]',
@@ -61,41 +81,46 @@ export class LivrosClasse {
         //     seletorPaginacao: 'a[href^="#-calibre_link"]',
         //     idsEsconder: []
         // },
-        {
-            nome: 'Armas-Persuacao',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
-        {
-            nome: 'Negocie-como-se-sua-vida',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
-        {
-            nome: 'How-To-Win-Friends',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
-        {
-            nome: 'Predictably-Irrational',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
-        {
-            nome: 'The-Upside-of-Irrationality',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
-        {
-            nome: 'The-Honest-Truth-About-Dishon',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
-        {
-            nome: 'Thinking-Fast-and-Slow',
-            seletorPaginacao: 'a[href^="#-calibre_link"]',
-            idsEsconder: []
-        },
+        // {
+        //     nome: 'Armas-Persuacao',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'Negocie-como-se-sua-vida',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'How-To-Win-Friends',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'Predictably-Irrational',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'The-Upside-of-Irrationality',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'The-Honest-Truth-About-Dishon',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'Thinking-Fast-and-Slow',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
+        // {
+        //     nome: 'Never-Split-the-Difference',
+        //     seletorPaginacao: 'a[href^="#-calibre_link"]',
+        //     idsEsconder: []
+        // },
         // Biblia
         {
             biblia: true,

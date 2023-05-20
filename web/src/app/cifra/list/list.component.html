@@ -1,0 +1,29 @@
+<div class="cifra-lista-content" [ngClass]="{'celular': mobileAndTabletCheck() }">
+
+  <div class="form-container">
+    <div class="input-content">
+      <label for="artista">Artista</label>
+      <input id="artista" type="text" [(ngModel)]="pesquisaArtista" (keyup)="keyupArtista($event)">
+    </div>
+
+    <div class="input-content">
+      <label for="musica">Música</label>
+      <input id="musica" type="text" [(ngModel)]="pesquisaMusica" (keyup)="keyupMusica($event)">
+    </div>
+  </div>
+  <div>
+    <div *ngFor="let artista of indexJsonFiltrado">
+      <div>
+        <h2>{{ artista.artista }}</h2>
+      </div>
+      <div>
+        <div *ngFor="let musica of artista.musicas; let i = index">
+          <a [routerLink]="['/cifra-view']" [queryParams]="{artista: artista.id, musica: musica.id}" class="musica">
+            <span>{{ i + 1 }} - </span>
+            <span>{{ musica.musica }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -145,7 +145,7 @@ export class LeitorComponent implements OnInit {
       elemento.querySelector(element)?.classList.add("hide");
     }
 
-    this.mostrarCapitulos = false;
+    this.mostrarCapitulos = true;
   }
 
   proximoIrmao(nextElementSibling: any, esconder: boolean): boolean {
@@ -600,11 +600,13 @@ export class LeitorComponent implements OnInit {
     for (let i = 0; i < spans.length; i++) {
       var text = spans[i].textContent.trim().replace('“', '').replace('”', '')
         .replace('.', '').replace(',', '').replace('—', '').replace(':', '').replace(';', '')
-        .replace('!', '').replace('?', '').replace('"', '')
+        .replace('!', '').replace('?', '').replace('"', '').replace(')', '').replace('(', '')
+        .replace('-', '').replace('."', '')
         .toLocaleLowerCase();
       palavra = palavra.replace('“', '').replace('”', '')
         .replace('.', '').replace(',', '').replace('—', '').replace(':', '').replace(';', '')
-        .replace('!', '').replace('?', '').replace('"', '')
+        .replace('!', '').replace('?', '').replace('"', '').replace(')', '').replace('(', '')
+        .replace('-', '').replace('."', '')
         .toLocaleLowerCase();
 
       if (text === palavra) {
