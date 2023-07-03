@@ -91,8 +91,6 @@ function handleError(res, err) {
   });
 }
 
-
-
 exports.obterPronunciationAudio = async (req, res, next) => {
 
   try {
@@ -110,3 +108,25 @@ exports.obterPronunciationAudio = async (req, res, next) => {
     handleError(res, err);
   }
 };
+
+exports.obterContextTraducoes = async (req, res, next) => {
+
+  try {
+
+    var palavras = req.body;
+
+    var lista = await repository.obterContextTraducoes(palavras);
+    res.status(200).send(lista);
+  } catch (err) {
+    console.log(err);
+    handleError(res, err);
+  }
+};
+
+function handleError(res, err) {
+  res.status(500).send({
+    message: 'Falha ao processar sua requisição',
+    error: err.message,
+    stack: err.stack
+  });
+}

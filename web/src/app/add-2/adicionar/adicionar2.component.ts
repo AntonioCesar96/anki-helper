@@ -53,11 +53,12 @@ export class Adicionar2Component implements OnInit {
         this.mostrarLoader = false;
         if (res && res.length > 0) {
 
-          this.decks = res.filter(x => 
-            !x.startsWith('01') && 
-            !x.startsWith('02') && 
-            !x.startsWith('99') && 
-            !x.startsWith('00'));
+          this.decks = res;
+          // this.decks = res.filter(x => 
+          //   !x.startsWith('01') && 
+          //   !x.startsWith('02') && 
+          //   !x.startsWith('99') && 
+          //   !x.startsWith('00'));
 
           var deckStorage = localStorage.getItem('deck');
           if (deckStorage) {

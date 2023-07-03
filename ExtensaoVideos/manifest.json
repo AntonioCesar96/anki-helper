@@ -20,7 +20,8 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "youtube.html"
+                "youtube.html",
+                "netflix-rewind-1-sec.js"
             ],
             "matches": [
                 "https://*/*"
@@ -38,7 +39,8 @@
                 "content-script-prime.js",
                 "content-script-hbo.js",
                 "content-script-cifraclub.js",
-                "content-script-disney.js"
+                "content-script-disney.js",
+                "content-script-netflix.js"
             ]
         }
     ]

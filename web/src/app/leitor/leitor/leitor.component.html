@@ -1,44 +1,52 @@
 <!-- <div class="mobile"> -->
-    <div class="ebook" oncontextmenu="return false;">
-        <div [contentEditable]="false" #elementoAnotacao (mousedown)="handleKeyboardEvent($event)"></div>
-    </div>
+<div class="ebook" oncontextmenu="return false;">
+    <div [contentEditable]="false" #elementoAnotacao (mousedown)="handleKeyboardEvent($event)"></div>
+</div>
 
-    <div class="menu" (click)="mostrarCapitulos = !mostrarCapitulos">
-        <div class="linha"></div>
-        <div class="linha"></div>
-        <div class="linha"></div>
-    </div> 
+<div class="menu" (click)="mostrarCapitulos = !mostrarCapitulos">
+    <div class="linha"></div>
+    <div class="linha"></div>
+    <div class="linha"></div>
+</div>
 
-    <div class="capitulos-wrap" *ngIf="mostrarCapitulos">
-        <select #Select (change)="changeLivro(Select.value)">
-            <option *ngFor="let i of obterLivros(false)" [selected]="i.nome === livro?.nome">{{i.nome}}</option>
-        </select>
+<div class="capitulos-wrap" *ngIf="mostrarCapitulos">
+    <select #Select (change)="changeLivro(Select.value)">
+        <option *ngFor="let i of obterLivros(false)" [selected]="i.nome === livro?.nome">{{i.nome}}</option>
+    </select>
 
-        <select #Select2 (change)="changeLivro(Select2.value)" class="select-biblia">
-            <option *ngFor="let i of obterLivros(true)" [selected]="i.nome === livro?.nome">{{i.nome}}</option>
-        </select>
+    <select #Select2 (change)="changeLivro(Select2.value)" class="select-biblia">
+        <option *ngFor="let i of obterLivros(true)" [selected]="i.nome === livro?.nome">{{i.nome}}</option>
+    </select>
 
-        <div class="capitulos">
-            <div *ngFor="let item of capitulos">
-                <span (click)="mostrarCapituloAux(item.href)">{{ item.capitulo }}</span>
-            </div>
-        </div>
-
-        <div class="fechar" (click)="mostrarCapitulos = !mostrarCapitulos">
-            X
+    <div class="capitulos">
+        <div *ngFor="let item of capitulos">
+            <span (click)="mostrarCapituloAux(item.href)">{{ item.capitulo }}</span>
         </div>
     </div>
 
-    <div class="note-wrap" *ngIf="mostrarNote && highlight">
-        <div class="fechar">
-            <span (click)="fecharNote()">X</span>
-        </div>
-        <div class="note">
-            <textarea name="" id="textarea" [(ngModel)]="highlight.comentario"></textarea>
-        </div>
-
-        <div class="salvar">
-            <span (click)="salvarNote()">SALVAR</span>
-        </div>
+    <div class="fechar" (click)="mostrarCapitulos = !mostrarCapitulos">
+        X
     </div>
+</div>
+
+<div class="note-wrap" *ngIf="mostrarNote && highlight">
+    <div class="fechar">
+        <span (click)="fecharNote()">X</span>
+    </div>
+    <div class="note">
+        <textarea name="" id="textarea" [(ngModel)]="highlight.comentario"></textarea>
+    </div>
+
+    <div class="salvar">
+        <span (click)="salvarNote()">SALVAR</span>
+    </div>
+</div>
 <!-- </div> -->
+
+<div class="balao-quadrinhos-wrap">
+
+</div>
+
+<div class="balao-quadrinhos-wrap2">
+
+</div>

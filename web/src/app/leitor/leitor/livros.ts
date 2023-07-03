@@ -32,10 +32,15 @@ export class LivrosClasse {
             idsEsconder: []
         },
         {
-            nome: 'Lord-of-the-flies',
+            nome: 'Matin-Luther-King',
             seletorPaginacao: 'a[href^="#--calibre_link"]',
             idsEsconder: []
         },
+        // {
+        //     nome: 'Lord-of-the-flies',
+        //     seletorPaginacao: 'a[href^="#--calibre_link"]',
+        //     idsEsconder: []
+        // },
         // {
         //     nome: 'Animal-Farm',
         //     seletorPaginacao: 'a[href^="#--calibre_link"]',

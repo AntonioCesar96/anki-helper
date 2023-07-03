@@ -72,7 +72,7 @@ export class LeitorComponent implements OnInit {
   }
 
   obterLivros(biblia: boolean) {
-    if(!biblia) {
+    if (!biblia) {
       return this.livros.filter(x => x.biblia === false || !x.biblia);
     }
 
@@ -145,7 +145,7 @@ export class LeitorComponent implements OnInit {
       elemento.querySelector(element)?.classList.add("hide");
     }
 
-    this.mostrarCapitulos = true;
+    this.mostrarCapitulos = false;
   }
 
   proximoIrmao(nextElementSibling: any, esconder: boolean): boolean {
@@ -162,6 +162,12 @@ export class LeitorComponent implements OnInit {
   }
 
   salvarHtml() {
+    let wrappers = document.querySelectorAll('.balao-quadrinhos-remover');
+    for (let i = 0; i < wrappers.length; i++) {
+      wrappers[i].parentElement.removeAttribute('data-line');
+      wrappers[i].parentElement.removeChild(wrappers[i]);
+    }
+
     setTimeout(() => {
       const elemento = this.elementoAnotacao.nativeElement;
       var obj = { livro: this.livro.nome, innerHTML: elemento.innerHTML }
@@ -214,30 +220,6 @@ export class LeitorComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any) {
     this.adicionarService.salvarParametro(this.livro, 'pageYOffset', window.pageYOffset.toString());
-  }
-
-  // @HostListener('window:mousedown', ['$event'])
-  handleKeyboardEvent(ev: any) {
-
-    if (ev.which == 3) {
-      ev.preventDefault();
-
-      let palavraMarcada = window.getSelection()?.toString() ?? "";
-      let palavraClicada = (ev.target as any).textContent;
-
-      this.mostrarPronuncia(ev, palavraClicada);
-
-      if (palavraMarcada) {
-        let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraMarcada}`);
-        audio.play();
-        return;
-      }
-
-      if (palavraClicada) {
-        let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraClicada}`);
-        audio.play();
-      }
-    }
   }
 
   removerPronuncias(): void {
@@ -447,6 +429,8 @@ export class LeitorComponent implements OnInit {
 
   @HostListener('window:keypress', ['$event'])
   handleKeyboardEventKeypress(event: KeyboardEvent) {
+    console.log(event.code);
+
     if (event.code === 'Space') {
       if (!window.getSelection()?.toString()) {
         return;
@@ -466,6 +450,21 @@ export class LeitorComponent implements OnInit {
     }
     if (event.code === 'Numpad1') {
       this.removerPronuncias();
+    }
+    if (event.code === 'Numpad2') {
+      let wrappers = document.querySelectorAll('.balao-quadrinhos-remover');
+      for (let i = 0; i < wrappers.length; i++) {
+        wrappers[i].parentElement.removeAttribute('data-line');
+        wrappers[i].parentElement.removeChild(wrappers[i]);
+      }
+    }
+    if (event.code === 'Numpad3') {
+
+      let wrappers = document.querySelectorAll('.balao-quadrinhos');
+      for (let i = 0; i < wrappers.length; i++) {
+        wrappers[i].parentElement.removeChild(wrappers[i]);
+      }
+      return;
     }
   }
 
@@ -572,9 +571,9 @@ export class LeitorComponent implements OnInit {
     var existe = this.pronunciasGoogle.find(x => x.palavra === palavraMarcada)
     if (existe) {
       (ev.target as any).setAttribute("data-pro", existe.pronuncia);
-      this.mostrarEmTodasAsPalavras(palavraMarcada, existe.pronuncia);
+      // this.mostrarEmTodasAsPalavras(palavraMarcada, existe.pronuncia);
       return;
-    }
+    } 
 
     this.pronunciasGoogle.push({ palavra: palavraMarcada, pronuncia: '' });
 
@@ -589,7 +588,7 @@ export class LeitorComponent implements OnInit {
 
         (ev.target as any).setAttribute("data-pro", existe.pronuncia);
 
-        this.mostrarEmTodasAsPalavras(palavraMarcada, existe.pronuncia);
+        // this.mostrarEmTodasAsPalavras(palavraMarcada, existe.pronuncia);
       }
     });
   }
@@ -620,6 +619,126 @@ export class LeitorComponent implements OnInit {
     }
 
     console.log(spansAux);
+  }
+
+  removerAcentos(palavra: string) {
+    palavra = palavra.trim().replace('“', '').replace('”', '')
+      .replace('.', '').replace(',', '').replace('—', '').replace(':', '').replace(';', '')
+      .replace('!', '').replace('?', '').replace('"', '').replace(')', '').replace('(', '')
+      .replace('-', '').replace('."', '')
+
+    return palavra;
+  }
+
+  // @HostListener('window:mousedown', ['$event'])
+  handleKeyboardEvent(ev: any) {
+
+    if (ev.ctrlKey && ev.which == 1) {
+      let palavraMarcada = window.getSelection()?.toString() ?? "";
+      let palavraClicada = palavraMarcada !== "" ? palavraMarcada : (ev.target as any).textContent;
+
+      let elementoClicado = (ev.target as any);
+
+      // if (elementoClicado.getAttribute("data-traducoes")) {
+      //   if (!elementoClicado.querySelector('.balao-quadrinhos-remover')) {
+      //     elementoClicado.setAttribute("data-line", true);
+
+      //     var divElement = document.createElement('div');
+      //     divElement.innerHTML = elementoClicado.getAttribute("data-traducoes");
+      //     divElement.classList.add('balao-quadrinhos-remover');
+      //     var spanElement = document.createElement('span');
+      //     spanElement.innerHTML = " ";
+
+      //     elementoClicado.appendChild(spanElement);
+      //     elementoClicado.appendChild(divElement);
+      //   }
+      //   return;
+      // }
+
+      palavraClicada = this.removerAcentos(palavraClicada);
+
+      this.adicionarService.obterTraducoes([palavraClicada]).subscribe(traducoes => {
+
+        if (!elementoClicado.querySelector('.balao-quadrinhos-remover')) {
+
+          elementoClicado.setAttribute("data-traducoes", traducoes[0]);
+          elementoClicado.setAttribute("data-line", true);
+
+          var divElement = document.createElement('div');
+          divElement.innerHTML = traducoes;
+          divElement.classList.add('balao-quadrinhos-remover');
+          var spanElement = document.createElement('span');
+          spanElement.innerHTML = " ";
+
+          elementoClicado.appendChild(spanElement);
+          elementoClicado.appendChild(divElement);
+        }
+
+
+        var divElement2 = document.createElement('div');
+        divElement2.classList.add('balao-quadrinhos');
+        var bElement = document.createElement('b');
+        bElement.innerHTML = "#" + palavraClicada + "# ";
+        spanElement = document.createElement('span');
+        spanElement.innerHTML = traducoes[0];
+
+        divElement2.appendChild(bElement);
+        divElement2.appendChild(spanElement);
+        // divElement2.setAttribute("title", traducoes[0]);
+
+        var parentElement = document.querySelector('.balao-quadrinhos-wrap');
+        var firstChild = parentElement.firstChild;
+
+        parentElement.insertBefore(divElement2, firstChild);
+      });
+    }
+
+    if (!ev.ctrlKey && ev.which == 3) {
+      ev.preventDefault();
+
+      let palavraMarcada = window.getSelection()?.toString() ?? "";
+      let palavraClicada = (ev.target as any).innerHTML.split('<s')[0];
+
+      palavraClicada = palavraClicada != null ? palavraClicada.split('<s')[0] : palavraClicada;
+
+      this.mostrarPronuncia(ev, palavraClicada);
+
+      if (palavraMarcada) {
+        let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraMarcada}`);
+        audio.play();
+        return;
+      }
+
+      if (palavraClicada) {
+        let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${palavraClicada}`);
+        audio.play();
+      }
+    }
+
+    if (ev.ctrlKey && ev.which == 3) {
+      ev.preventDefault();
+
+      let palavraMarcada = window.getSelection()?.toString() ?? "";
+      if (!palavraMarcada) {
+        return;
+      }
+
+      this.adicionarService.obterTraducao2(palavraMarcada)
+        .then(traducao => {
+          var divElement2 = document.createElement('div');
+          divElement2.classList.add('balao-quadrinhos');
+
+          var spanElement = document.createElement('span');
+          spanElement.innerHTML = palavraMarcada + '<br/><hr>' + traducao;
+
+          divElement2.appendChild(spanElement);
+
+          var parentElement = document.querySelector('.balao-quadrinhos-wrap2');
+          var firstChild = parentElement.firstChild;
+
+          parentElement.insertBefore(divElement2, firstChild);
+        });
+    }
   }
 
 }

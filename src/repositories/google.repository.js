@@ -163,22 +163,22 @@ async function obterContext2(palavraIngles, palavraPortugues) {
       var tipo = 0;
       var tipoDesc = '';
       if (classes.some(y => y === 'v')) {
-        tipo = 1; 
+        tipo = 1;
         tipoDesc = 'verb';
       } else if (classes.some(y => y === 'n')) {
-        tipo = 2; 
+        tipo = 2;
         tipoDesc = 'noun';
       } else if (classes.some(y => y === 'adj')) {
-        tipo = 3; 
+        tipo = 3;
         tipoDesc = 'adje';
       } else if (classes.some(y => y === 'adv')) {
-        tipo = 4; 
+        tipo = 4;
         tipoDesc = 'adve';
       } else if (classes.some(y => y === 'no-pos')) {
-        tipo = 5; 
+        tipo = 5;
         tipoDesc = 'nopo';
       } else if (classes.some(y => y === 'indication')) {
-        tipo = 6; 
+        tipo = 6;
         tipoDesc = 'indi';
       }
 
@@ -201,8 +201,10 @@ async function obterContext2(palavraIngles, palavraPortugues) {
         sinonimos1 += ', ' + sin;
       }
 
-      lista.push({ freq: freq, tipo: tipo, palavraIngles: pIngles, 
-        palavraPortugues: traducao, sinonimos: `${tipoDesc}_${freq} ` + sinonimos1 });
+      lista.push({
+        freq: freq, tipo: tipo, palavraIngles: pIngles,
+        palavraPortugues: traducao, sinonimos: `${tipoDesc}_${freq} ` + sinonimos1
+      });
     }
 
     lista = lista.sort(function (a, b) { return a.tipo - b.tipo || b.freq - a.freq; });
@@ -248,4 +250,137 @@ async function obterImagem(palavra) {
   await browser.close();
 
   return 'http://localhost:3000/' + nomeImagem;
+}
+
+
+exports.obterContextTraducoes1 = async palavras => {
+
+  var palavraIngles = palavras[0];
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  page.setDefaultTimeout(60000);
+  await page.goto('https://context.reverso.net/traducao/ingles-portugues/' + palavraIngles);
+
+  var traducoesTermos2 = await page.evaluate(async (pIngles) => {
+    // await new Promise(resolve => setTimeout(resolve, 1500));
+
+    var traducoes = [...document.querySelectorAll('#translations-content .translation')];
+    traducoes = traducoes.sort(function (a, b) { return b.getAttribute("data-freq") - a.getAttribute("data-freq") });
+
+    var lista = [];
+    if (!traducoes) {
+      return lista;
+    }
+
+    var traducoesTermos = "";
+    for (let i = 0; i < traducoes.length; i++) {
+
+      var traducao = traducoes[i].querySelector('.display-term').textContent.trim();
+      if (traducao === '') {
+        continue;
+      }
+
+      traducoesTermos += `${traducao}, `
+    }
+
+    return traducoesTermos;
+  }, palavraIngles);
+
+  await browser.close();
+
+  return [{ palavraIngles: palavraIngles, traducoes: traducoesTermos2 }];
+}
+
+exports.obterContextTraducoes = async palavras => {
+
+  var lista = [];
+  for (let i = 0; i < palavras.length; i++) {
+    let palavraBusca = palavras[i];
+
+    var command = 'curl -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36" "https://context.reverso.net/traducao/ingles-portugues/' + palavraBusca + '"';
+
+    const { stdout, stderr } = await exec(command, { maxBuffer: 1024 * tamanhoBuffer })
+
+    const $ = cheerio.load(stdout);
+
+    var traducoes = [...$('#translations-content .translation')];
+    traducoes = traducoes.sort(function (a, b) { return $(b).data("freq") - $(b).data("freq") });
+
+    var lista = [];
+    if (!traducoes) {
+      return lista;
+    }
+
+    var traducoesTermos = "";
+    var traducoesTermosComCategoria = [];
+    for (let i = 0; i < traducoes.length; i++) {
+
+      var traducao = $(traducoes[i]).text().trim();
+      if (traducao === '') {
+        continue;
+      }
+
+      const classValue = $(traducoes[i]).attr('class');
+      const classes = classValue.split(' ');
+
+      var tipo = 0;
+      var tipoDesc = '';
+      if (classes.some(y => y === 'v')) {
+        tipo = 1;
+        tipoDesc = 'verb';
+      } else if (classes.some(y => y === 'n')) {
+        tipo = 2;
+        tipoDesc = 'noun';
+      } else if (classes.some(y => y === 'adj')) {
+        tipo = 3;
+        tipoDesc = 'adje';
+      } else if (classes.some(y => y === 'adv')) {
+        tipo = 4;
+        tipoDesc = 'adve';
+      } else if (classes.some(y => y === 'no-pos')) {
+        tipo = 5;
+        tipoDesc = 'nopo';
+      } else if (classes.some(y => y === 'indication')) {
+        tipo = 6;
+        tipoDesc = 'indi';
+      }
+
+      traducao = traducao.replace(' mf', '').replace(' f', '').replace(' m', '');
+
+      traducoesTermosComCategoria.push({ traducao: traducao, tipo: tipo, tipoDesc: tipoDesc });
+
+      if (traducoesTermos == "") {
+        traducoesTermos = `${traducao}`;
+        continue;
+      }
+      traducoesTermos += `, ${traducao}`;
+    }
+
+    // lista.push(traducoesTermos);
+  }
+
+  const traducoesPorTipo = {};
+
+  // Itera sobre os dados e agrupa as traduções por tipo
+  traducoesTermosComCategoria.forEach((item) => {
+    if (!traducoesPorTipo[item.tipoDesc]) {
+      traducoesPorTipo[item.tipoDesc] = [];
+    }
+    traducoesPorTipo[item.tipoDesc].push(item.traducao);
+  });
+
+  // Cria a string no formato desejado
+  let resultado = '';
+  for (const tipo in traducoesPorTipo) {
+    resultado += `<b>${tipo}:</b> ${traducoesPorTipo[tipo].join(', ')}<br/><hr>`;
+  }
+
+  if (resultado) {
+    resultado = resultado.substring(0, resultado.length - 4)
+  }
+
+  lista.push(resultado);
+
+  return lista;
 }

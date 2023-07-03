@@ -97,9 +97,9 @@ function fonePrime() {
             return;
         }
 
-        var audioIngles = document.querySelector(site.seletorAudioIngles);
+        var audioIngles = document.querySelector(site.seletorAudioIngles2);
         if (!audioIngles) {
-            audioIngles = document.querySelector(site.seletorAudioIngles2);
+            audioIngles = document.querySelector(site.seletorAudioIngles);
         }
         if (audioIngles) {
             if (audioIngles.checked) {
