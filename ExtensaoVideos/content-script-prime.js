@@ -97,9 +97,9 @@ function fonePrime() {
             return;
         }
 
-        var audioIngles = document.querySelector(site.seletorAudioIngles2);
+        var audioIngles = document.querySelector(site.seletorAudioIngles);
         if (!audioIngles) {
-            audioIngles = document.querySelector(site.seletorAudioIngles);
+            audioIngles = document.querySelector(site.seletorAudioIngles2);
         }
         if (audioIngles) {
             if (audioIngles.checked) {
@@ -417,7 +417,11 @@ function afterDOMLoadedPrime() {
             if (e.keyCode == '192') { // . /
                 var legenda = pegarLegendaPrime2222();
                 if (!legenda) {
-                    return;
+                    if (legendas && legendas.length > 0) {
+                        legenda = legendas[legendas.length - 1]
+                    } else {
+                        return;
+                    }
                 }
 
                 console.log(legenda);

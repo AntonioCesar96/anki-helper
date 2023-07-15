@@ -411,8 +411,11 @@ function afterDOMLoadedHbo() {
             if (e.keyCode == '192') { // . /
                 var legenda = pegarLegendaHbo();
                 if (!legenda) {
-                    console.log('Nada!');
-                    return;
+                    if (legendas && legendas.length > 0) {
+                        legenda = legendas[legendas.length - 1]
+                    } else {
+                        return;
+                    }
                 }
 
                 var achou = legendas.filter(x => x == legenda);

@@ -208,8 +208,11 @@ function afterDOMNetflix() {
             if (e.keyCode == '192') { // . /
                 var legenda = pegarLegendaNetflix();
                 if (!legenda) {
-                    console.log('Nada!');
-                    return;
+                    if (legendas && legendas.length > 0) {
+                        legenda = legendas[legendas.length - 1]
+                    } else {
+                        return;
+                    }
                 }
 
                 var achou = legendas.filter(x => x == legenda);
@@ -247,24 +250,8 @@ function afterDOMNetflix() {
     }, 5000);
 }
 
-
-function getBotao(texto, sessao) {
-    return null;
-}
-
-
-// function getBotao(texto, sessao) {
-//     var labels = document.querySelectorAll('label');
-
-//     for (let i = 0; i < labels.length; i++) {
-//         if (labels[i].textContent.startsWith(texto) && labels[i].getAttribute('for').startsWith(sessao)) {
-//             return labels[i];
-//         }
-//     }
-// }
-
 function pegarLegendaNetflix() {
-    var elemento = document.querySelector('.player-timedtext .player-timedtext-text-container');
+    var elemento = document.querySelector('.player-timedtext');
     if (!elemento) {
         return '';
     }

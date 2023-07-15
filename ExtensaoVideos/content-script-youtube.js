@@ -106,14 +106,17 @@ function afterDOMLoadedYoutube() {
             console.log(e.keyCode);
 
             if (e.keyCode == '110') { // ,
-                video.currentTime = video.currentTime - 2;
+                video.currentTime = video.currentTime - 3;
             }
 
             if (e.keyCode == '192') { // aspas simples '
                 var legenda = pegarLegendaYoutube();
                 if (!legenda) {
-                    console.log('Nada!');
-                    return;
+                    if (legendas && legendas.length > 0) {
+                        legenda = legendas[legendas.length - 1]
+                    } else {
+                        return;
+                    }
                 }
 
                 var achou = legendas.filter(x => x == legenda);

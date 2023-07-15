@@ -4,11 +4,11 @@ var sitesHome = [
         href: "https://twitter.com/explore",
         seletor: 'body'
     },
-    {
-        host: "www.instagram.com",
-        href: "https://www.instagram.com/",
-        seletor: 'body'
-    },
+    // {
+    //     host: "www.instagram.com",
+    //     href: "https://www.instagram.com/",
+    //     seletor: 'body'
+    // },
     {
         host: "g1.globo.com",
         href: "https://g1.globo.com/",
