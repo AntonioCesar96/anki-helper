@@ -29,8 +29,6 @@ function foneStar() {
             return;
         }
 
-        console.log('previoustrack');
-
         document.querySelector('[aria-label="Skip back 10 seconds"]').click();
     });
 
@@ -38,8 +36,6 @@ function foneStar() {
         if (pularIntro()) {
             return;
         }
-
-        console.log('nexttrack');
 
         let audioPortugues = getBotao('Português (Brasil)', 'audio');
         let audioIngles = getBotao('English', 'audio');
@@ -62,7 +58,7 @@ function foneStar() {
 var legendas = [];
 
 function afterDOMDisney() {
-    console.log('Fone Helper Rodando! - disney ou starplus');
+    console.log('Fone Helper Rodando! - Star ou Disney');
 
     setTimeout(() => {
         console.log('Fone Helper Rodando! - Star ou Disney');
@@ -92,7 +88,7 @@ function afterDOMDisney() {
             e = e || window.event;
             var video = getVideo();
 
-            console.log(e.keyCode);
+            // console.log(e.keyCode);
 
             if (e.keyCode == '96') { // 0
                 // voltarNoTempo(skipTime)
@@ -107,7 +103,7 @@ function afterDOMDisney() {
 
             if (e.keyCode == '78') { // N
 
-                console.log("Trocar audio e legenda");
+                // console.log("Trocar audio e legenda");
 
                 var audioPortugues = getBotao('Português (Brasil)', 'audio');
                 var audioIngles = getBotao('English', 'audio');
@@ -186,7 +182,7 @@ function afterDOMDisney() {
                     }
                 }
 
-                console.log(legenda);
+                // console.log(legenda);
 
                 copyToClipboard(legenda)
 

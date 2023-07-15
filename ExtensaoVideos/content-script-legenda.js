@@ -18,13 +18,12 @@ if (siteHome) {
 
 var lagLegendaRodape = obterVariavel('lagLegendaRodape') ? obterVariavel('lagLegendaRodape') : 1100;
 var lagLegendaTopo = obterVariavel('lagLegendaTopo') ? obterVariavel('lagLegendaTopo') : 1100;
-var fonteLegendaTopo = obterVariavel('fonteLegendaTopo') ? obterVariavel('fonteLegendaTopo') : 32;
-var fonteLegendaRodape = obterVariavel('fonteLegendaRodape') ? obterVariavel('fonteLegendaRodape') : 32;
+var fonteLegendaTopo = obterVariavel('fonteLegendaTopo') ? obterVariavel('fonteLegendaTopo') : 34;
+var fonteLegendaRodape = obterVariavel('fonteLegendaRodape') ? obterVariavel('fonteLegendaRodape') : 34;
 var posicaoLegendaTopo = obterVariavel('posicaoLegendaTopo') ? obterVariavel('posicaoLegendaTopo') : 50;
 var posicaoLegendaRodape = obterVariavel('posicaoLegendaRodape') ? obterVariavel('posicaoLegendaRodape') : 50;
-
-var backgroundColorTopo = obterVariavel('backgroundColorTopo') ? obterVariavel('backgroundColorTopo') : 0.5;
-var backgroundColorRodape = obterVariavel('backgroundColorRodape') ? obterVariavel('backgroundColorRodape') : 0.5;
+var backgroundColorTopo = obterVariavel('backgroundColorTopo') ? obterVariavel('backgroundColorTopo') : '0.25';
+var backgroundColorRodape = obterVariavel('backgroundColorRodape') ? obterVariavel('backgroundColorRodape') : '0.25';
 
 var legendaRodapeInterval = 0;
 var legendaTopoInterval = 0;
@@ -184,7 +183,7 @@ function criarModal() {
     modalContent.style.maxWidth = '290px';
     modalContent.style.boxSizing = 'content-box';
     modalContent.style.color = '#000';
-    modalContent.style.fontSize = '16px';
+    modalContent.style.fontSize = '15px';
 
     // Cria o botão de fechar
     var closeButton = document.createElement('span');
@@ -212,13 +211,10 @@ function criarModal() {
 
     // Adiciona os elementos ao modal
     modalContent.appendChild(closeButton);
-    modalContent.appendChild(document.createElement('br'));
-    modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(inputTopo);
 
     addInputsTopo(modalContent);
 
-    modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(inputRodape);
@@ -267,14 +263,15 @@ function criarModal() {
                 const subtitle = legendas.find(sub => currentTime >= sub.inicio && currentTime <= sub.fim);
 
                 if (subtitle) {
-                    if (legendaTopoHtml.innerHTML != subtitle.legenda) {
-                        legendaTopoHtml.innerHTML = subtitle.legenda;
-                        
+                    let innerHTML = "";
+                    for (let i = 0; i < subtitle.legendas.length; i++) {
+                        innerHTML += `<div style="padding: 0px 0px 0; line-height: normal;">
+                            <span style="background-color: rgba(0, 0, 0, ${backgroundColorTopo}); padding: 0px 0px 0; margin: 0;">${subtitle.legendas[i]}</span>
+                            </div>`;
+                    }
 
-                        
-
-                        
-                        
+                    if (legendaTopoHtml.innerHTML != innerHTML) {
+                        legendaTopoHtml.innerHTML = innerHTML;
                         legendaTopoHtml.style.display = 'block';
                     }
                 } else {
@@ -323,8 +320,15 @@ function criarModal() {
                 const subtitle = legendas.find(sub => currentTime >= sub.inicio && currentTime <= sub.fim);
 
                 if (subtitle) {
-                    if (legendaRodapeHtml.innerHTML != subtitle.legenda) {
-                        legendaRodapeHtml.innerHTML = subtitle.legenda;
+                    let innerHTML = "";
+                    for (let i = 0; i < subtitle.legendas.length; i++) {
+                        innerHTML += `<div style="padding: 0px 0px 0; line-height: normal;">
+                            <span style="background-color: rgba(0, 0, 0, ${backgroundColorRodape}); padding: 0px 0px 0; margin: 0;">${subtitle.legendas[i]}</span>
+                            </div>`;
+                    }
+
+                    if (legendaRodapeHtml.innerHTML != innerHTML) {
+                        legendaRodapeHtml.innerHTML = innerHTML;
                         legendaRodapeHtml.style.display = 'block';
                     }
                 } else {
@@ -382,6 +386,7 @@ function addInputsTopo(modalContent) {
     lagTopoInput.value = lagLegendaTopo;
     lagTopoInput.style.display = 'inline-block';
     lagTopoInput.style.width = '100px';
+    lagTopoInput.style.height = '18px';
 
     lagTopoInput.addEventListener('input', function () {
         lagLegendaTopo = Number(this.value);
@@ -405,6 +410,7 @@ function addInputsTopo(modalContent) {
     fonteTopoInput.value = fonteLegendaTopo;
     fonteTopoInput.style.display = 'inline-block';
     fonteTopoInput.style.width = '100px';
+    fonteTopoInput.style.height = '18px';
 
     fonteTopoInput.addEventListener('input', function () {
         fonteLegendaTopo = Number(this.value);
@@ -429,6 +435,7 @@ function addInputsTopo(modalContent) {
     posicaoTopoInput.value = posicaoLegendaTopo;
     posicaoTopoInput.style.display = 'inline-block';
     posicaoTopoInput.style.width = '100px';
+    posicaoTopoInput.style.height = '18px';
 
     posicaoTopoInput.addEventListener('input', function () {
         posicaoLegendaTopo = Number(this.value);
@@ -437,6 +444,34 @@ function addInputsTopo(modalContent) {
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
         if (legendaTopoHtml) {
             legendaTopoHtml.style.top = posicaoLegendaTopo + 'px';
+        }
+    });
+
+    // INPUTS background color topo
+    var backgroundColorTopoLabel = document.createElement('label');
+    backgroundColorTopoLabel.setAttribute('for', 'backgroundColorTopo');
+    backgroundColorTopoLabel.innerHTML = 'BackgroundColor Topo';
+    backgroundColorTopoLabel.style.display = 'inline-block';
+    backgroundColorTopoLabel.style.marginRight = '5px';
+
+    var backgroundColorTopoInput = document.createElement('input');
+    backgroundColorTopoInput.setAttribute('type', 'text');
+    backgroundColorTopoInput.setAttribute('id', 'backgroundColorTopo');
+    backgroundColorTopoInput.value = backgroundColorTopo;
+    backgroundColorTopoInput.style.display = 'inline-block';
+    backgroundColorTopoInput.style.width = '100px';
+    backgroundColorTopoInput.style.height = '18px';
+
+    backgroundColorTopoInput.addEventListener('input', function () {
+        backgroundColorTopo = this.value;
+        salvarVariavel('backgroundColorTopo', backgroundColorTopo);
+
+        let legendaTopoHtml = document.getElementById('legendaTopoHtml');
+        let spans = legendaTopoHtml?.querySelectorAll('span');
+        if (legendaTopoHtml && spans) {
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].style.backgroundColor = `rgba(0, 0, 0, ${backgroundColorTopo})`;
+            }
         }
     });
 
@@ -450,6 +485,9 @@ function addInputsTopo(modalContent) {
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoTopoLabel);
     modalContent.appendChild(posicaoTopoInput);
+    modalContent.appendChild(document.createElement('br'));
+    modalContent.appendChild(backgroundColorTopoLabel);
+    modalContent.appendChild(backgroundColorTopoInput);
 }
 
 
@@ -547,14 +585,46 @@ function addInputsRodape(modalContent) {
         }
     });
 
+    // INPUTS background color rodape
+    var backgroundColorRodapeLabel = document.createElement('label');
+    backgroundColorRodapeLabel.setAttribute('for', 'backgroundColorRodape');
+    backgroundColorRodapeLabel.innerHTML = 'BackgroundColor Rodape';
+    backgroundColorRodapeLabel.style.display = 'inline-block';
+    backgroundColorRodapeLabel.style.marginRight = '5px';
+
+    var backgroundColorRodapeInput = document.createElement('input');
+    backgroundColorRodapeInput.setAttribute('type', 'text');
+    backgroundColorRodapeInput.setAttribute('id', 'backgroundColorRodape');
+    backgroundColorRodapeInput.value = backgroundColorRodape;
+    backgroundColorRodapeInput.style.display = 'inline-block';
+    backgroundColorRodapeInput.style.width = '100px';
+    backgroundColorRodapeInput.style.height = '18px';
+
+    backgroundColorRodapeInput.addEventListener('input', function (e) {
+        e.preventDefault();
+
+        backgroundColorRodape = this.value;
+        salvarVariavel('backgroundColorRodape', backgroundColorRodape);
+
+        let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
+        let spans = legendaRodapeHtml?.querySelectorAll('span');
+        if (legendaRodapeHtml && spans) {
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].style.backgroundColor = `rgba(0, 0, 0, ${backgroundColorRodape})`;
+            }
+        }
+    });
+
     modalContent.appendChild(switchLegendaRodapeButton);
     modalContent.appendChild(lagRodapeLabel);
     modalContent.appendChild(lagRodapeInput);
-    // modalContent.appendChild(lagRodapeAviso);
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(fonteRodapeLabel);
     modalContent.appendChild(fonteRodapeInput);
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoRodapeLabel);
     modalContent.appendChild(posicaoRodapeInput);
+    modalContent.appendChild(document.createElement('br'));
+    modalContent.appendChild(backgroundColorRodapeLabel);
+    modalContent.appendChild(backgroundColorRodapeInput);
 }

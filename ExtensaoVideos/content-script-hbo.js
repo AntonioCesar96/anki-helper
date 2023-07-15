@@ -45,8 +45,6 @@ function foneHbo() {
             return;
         }
 
-        console.log('previoustrack');
-
         var video = getVideo();
         video.currentTime = video.currentTime - 7;
         // voltarNoTempo(7);
@@ -57,8 +55,6 @@ function foneHbo() {
         if (pularIntro()) {
             return;
         }
-
-        console.log('nexttrack');
 
         setTimeout(() => {
             document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
@@ -125,7 +121,7 @@ function pularIntro2(tentativas) {
 
     pular.click();
 
-    console.log("Abertura pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 10))));
+    // console.log("Abertura pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 10))));
     setTimeout(() => {
         //console.log(new Date() + "Iniciando processo de tentativas");
         pularIntro2(1);
@@ -209,7 +205,7 @@ function afterDOMLoadedHbo() {
             if (e.keyCode == '78') { // N
 
                 proxy(() => {
-                    console.log("Trocar audio e legenda");
+                    // console.log("Trocar audio e legenda");
 
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
@@ -261,7 +257,7 @@ function afterDOMLoadedHbo() {
 
             if (e.keyCode == '86') { // V     
                 proxy(() => {
-                    console.log("Trocar legenda ingles");
+                    // console.log("Trocar legenda ingles");
 
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
@@ -289,7 +285,7 @@ function afterDOMLoadedHbo() {
 
             if (e.keyCode == '80') { // P      
                 proxy(() => {
-                    console.log("Trocar legenda português");
+                    // console.log("Trocar legenda português");
 
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
@@ -317,7 +313,7 @@ function afterDOMLoadedHbo() {
 
             if (e.keyCode == '66') { // B    
                 proxy(() => {
-                    console.log("Trocar audio");
+                    // console.log("Trocar audio");
 
                     document.querySelector('div[aria-label="Exibir áudio e legendas CC"]').click();
 
@@ -401,7 +397,7 @@ function afterDOMLoadedHbo() {
 
             if (e.keyCode == '82') { // R
                 clearInterval(timer);
-                console.log("Interval cancelado!")
+                // console.log("Interval cancelado!")
             }
 
             if (e.keyCode == '106') { // *
@@ -438,7 +434,7 @@ function afterDOMLoadedHbo() {
                     }
                 }
 
-                console.log(legenda);
+                // console.log(legenda);
 
                 copyToClipboard(legenda)
 
@@ -462,7 +458,7 @@ function proxy(funcao) {
         let botaoVoltar = document.querySelector('div[aria-label="Retroceder 15 segundos"]');
         if (!botaoVoltar) {
             contadorTempo += 5;
-            console.log("botão nulo: " + contadorTempo);
+            // console.log("botão nulo: " + contadorTempo);
             return;
         }
         clearInterval(idInterval);

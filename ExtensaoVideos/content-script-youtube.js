@@ -137,7 +137,7 @@ function afterDOMLoadedYoutube() {
                     }
                 }
 
-                console.log(legenda);
+                // console.log(legenda);
 
                 copyToClipboard(legenda)
 

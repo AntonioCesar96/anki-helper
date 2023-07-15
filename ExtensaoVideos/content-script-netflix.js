@@ -42,11 +42,11 @@ function afterDOMNetflix() {
         async function checkKey(e) {
             e = e || window.event;
 
-            console.log(e.keyCode);
+            // console.log(e.keyCode);
 
             if (e.keyCode == '78') { // N
 
-                console.log("Trocar audio e legenda");
+                // console.log("Trocar audio e legenda");
 
                 document.querySelector('button[aria-label="Idioma e legendas"]').click();
 
@@ -233,7 +233,7 @@ function afterDOMNetflix() {
                     }
                 }
 
-                console.log(legenda);
+                // console.log(legenda);
 
                 copyToClipboard(legenda)
 

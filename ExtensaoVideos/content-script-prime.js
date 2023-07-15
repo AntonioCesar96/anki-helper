@@ -73,14 +73,14 @@ function fonePrime() {
             return;
         }
 
-        console.log(`Possível legenda: ${tempoElemento.textContent} - `);
+        // console.log(`Possível legenda: ${tempoElemento.textContent} - `);
 
         var legenda = pegarLegendaPrime2222();
         if (!legenda) {
             return;
         }
 
-        console.log(`${tempoElemento.textContent} - ` + legenda);
+        // console.log(`${tempoElemento.textContent} - ` + legenda);
     });
 
     navigator.mediaSession.setActionHandler('previoustrack', function () {
@@ -278,7 +278,7 @@ function afterDOMLoadedPrime() {
             e = e || window.event;
             var video = getVideo();
 
-            console.log(e.keyCode);
+            // console.log(e.keyCode);
 
             if (e.keyCode == '78') { // N
                 var ingles = document.querySelector(site.seletorLegendaIngles);
@@ -411,7 +411,7 @@ function afterDOMLoadedPrime() {
 
             if (e.keyCode == '82') { // R
                 clearInterval(timer);
-                console.log("Interval cancelado!")
+                // console.log("Interval cancelado!")
             }
 
             if (e.keyCode == '106') { // *
@@ -435,7 +435,7 @@ function afterDOMLoadedPrime() {
                     }
                 }
 
-                console.log(legenda);
+                // console.log(legenda);
 
                 copyToClipboard(legenda)
 
