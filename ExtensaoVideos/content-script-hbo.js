@@ -105,7 +105,7 @@ function acelerarVideoHbo() {
     }
 
     var video = getVideo();
-    if(video && playbackRate) {
+    if (video && playbackRate) {
         video.playbackRate = playbackRate;
         document.title = video.playbackRate + ' - ' + tituloPagina;
     }
@@ -491,9 +491,12 @@ async function sleep(msec) {
 function pegarLegendaHbo() {
     var elemento = document.querySelector('div[data-testid="CueBoxContainer"]');
     if (!elemento) {
-        return '';
+        elemento = document.getElementById('legendaRodapeHtml');
+        if (!elemento) {
+            return '';
+        }
     }
-
+    
     // if (!elemento) {
     //     elemento = document.querySelector('.css-175oi2r .css-175oi2r');
     //     if (!elemento) {

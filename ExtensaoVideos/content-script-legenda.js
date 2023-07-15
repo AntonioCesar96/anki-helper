@@ -16,12 +16,15 @@ if (siteHome) {
     }
 }
 
-var lagLegendaRodape = 1100;
-var lagLegendaTopo = 1100;
-var fonteLegendaTopo = 32;
-var fonteLegendaRodape = 32;
-var posicaoLegendaTopo = 530;
-var posicaoLegendaRodape = 220;
+var lagLegendaRodape = obterVariavel('lagLegendaRodape') ? obterVariavel('lagLegendaRodape') : 1100;
+var lagLegendaTopo = obterVariavel('lagLegendaTopo') ? obterVariavel('lagLegendaTopo') : 1100;
+var fonteLegendaTopo = obterVariavel('fonteLegendaTopo') ? obterVariavel('fonteLegendaTopo') : 32;
+var fonteLegendaRodape = obterVariavel('fonteLegendaRodape') ? obterVariavel('fonteLegendaRodape') : 32;
+var posicaoLegendaTopo = obterVariavel('posicaoLegendaTopo') ? obterVariavel('posicaoLegendaTopo') : 50;
+var posicaoLegendaRodape = obterVariavel('posicaoLegendaRodape') ? obterVariavel('posicaoLegendaRodape') : 50;
+
+var backgroundColorTopo = obterVariavel('backgroundColorTopo') ? obterVariavel('backgroundColorTopo') : 0.5;
+var backgroundColorRodape = obterVariavel('backgroundColorRodape') ? obterVariavel('backgroundColorRodape') : 0.5;
 
 var legendaRodapeInterval = 0;
 var legendaTopoInterval = 0;
@@ -30,6 +33,18 @@ var legendaRodapeLigar = false;
 var legendaRodape;
 var legendaTopo;
 var legendas = [];
+
+function obterVariavel(nome) {
+    let variavel = localStorage.getItem(nome);
+    if (variavel) {
+        return Number(variavel);
+    }
+    return null;
+}
+
+function salvarVariavel(nome, valor) {
+    localStorage.setItem(nome, valor);
+}
 
 function afterDOMLegenda() {
     console.log('Fone Helper Rodando! - Legenda');
@@ -59,6 +74,7 @@ function criarLegendaRodape() {
     let legenda = document.createElement('div');
     legenda.setAttribute('id', 'legendaRodapeHtml');
     legenda.style.position = 'fixed';
+    legenda.style.zIndex = '99999999999';
     legenda.style.bottom = posicaoLegendaRodape + 'px';
     legenda.style.left = '0';
     legenda.style.width = '100%';
@@ -75,7 +91,8 @@ function criarLegendaTopo() {
     let legenda = document.createElement('div');
     legenda.setAttribute('id', 'legendaTopoHtml');
     legenda.style.position = 'fixed';
-    legenda.style.bottom = posicaoLegendaTopo + 'px';
+    legenda.style.zIndex = '99999999999';
+    legenda.style.top = posicaoLegendaTopo + 'px';
     legenda.style.left = '0';
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
@@ -92,7 +109,7 @@ function parsearArquivoLegenda(legendas) {
     let linhas = legendas.split('\r\n');
 
     let contaLinha = 1;
-    let blocoObjeto = { legenda: '' };
+    let blocoObjeto = { legenda: '', legendas: [] };
     for (let i = 0; i < linhas.length; i++) {
         let linha = linhas[i];
 
@@ -104,9 +121,9 @@ function parsearArquivoLegenda(legendas) {
             }
 
             if (contaLinha > 2) {
-                // blocoObjeto.legenda += `<div style="padding: 0px 0px 6px;"><span style="background-color: rgba(0, 0, 0, 0.5); padding: 0px 0px 6px;">${linha}</span></div>`;
-                blocoObjeto.legenda += `<div style="padding: 0px 0px 6px;">
-                    <span style="background-color: rgba(0, 0, 0, 0.5); padding: 0px 0px 6px;">${linha}</span>
+                blocoObjeto.legendas.push(linha);
+                blocoObjeto.legenda += `<div style="padding: 0px 0px 0; line-height: normal;">
+                    <span style="background-color: rgba(0, 0, 0, 0.5); padding: 0px 0px 0; margin: 0;">${linha}</span>
                     </div>`;
             }
 
@@ -115,7 +132,7 @@ function parsearArquivoLegenda(legendas) {
 
         if (linha == '' && blocoObjeto.legenda !== '') {
             listaBlocosAux.push(blocoObjeto);
-            blocoObjeto = { legenda: '' };
+            blocoObjeto = { legenda: '', legendas: [] };
             contaLinha = 1;
         }
     }
@@ -150,7 +167,7 @@ function criarModal() {
     modal.setAttribute('id', 'modal');
     modal.style.display = 'none';
     modal.style.position = 'fixed';
-    modal.style.zIndex = '1';
+    modal.style.zIndex = '99999999999';
     modal.style.right = '0';
     modal.style.top = '20%';
     modal.style.overflow = 'auto';
@@ -162,8 +179,12 @@ function criarModal() {
     modalContent.style.backgroundColor = '#fefefe';
     modalContent.style.margin = '0 0 0 auto';
     modalContent.style.padding = '20px';
+    modalContent.style.paddingTop = '0';
     modalContent.style.border = '1px solid #888';
     modalContent.style.maxWidth = '290px';
+    modalContent.style.boxSizing = 'content-box';
+    modalContent.style.color = '#000';
+    modalContent.style.fontSize = '16px';
 
     // Cria o botão de fechar
     var closeButton = document.createElement('span');
@@ -179,26 +200,20 @@ function criarModal() {
     closeButton.addEventListener('click', closeModal);
 
     // Cria os inputs de arquivo e as labels
-    var labelTopo = document.createElement('label');
-    labelTopo.setAttribute('for', 'legendaTopo');
-    labelTopo.innerHTML = 'Legenda do Topo:';
     var inputTopo = document.createElement('input');
     inputTopo.setAttribute('type', 'file');
     inputTopo.setAttribute('id', 'legendaTopo');
-    inputTopo.style.marginRight = '10px';
+    inputTopo.style.fontSize = '13.3px';
 
-    var labelRodape = document.createElement('label');
-    labelRodape.setAttribute('for', 'legendaRodape');
-    labelRodape.innerHTML = 'Legenda do Rodapé:';
     var inputRodape = document.createElement('input');
     inputRodape.setAttribute('type', 'file');
     inputRodape.setAttribute('id', 'legendaRodape');
+    inputRodape.style.fontSize = '13.3px';
 
     // Adiciona os elementos ao modal
     modalContent.appendChild(closeButton);
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
-    // modalContent.appendChild(labelTopo);
     modalContent.appendChild(inputTopo);
 
     addInputsTopo(modalContent);
@@ -206,7 +221,6 @@ function criarModal() {
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
-    // modalContent.appendChild(labelRodape);
     modalContent.appendChild(inputRodape);
 
     addInputsRodape(modalContent);
@@ -224,7 +238,6 @@ function criarModal() {
         const reader = new FileReader();
         reader.onload = (e) => {
             const contents = e.target.result;
-            legendaTopoLigar = true;
 
             if (!document.getElementById('legendaTopoHtml')) {
                 legendaTopoHtml = criarLegendaTopo();
@@ -232,6 +245,7 @@ function criarModal() {
             }
 
             document.getElementById('switchLegendaTopoButton').checked = true;
+            legendaTopoLigar = true;
 
             let legendas = parsearArquivoLegenda(contents);
 
@@ -255,6 +269,12 @@ function criarModal() {
                 if (subtitle) {
                     if (legendaTopoHtml.innerHTML != subtitle.legenda) {
                         legendaTopoHtml.innerHTML = subtitle.legenda;
+                        
+
+                        
+
+                        
+                        
                         legendaTopoHtml.style.display = 'block';
                     }
                 } else {
@@ -275,7 +295,6 @@ function criarModal() {
         const reader = new FileReader();
         reader.onload = (e) => {
             const contents = e.target.result;
-            legendaRodapeLigar = true;
 
             if (!document.getElementById('legendaRodapeHtml')) {
                 legendaRodapeHtml = criarLegendaRodape();
@@ -283,6 +302,7 @@ function criarModal() {
             }
 
             document.getElementById('switchLegendaRodapeButton').checked = true;
+            legendaRodapeLigar = true;
 
             let legendas = parsearArquivoLegenda(contents);
 
@@ -333,11 +353,14 @@ function addInputsTopo(modalContent) {
     var switchLegendaTopoButton = document.createElement('label');
     switchLegendaTopoButton.setAttribute('class', 'switch');
     switchLegendaTopoButton.setAttribute('for', 'switchLegendaTopoButton');
-    switchLegendaTopoButton.innerHTML = 'Desligar legenda topo';
+    switchLegendaTopoButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar legenda Topo</span>';
+    switchLegendaTopoButton.style.display = 'block';
+    switchLegendaTopoButton.style.margin = '8px 5px 10px 0';
 
     var switchLegendaTopo = document.createElement('input');
     switchLegendaTopo.setAttribute('type', 'checkbox');
     switchLegendaTopo.setAttribute('id', 'switchLegendaTopoButton');
+    switchLegendaTopo.style.margin = '0';
 
     switchLegendaTopoButton.appendChild(switchLegendaTopo);
 
@@ -350,14 +373,19 @@ function addInputsTopo(modalContent) {
     var lagTopoLabel = document.createElement('label');
     lagTopoLabel.setAttribute('for', 'lagTopo');
     lagTopoLabel.innerHTML = 'Lag topo';
+    lagTopoLabel.style.display = 'inline-block';
+    lagTopoLabel.style.marginRight = '5px';
 
     var lagTopoInput = document.createElement('input');
     lagTopoInput.setAttribute('type', 'number');
     lagTopoInput.setAttribute('id', 'lagTopo');
     lagTopoInput.value = lagLegendaTopo;
+    lagTopoInput.style.display = 'inline-block';
+    lagTopoInput.style.width = '100px';
 
     lagTopoInput.addEventListener('input', function () {
         lagLegendaTopo = Number(this.value);
+        salvarVariavel('lagLegendaTopo', lagLegendaTopo);
     });
 
     var lagTopoAviso = document.createElement('span');
@@ -368,39 +396,51 @@ function addInputsTopo(modalContent) {
     var fonteTopoLabel = document.createElement('label');
     fonteTopoLabel.setAttribute('for', 'fonteTopo');
     fonteTopoLabel.innerHTML = 'Fonte topo';
+    fonteTopoLabel.style.display = 'inline-block';
+    fonteTopoLabel.style.marginRight = '5px';
 
     var fonteTopoInput = document.createElement('input');
     fonteTopoInput.setAttribute('type', 'number');
     fonteTopoInput.setAttribute('id', 'fonteTopo');
     fonteTopoInput.value = fonteLegendaTopo;
+    fonteTopoInput.style.display = 'inline-block';
+    fonteTopoInput.style.width = '100px';
 
     fonteTopoInput.addEventListener('input', function () {
         fonteLegendaTopo = Number(this.value);
+        salvarVariavel('fonteLegendaTopo', fonteLegendaTopo);
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
-        legendaTopoHtml.style.fontSize = fonteLegendaTopo + 'px';
+        if (legendaTopoHtml) {
+            legendaTopoHtml.style.fontSize = fonteLegendaTopo + 'px';
+        }
     });
 
     // INPUTS posição legenda topo
     var posicaoTopoLabel = document.createElement('label');
     posicaoTopoLabel.setAttribute('for', 'posicaoTopo');
     posicaoTopoLabel.innerHTML = 'Posição topo';
+    posicaoTopoLabel.style.display = 'inline-block';
+    posicaoTopoLabel.style.marginRight = '5px';
 
     var posicaoTopoInput = document.createElement('input');
     posicaoTopoInput.setAttribute('type', 'number');
     posicaoTopoInput.setAttribute('id', 'posicaoTopo');
     posicaoTopoInput.value = posicaoLegendaTopo;
+    posicaoTopoInput.style.display = 'inline-block';
+    posicaoTopoInput.style.width = '100px';
 
     posicaoTopoInput.addEventListener('input', function () {
         posicaoLegendaTopo = Number(this.value);
+        salvarVariavel('posicaoLegendaTopo', posicaoLegendaTopo);
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
-        legendaTopoHtml.style.bottom = posicaoLegendaTopo + 'px';
+        if (legendaTopoHtml) {
+            legendaTopoHtml.style.top = posicaoLegendaTopo + 'px';
+        }
     });
 
-    modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(switchLegendaTopoButton);
-    modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(lagTopoLabel);
     modalContent.appendChild(lagTopoInput);
     // modalContent.appendChild(lagTopoAviso);
@@ -419,31 +459,39 @@ function addInputsRodape(modalContent) {
     var switchLegendaRodapeButton = document.createElement('label');
     switchLegendaRodapeButton.setAttribute('class', 'switch');
     switchLegendaRodapeButton.setAttribute('for', 'switchLegendaRodapeButton');
-    switchLegendaRodapeButton.innerHTML = 'Desligar legenda Rodape';
+    switchLegendaRodapeButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar legenda Rodape</span>';
+    switchLegendaRodapeButton.style.display = 'block';
+    switchLegendaRodapeButton.style.margin = '8px 5px 10px 0';
 
     var switchLegendaRodape = document.createElement('input');
     switchLegendaRodape.setAttribute('type', 'checkbox');
     switchLegendaRodape.setAttribute('id', 'switchLegendaRodapeButton');
+    switchLegendaRodape.style.margin = '0';
 
     switchLegendaRodapeButton.appendChild(switchLegendaRodape);
 
     // Adiciona o ouvinte de evento ao checkbox
     switchLegendaRodape.addEventListener('change', function () {
-        legendaRodapeLigar = this.checked
+        legendaRodapeLigar = this.checked;
     });
 
     // INPUTS Lag Rodape
     var lagRodapeLabel = document.createElement('label');
     lagRodapeLabel.setAttribute('for', 'lagRodape');
     lagRodapeLabel.innerHTML = 'Lag Rodape';
+    lagRodapeLabel.style.display = 'inline-block';
+    lagRodapeLabel.style.marginRight = '5px';
 
     var lagRodapeInput = document.createElement('input');
     lagRodapeInput.setAttribute('type', 'number');
     lagRodapeInput.setAttribute('id', 'lagRodape');
     lagRodapeInput.value = lagLegendaRodape;
+    lagRodapeInput.style.display = 'inline-block';
+    lagRodapeInput.style.width = '100px';
 
     lagRodapeInput.addEventListener('input', function () {
         lagLegendaRodape = Number(this.value);
+        salvarVariavel('lagLegendaRodape', lagLegendaRodape);
     });
 
     var lagRodapeAviso = document.createElement('span');
@@ -454,39 +502,52 @@ function addInputsRodape(modalContent) {
     var fonteRodapeLabel = document.createElement('label');
     fonteRodapeLabel.setAttribute('for', 'fonteRodape');
     fonteRodapeLabel.innerHTML = 'Fonte Rodape';
+    fonteRodapeLabel.style.display = 'inline-block';
+    fonteRodapeLabel.style.marginRight = '5px';
 
     var fonteRodapeInput = document.createElement('input');
     fonteRodapeInput.setAttribute('type', 'number');
     fonteRodapeInput.setAttribute('id', 'fonteRodape');
     fonteRodapeInput.value = fonteLegendaRodape;
+    fonteRodapeInput.style.display = 'inline-block';
+    fonteRodapeInput.style.width = '100px';
 
     fonteRodapeInput.addEventListener('input', function () {
         fonteLegendaRodape = Number(this.value);
+        salvarVariavel('fonteLegendaRodape', fonteLegendaRodape);
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
-        legendaRodapeHtml.style.fontSize = fonteLegendaRodape + 'px';
+        if (legendaRodapeHtml) {
+            legendaRodapeHtml.style.fontSize = fonteLegendaRodape + 'px';
+        }
     });
 
     // INPUTS posição legenda Rodape
     var posicaoRodapeLabel = document.createElement('label');
     posicaoRodapeLabel.setAttribute('for', 'posicaoRodape');
     posicaoRodapeLabel.innerHTML = 'Posição Rodape';
+    posicaoRodapeLabel.style.display = 'inline-block';
+    posicaoRodapeLabel.style.marginRight = '5px';
 
     var posicaoRodapeInput = document.createElement('input');
     posicaoRodapeInput.setAttribute('type', 'number');
     posicaoRodapeInput.setAttribute('id', 'posicaoRodape');
     posicaoRodapeInput.value = posicaoLegendaRodape;
+    posicaoRodapeInput.style.display = 'inline-block';
+    posicaoRodapeInput.style.width = '100px';
+    // ###
 
     posicaoRodapeInput.addEventListener('input', function () {
         posicaoLegendaRodape = Number(this.value);
+        salvarVariavel('posicaoLegendaRodape', posicaoLegendaRodape);
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
-        legendaRodapeHtml.style.bottom = posicaoLegendaRodape + 'px';
+        if (legendaRodapeHtml) {
+            legendaRodapeHtml.style.bottom = posicaoLegendaRodape + 'px';
+        }
     });
 
-    modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(switchLegendaRodapeButton);
-    modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(lagRodapeLabel);
     modalContent.appendChild(lagRodapeInput);
     // modalContent.appendChild(lagRodapeAviso);

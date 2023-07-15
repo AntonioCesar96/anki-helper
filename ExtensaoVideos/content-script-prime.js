@@ -132,7 +132,7 @@ function acelerarVideoPrime() {
     }
 
     var video = getVideo();
-    if(video && playbackRate) {
+    if (video && playbackRate) {
         video.playbackRate = playbackRate;
         document.title = video.playbackRate + ' - ' + tituloPagina;
     }
@@ -220,7 +220,7 @@ function afterDOMLoadedPrime() {
 
     setInterval(() => {
         let fundo = document.querySelector('.atvwebplayersdk-overlays-container .fkpovp9.f8hspre');
-        if(fundo) {
+        if (fundo) {
             fundo.style.display = 'none';
         }
 
@@ -308,8 +308,14 @@ function afterDOMLoadedPrime() {
             var ingles = document.querySelector(site.seletorLegendaIngles);
             if (e.keyCode == '86' && ingles) { // V
                 if (ingles.checked) {
-                    document.querySelector(site.seletorLegendaOff)
-                        .parentElement.querySelector('label').click()
+                    if (document.querySelector(site.seletorLegendaOff)) {
+                        document.querySelector(site.seletorLegendaOff)
+                            .parentElement.querySelector('label').click()
+                    } else if (document.querySelector('.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="Desativado"]')) {
+                        document.querySelector('.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="Desativado"]')
+                            .parentElement.querySelector('label').click()
+                    }
+
                 } else {
                     document.querySelector(site.seletorLegendaIngles)
                         .parentElement.querySelector('label').click()
@@ -326,8 +332,13 @@ function afterDOMLoadedPrime() {
             }
             if (e.keyCode == '80' && portugues) { // P
                 if (portugues.checked) {
-                    document.querySelector(site.seletorLegendaOff)
-                        .parentElement.querySelector('label').click()
+                    if (document.querySelector(site.seletorLegendaOff)) {
+                        document.querySelector(site.seletorLegendaOff)
+                            .parentElement.querySelector('label').click()
+                    } else if (document.querySelector('.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="Desativado"]')) {
+                        document.querySelector('.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="Desativado"]')
+                            .parentElement.querySelector('label').click()
+                    }
                 } else {
                     portugues.parentElement.querySelector('label').click()
                 }
