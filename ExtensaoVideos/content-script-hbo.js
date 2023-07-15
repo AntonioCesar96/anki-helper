@@ -105,8 +105,10 @@ function acelerarVideoHbo() {
     }
 
     var video = getVideo();
-    video.playbackRate = playbackRate;
-    document.title = video.playbackRate + ' - ' + tituloPagina;
+    if(video && playbackRate) {
+        video.playbackRate = playbackRate;
+        document.title = video.playbackRate + ' - ' + tituloPagina;
+    }
 
 }
 

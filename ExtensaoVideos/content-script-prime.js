@@ -132,7 +132,7 @@ function acelerarVideoPrime() {
     }
 
     var video = getVideo();
-    if (video) {
+    if(video && playbackRate) {
         video.playbackRate = playbackRate;
         document.title = video.playbackRate + ' - ' + tituloPagina;
     }
