@@ -22,6 +22,10 @@ var fonteLegendaTopo = obterVariavel('fonteLegendaTopo') ? obterVariavel('fonteL
 var fonteLegendaRodape = obterVariavel('fonteLegendaRodape') ? obterVariavel('fonteLegendaRodape') : 34;
 var posicaoLegendaTopo = obterVariavel('posicaoLegendaTopo') ? obterVariavel('posicaoLegendaTopo') : 50;
 var posicaoLegendaRodape = obterVariavel('posicaoLegendaRodape') ? obterVariavel('posicaoLegendaRodape') : 50;
+
+var posicaoLegendaSliderTopo = obterVariavel('posicaoLegendaSliderTopo') ? obterVariavel('posicaoLegendaSliderTopo') : 50;
+var posicaoLegendaSliderRodape = obterVariavel('posicaoLegendaSliderRodape') ? obterVariavel('posicaoLegendaSliderRodape') : 50;
+
 var backgroundColorTopo = obterVariavel('backgroundColorTopo') ? obterVariavel('backgroundColorTopo') : '0.25';
 var backgroundColorRodape = obterVariavel('backgroundColorRodape') ? obterVariavel('backgroundColorRodape') : '0.25';
 
@@ -64,7 +68,21 @@ function afterDOMLegenda() {
         console.log(e.keyCode);
 
         if (e.keyCode == '49') { // 1
-            openModal();
+            if (document.getElementById('modal').style.display === 'block') {
+                closeModal();
+            } else {
+                openModal();
+            }
+        }
+
+        if (e.keyCode == '50') { // 2
+            legendaTopoLigar = !legendaTopoLigar;
+            document.getElementById('switchLegendaTopoButton').checked = legendaTopoLigar;
+        }
+
+        if (e.keyCode == '51') { // 3
+            legendaRodapeLigar = !legendaRodapeLigar;
+            document.getElementById('switchLegendaRodapeButton').checked = legendaRodapeLigar;
         }
     }
 }
@@ -79,6 +97,7 @@ function criarLegendaRodape() {
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
     legenda.style.fontSize = fonteLegendaRodape + 'px';
+    // legenda.style.fontFamily = 'cinecav-sans-regular';
     legenda.style.textAlign = 'center';
     legenda.style.pointerEvents = 'none';
     legenda.innerText = 'Texto da legenda';
@@ -96,6 +115,7 @@ function criarLegendaTopo() {
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
     legenda.style.fontSize = fonteLegendaTopo + 'px';
+    // legenda.style.fontFamily = 'cinecav-sans-regular';
     legenda.style.textAlign = 'center';
     legenda.style.pointerEvents = 'none';
     legenda.innerText = 'Texto da legenda';
@@ -168,7 +188,7 @@ function criarModal() {
     modal.style.position = 'fixed';
     modal.style.zIndex = '99999999999';
     modal.style.right = '0';
-    modal.style.top = '20%';
+    modal.style.top = '14%';
     modal.style.overflow = 'auto';
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 
@@ -183,7 +203,7 @@ function criarModal() {
     modalContent.style.maxWidth = '290px';
     modalContent.style.boxSizing = 'content-box';
     modalContent.style.color = '#000';
-    modalContent.style.fontSize = '15px';
+    modalContent.style.fontSize = '15px';    
 
     // Cria o botão de fechar
     var closeButton = document.createElement('span');
@@ -274,6 +294,8 @@ function criarModal() {
                         legendaTopoHtml.innerHTML = innerHTML;
                         legendaTopoHtml.style.display = 'block';
                     }
+
+                    legendaTopoHtml.style.top = obterVariacaoSeSliderVisivelTopo() + 'px';
                 } else {
                     legendaTopoHtml.innerHTML = '';
                     legendaTopoHtml.style.display = 'none';
@@ -331,6 +353,8 @@ function criarModal() {
                         legendaRodapeHtml.innerHTML = innerHTML;
                         legendaRodapeHtml.style.display = 'block';
                     }
+
+                    legendaRodapeHtml.style.bottom = obterVariacaoSeSliderVisivelRodape() + 'px';
                 } else {
                     legendaRodapeHtml.innerHTML = '';
                     legendaRodapeHtml.style.display = 'none';
@@ -340,6 +364,38 @@ function criarModal() {
         };
         reader.readAsText(file);
     });
+}
+// var sitesHome = [
+//     { host: "www.netflix.com", },
+//     { host: "www.primevideo.com" },
+//     { host:  },
+//     { host: "www.disneyplus.com" },
+//     { host: "www.starplus.com" },
+//     { host: "www.southparkstudios.com.br" },
+// ]
+
+function obterVariacaoSeSliderVisivelRodape() {
+    if ((document.querySelector('div[data-testid="TimelineSlider"]') ||
+        document.querySelector('.atvwebplayersdk-seekbar-container.show')) &&
+        posicaoLegendaRodape < posicaoLegendaSliderRodape) {
+        return posicaoLegendaSliderRodape;
+    }
+
+
+    return posicaoLegendaRodape;
+
+}
+
+function obterVariacaoSeSliderVisivelTopo() {
+    if ((document.querySelector('div[data-testid="TimelineSlider"]') ||
+        document.querySelector('.atvwebplayersdk-seekbar-container.show')) &&
+        posicaoLegendaTopo < posicaoLegendaSliderTopo) {
+        return posicaoLegendaSliderTopo;
+    }
+
+
+    return posicaoLegendaTopo;
+
 }
 
 function openModal() {
@@ -447,6 +503,31 @@ function addInputsTopo(modalContent) {
         }
     });
 
+    // INPUTS posição legenda slider topo
+    var posicaoTopoSliderLabel = document.createElement('label');
+    posicaoTopoSliderLabel.setAttribute('for', 'posicaoSliderTopo');
+    posicaoTopoSliderLabel.innerHTML = 'Posição slider topo';
+    posicaoTopoSliderLabel.style.display = 'inline-block';
+    posicaoTopoSliderLabel.style.marginRight = '5px';
+
+    var posicaoTopoSliderInput = document.createElement('input');
+    posicaoTopoSliderInput.setAttribute('type', 'number');
+    posicaoTopoSliderInput.setAttribute('id', 'posicaoSliderTopo');
+    posicaoTopoSliderInput.value = posicaoLegendaSliderTopo;
+    posicaoTopoSliderInput.style.display = 'inline-block';
+    posicaoTopoSliderInput.style.width = '100px';
+    posicaoTopoSliderInput.style.height = '18px';
+
+    posicaoTopoSliderInput.addEventListener('input', function () {
+        posicaoLegendaSliderTopo = Number(this.value);
+        salvarVariavel('posicaoLegendaSliderTopo', posicaoLegendaSliderTopo);
+
+        let legendaTopoHtml = document.getElementById('legendaTopoHtml');
+        if (legendaTopoHtml) {
+            legendaTopoHtml.style.top = posicaoLegendaSliderTopo + 'px';
+        }
+    });
+
     // INPUTS background color topo
     var backgroundColorTopoLabel = document.createElement('label');
     backgroundColorTopoLabel.setAttribute('for', 'backgroundColorTopo');
@@ -485,6 +566,9 @@ function addInputsTopo(modalContent) {
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoTopoLabel);
     modalContent.appendChild(posicaoTopoInput);
+    modalContent.appendChild(document.createElement('br'));
+    modalContent.appendChild(posicaoTopoSliderLabel);
+    modalContent.appendChild(posicaoTopoSliderInput);
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(backgroundColorTopoLabel);
     modalContent.appendChild(backgroundColorTopoInput);
@@ -573,7 +657,6 @@ function addInputsRodape(modalContent) {
     posicaoRodapeInput.value = posicaoLegendaRodape;
     posicaoRodapeInput.style.display = 'inline-block';
     posicaoRodapeInput.style.width = '100px';
-    // ###
 
     posicaoRodapeInput.addEventListener('input', function () {
         posicaoLegendaRodape = Number(this.value);
@@ -582,6 +665,32 @@ function addInputsRodape(modalContent) {
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
         if (legendaRodapeHtml) {
             legendaRodapeHtml.style.bottom = posicaoLegendaRodape + 'px';
+        }
+    });
+
+
+    // INPUTS posição legenda slider topo
+    var posicaoRodapeSliderLabel = document.createElement('label');
+    posicaoRodapeSliderLabel.setAttribute('for', 'posicaoSliderTopo');
+    posicaoRodapeSliderLabel.innerHTML = 'Posição slider rodape';
+    posicaoRodapeSliderLabel.style.display = 'inline-block';
+    posicaoRodapeSliderLabel.style.marginRight = '5px';
+
+    var posicaoRodapeSliderInput = document.createElement('input');
+    posicaoRodapeSliderInput.setAttribute('type', 'number');
+    posicaoRodapeSliderInput.setAttribute('id', 'posicaoSliderTopo');
+    posicaoRodapeSliderInput.value = posicaoLegendaSliderRodape;
+    posicaoRodapeSliderInput.style.display = 'inline-block';
+    posicaoRodapeSliderInput.style.width = '100px';
+    posicaoRodapeSliderInput.style.height = '18px';
+
+    posicaoRodapeSliderInput.addEventListener('input', function () {
+        posicaoLegendaSliderRodape = Number(this.value);
+        salvarVariavel('posicaoLegendaSliderRodape', posicaoLegendaSliderRodape);
+
+        let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
+        if (legendaRodapeHtml) {
+            legendaRodapeHtml.style.bottom = posicaoLegendaSliderRodape + 'px';
         }
     });
 
@@ -624,6 +733,9 @@ function addInputsRodape(modalContent) {
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoRodapeLabel);
     modalContent.appendChild(posicaoRodapeInput);
+    modalContent.appendChild(document.createElement('br'));
+    modalContent.appendChild(posicaoRodapeSliderLabel);
+    modalContent.appendChild(posicaoRodapeSliderInput);
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(backgroundColorRodapeLabel);
     modalContent.appendChild(backgroundColorRodapeInput);
