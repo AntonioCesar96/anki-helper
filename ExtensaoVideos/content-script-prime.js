@@ -219,6 +219,13 @@ function afterDOMLoadedPrime() {
     pularPropaganda(1);
 
     setInterval(() => {
+        let legenda = document.querySelector('.f1iwgj00');
+        if(legenda) {
+            legenda.style.fontFamily = 'NovaFonte, Arial, sans-serif';
+        }
+    }, 1);
+
+    setInterval(() => {
         let fundo = document.querySelector('.atvwebplayersdk-overlays-container .fkpovp9.f8hspre');
         if (fundo) {
             fundo.style.display = 'none';

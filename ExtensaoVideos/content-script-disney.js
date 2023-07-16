@@ -67,6 +67,27 @@ function afterDOMDisney() {
 
     }, 15000);
 
+    let posicaoLegendaSliderRodape = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+    setTimeout(() => {
+        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+
+        posicaoRodapeSliderInput.addEventListener('input', function () {
+            posicaoLegendaSliderRodape = Number(this.value);
+        });
+    }, 5000);
+
+    setInterval(() => {
+        let legenda = document.querySelector('.dss-subtitle-renderer-cue');
+        if(legenda) {
+            legenda.style.fontFamily = 'NovaFonte, sans-serif';
+            
+            let legendaBox = document.querySelector('.dss-subtitle-renderer-cue-positioning-box');
+            if(document.querySelector('.overlay__controls--visually-show')) {
+                legendaBox.style.top = posicaoLegendaSliderRodape + 'px'
+            }
+        }
+    }, 1);
+
     setInterval(() => {
         var legenda = pegarLegendaStar();
         if (!legenda) {

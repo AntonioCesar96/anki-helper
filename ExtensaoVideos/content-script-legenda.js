@@ -90,6 +90,7 @@ function afterDOMLegenda() {
 function criarLegendaRodape() {
     let legenda = document.createElement('div');
     legenda.setAttribute('id', 'legendaRodapeHtml');
+    legenda.classList.add('legenda');
     legenda.style.position = 'fixed';
     legenda.style.zIndex = '99999999999';
     legenda.style.bottom = posicaoLegendaRodape + 'px';
@@ -97,7 +98,7 @@ function criarLegendaRodape() {
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
     legenda.style.fontSize = fonteLegendaRodape + 'px';
-    // legenda.style.fontFamily = 'cinecav-sans-regular';
+    legenda.style.fontFamily = 'NovaFonte, sans-serif';
     legenda.style.textAlign = 'center';
     legenda.style.pointerEvents = 'none';
     legenda.innerText = 'Texto da legenda';
@@ -108,6 +109,7 @@ function criarLegendaRodape() {
 function criarLegendaTopo() {
     let legenda = document.createElement('div');
     legenda.setAttribute('id', 'legendaTopoHtml');
+    legenda.classList.add('legenda');
     legenda.style.position = 'fixed';
     legenda.style.zIndex = '99999999999';
     legenda.style.top = posicaoLegendaTopo + 'px';
@@ -115,7 +117,7 @@ function criarLegendaTopo() {
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
     legenda.style.fontSize = fonteLegendaTopo + 'px';
-    // legenda.style.fontFamily = 'cinecav-sans-regular';
+    legenda.style.fontFamily = 'NovaFonte, sans-serif';
     legenda.style.textAlign = 'center';
     legenda.style.pointerEvents = 'none';
     legenda.innerText = 'Texto da legenda';
@@ -203,7 +205,7 @@ function criarModal() {
     modalContent.style.maxWidth = '290px';
     modalContent.style.boxSizing = 'content-box';
     modalContent.style.color = '#000';
-    modalContent.style.fontSize = '15px';    
+    modalContent.style.fontSize = '15px';
 
     // Cria o botão de fechar
     var closeButton = document.createElement('span');
@@ -217,6 +219,33 @@ function criarModal() {
 
     // Adiciona evento de clique no botão de fechar
     closeButton.addEventListener('click', closeModal);
+
+    // Cria os inputs de arquivo e as labels
+    var fontFileInput = document.createElement('input');
+    fontFileInput.setAttribute('type', 'file');
+    fontFileInput.setAttribute('id', 'fontFileInput');
+    fontFileInput.style.fontSize = '13.3px';
+    fontFileInput.addEventListener('change', handleFontFile, false);
+    function handleFontFile(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function () {
+            const fontData = reader.result;
+            addFontToPage(fontData);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    function addFontToPage(fontData) {
+        const newFont = new FontFace('NovaFonte', `url(${fontData})`);
+        newFont.load().then(function (loadedFont) {
+            document.fonts.add(loadedFont);
+        }).catch(function (error) {
+            console.error('Erro ao carregar a fonte:', error);
+        });
+    }
 
     // Cria os inputs de arquivo e as labels
     var inputTopo = document.createElement('input');
@@ -240,6 +269,10 @@ function criarModal() {
     modalContent.appendChild(inputRodape);
 
     addInputsRodape(modalContent);
+
+    modalContent.appendChild(document.createElement('br'));
+    modalContent.appendChild(document.createElement('br'));
+    modalContent.appendChild(fontFileInput);
 
     modal.appendChild(modalContent);
 
@@ -365,18 +398,12 @@ function criarModal() {
         reader.readAsText(file);
     });
 }
-// var sitesHome = [
-//     { host: "www.netflix.com", },
-//     { host: "www.primevideo.com" },
-//     { host:  },
-//     { host: "www.disneyplus.com" },
-//     { host: "www.starplus.com" },
-//     { host: "www.southparkstudios.com.br" },
-// ]
 
 function obterVariacaoSeSliderVisivelRodape() {
     if ((document.querySelector('div[data-testid="TimelineSlider"]') ||
-        document.querySelector('.atvwebplayersdk-seekbar-container.show')) &&
+        document.querySelector('.atvwebplayersdk-seekbar-container.show') ||
+        document.querySelector('.overlay__controls--visually-show') ||
+        document.querySelector('div[data-uia="timeline-bar"]')) &&
         posicaoLegendaRodape < posicaoLegendaSliderRodape) {
         return posicaoLegendaSliderRodape;
     }
@@ -388,7 +415,9 @@ function obterVariacaoSeSliderVisivelRodape() {
 
 function obterVariacaoSeSliderVisivelTopo() {
     if ((document.querySelector('div[data-testid="TimelineSlider"]') ||
-        document.querySelector('.atvwebplayersdk-seekbar-container.show')) &&
+        document.querySelector('.atvwebplayersdk-seekbar-container.show') ||
+        document.querySelector('.overlay__controls--visually-show') ||
+        document.querySelector('div[data-uia="timeline-bar"]')) &&
         posicaoLegendaTopo < posicaoLegendaSliderTopo) {
         return posicaoLegendaSliderTopo;
     }
@@ -671,14 +700,14 @@ function addInputsRodape(modalContent) {
 
     // INPUTS posição legenda slider topo
     var posicaoRodapeSliderLabel = document.createElement('label');
-    posicaoRodapeSliderLabel.setAttribute('for', 'posicaoSliderTopo');
+    posicaoRodapeSliderLabel.setAttribute('for', 'posicaoSliderRodape');
     posicaoRodapeSliderLabel.innerHTML = 'Posição slider rodape';
     posicaoRodapeSliderLabel.style.display = 'inline-block';
     posicaoRodapeSliderLabel.style.marginRight = '5px';
 
     var posicaoRodapeSliderInput = document.createElement('input');
     posicaoRodapeSliderInput.setAttribute('type', 'number');
-    posicaoRodapeSliderInput.setAttribute('id', 'posicaoSliderTopo');
+    posicaoRodapeSliderInput.setAttribute('id', 'posicaoSliderRodape');
     posicaoRodapeSliderInput.value = posicaoLegendaSliderRodape;
     posicaoRodapeSliderInput.style.display = 'inline-block';
     posicaoRodapeSliderInput.style.width = '100px';
