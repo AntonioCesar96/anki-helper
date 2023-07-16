@@ -561,6 +561,52 @@ function addInputsTopo(modalContent) {
     fonteTopoInput.style.width = '100px';
     fonteTopoInput.style.height = '18px';
 
+
+
+    // AAAAAAAAA
+    // Criar o elemento de slider
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = -10;
+    slider.max = 100;
+
+    // Adicionar estilos personalizados ao slider
+    slider.style.width = '200px'; // Defina a largura desejada
+    slider.style.appearance = 'none';
+    slider.style.height = '10px';
+    slider.style.background = '#d3d3d3';
+    slider.style.outline = 'none';
+    slider.style.borderRadius = '5px';
+    slider.style.opacity = '0.7';
+    slider.style.transition = 'opacity 0.2s';
+
+    const valueDisplay = document.createElement('span');
+    valueDisplay.style.marginLeft = '10px'; // Defina o espaçamento desejado
+
+    // Adicionar evento de atualização de estilo no hover do slider
+    slider.addEventListener('mouseover', function () {
+        slider.style.opacity = '1';
+    });
+
+    slider.addEventListener('mouseout', function () {
+        slider.style.opacity = '0.7';
+    });
+
+    // Adicionar evento de atualização do valor selecionado
+    slider.addEventListener('input', function () {
+        valueDisplay.textContent = slider.value;
+    });
+
+    // Adicionar o slider ao corpo do documento
+    document.body.appendChild(slider);
+
+
+    // AAAAAA
+
+
+
+
+
     fonteTopoInput.addEventListener('input', function () {
         fonteLegendaTopo = Number(this.value);
         salvarVariavel('fonteLegendaTopo', fonteLegendaTopo);
@@ -603,7 +649,7 @@ function addInputsTopo(modalContent) {
     posicaoTopoSliderLabel.innerHTML = 'Posição Slider Superior';
     posicaoTopoSliderLabel.style.display = 'inline-block';
     posicaoTopoSliderLabel.style.marginRight = '5px';
-    
+
     var posicaoTopoSliderInput = document.createElement('input');
     posicaoTopoSliderInput.setAttribute('type', 'number');
     posicaoTopoSliderInput.setAttribute('id', 'posicaoSliderTopo');
@@ -656,8 +702,12 @@ function addInputsTopo(modalContent) {
     modalContent.appendChild(lagTopoInput);
     // modalContent.appendChild(lagTopoAviso);
     modalContent.appendChild(document.createElement('br'));
+    
     modalContent.appendChild(fonteTopoLabel);
     modalContent.appendChild(fonteTopoInput);
+    modalContent.appendChild(slider);
+    modalContent.appendChild(valueDisplay);
+
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoTopoLabel);
     modalContent.appendChild(posicaoTopoInput);
