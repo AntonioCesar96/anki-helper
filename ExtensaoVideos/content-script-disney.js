@@ -1,4 +1,4 @@
-if (location.host === "www.disneyplus.com" || location.host === "www.starplus.com" 
+if (location.host === "www.disneyplus.com" || location.host === "www.starplus.com"
     || location.host === "www.southparkstudios.com.br") {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMDisney);
@@ -56,6 +56,29 @@ function foneStar() {
 }
 
 var legendas = [];
+var styleElementStar;
+var posicaoLegendaSliderRodapeStar = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+var fonteLegendaRodapeStar = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
+var posicaoLegendaRodapeStar = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
+var backgroundColorRodapeStar = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+
+function addStyleElementStar() {
+    if (styleElementStar) {
+        styleElementStar.parentElement.removeChild(styleElementStar);
+    }
+
+    styleElementStar = document.createElement('style');
+
+    styleElementStar.innerHTML = `.dss-subtitle-renderer-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeStar}px !important;} `;
+    styleElementStar.innerHTML += `.btm-media-player:not(.btm-media-player-idle) .dss-subtitle-renderer-cue-positioning-box {top: ${posicaoLegendaSliderRodapeStar}% !important;} `;
+    styleElementStar.innerHTML += `.btm-media-player.btm-media-player-idle .dss-subtitle-renderer-cue-positioning-box {top: ${posicaoLegendaRodapeStar}% !important;} `;
+    styleElementStar.innerHTML += `.dss-subtitle-renderer-line {background-color: rgba(0, 0, 0, ${backgroundColorRodapeStar}) !important;} `;
+    styleElementStar.innerHTML += `.controls__footer { padding-bottom: 5px !important;} `;
+    styleElementStar.innerHTML += `.controls__header:before { display: none !important;} `;
+    styleElementStar.innerHTML += `.controls__footer:before { height: 11% !important;} `;
+
+    document.head.appendChild(styleElementStar);
+}
 
 function afterDOMDisney() {
     console.log('Fone Helper Rodando! - Star ou Disney');
@@ -67,26 +90,33 @@ function afterDOMDisney() {
 
     }, 15000);
 
-    let posicaoLegendaSliderRodape = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
     setTimeout(() => {
-        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+        addStyleElementStar();
 
+        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
         posicaoRodapeSliderInput.addEventListener('input', function () {
-            posicaoLegendaSliderRodape = Number(this.value);
+            posicaoLegendaSliderRodapeStar = Number(this.value);
+            addStyleElementStar();
+        });
+
+        let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+        fonteLegendaRodapeInput.addEventListener('input', function () {
+            fonteLegendaRodapeStar = Number(this.value);
+            addStyleElementStar();
+        });
+
+        let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+        posicaoRodapeInput.addEventListener('input', function () {
+            posicaoLegendaRodapeStar = Number(this.value);
+            addStyleElementStar();
+        });
+
+        let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+        backgroundColorRodapeInput.addEventListener('input', function () {
+            backgroundColorRodapeStar = this.value;
+            addStyleElementStar();
         });
     }, 5000);
-
-    setInterval(() => {
-        let legenda = document.querySelector('.dss-subtitle-renderer-cue');
-        if(legenda) {
-            legenda.style.fontFamily = 'NovaFonte, sans-serif';
-            
-            let legendaBox = document.querySelector('.dss-subtitle-renderer-cue-positioning-box');
-            if(document.querySelector('.overlay__controls--visually-show')) {
-                legendaBox.style.top = posicaoLegendaSliderRodape + 'px'
-            }
-        }
-    }, 1);
 
     setInterval(() => {
         var legenda = pegarLegendaStar();
@@ -114,6 +144,10 @@ function afterDOMDisney() {
             if (e.keyCode == '96') { // 0
                 // voltarNoTempo(skipTime)
                 video.currentTime = video.currentTime - 4;
+
+                // TODO
+                // quando aparecer document.querySelector('.overlay__loading')
+                // apertar voltar 10s e ir pra frente 10s
             }
 
             if (e.keyCode == '110') { // ` '

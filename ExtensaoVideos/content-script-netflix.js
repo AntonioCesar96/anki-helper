@@ -16,11 +16,67 @@ function inject() {
 }
 
 var legendas = [];
+var styleElementNetflix;
+var posicaoLegendaSliderRodapeNetflix = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+var fonteLegendaRodapeNetflix = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
+var posicaoLegendaRodapeNetflix = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
+var backgroundColorRodapeNetflix = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+
+function addStyleElementNetflix() {
+    if (styleElementNetflix) {
+        styleElementNetflix.parentElement.removeChild(styleElementNetflix);
+    }
+
+    styleElementNetflix = document.createElement('style');
+
+    // talvez text-shadow: #000000 0px 0px 7px;
+    styleElementNetflix.innerHTML += `.player-timedtext-text-container span {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeNetflix}px !important; text-shadow: none !important; } `;
+    styleElementNetflix.innerHTML += `.player-timedtext-text-container span {background-color: rgba(0, 0, 0, ${backgroundColorRodapeNetflix}) !important; font-weight: normal !important;} `;
+
+    //styleElementNetflix.innerHTML += `.player-timedtext-text-container {text-align: center !important; left: 0 !important; right: 0 !important; bottom: ${posicaoLegendaRodapeNetflix}% !important;} `;
+    //styleElementNetflix.innerHTML += `.active .player-timedtext-text-container {bottom: ${posicaoLegendaSliderRodapeNetflix}% !important;} `;
+    // styleElementNetflix.innerHTML += `.player-timedtext-text-container {text-align: center !important; left: 0 !important; right: 0 !important;} `;
+    // styleElementNetflix.innerHTML += `.active .player-timedtext-text-container {bottom: ${posicaoLegendaSliderRodapeNetflix}% !important;} `;
+    
+    styleElementNetflix.innerHTML += `.player-timedtext {position: fixed !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaRodapeNetflix}%!important;} `;
+    styleElementNetflix.innerHTML += `.active .player-timedtext { bottom: ${posicaoLegendaSliderRodapeNetflix}%!important;} `;
+    styleElementNetflix.innerHTML += `.player-timedtext-text-container { position: static !important; text-align: center !important; } `;
+
+    document.head.appendChild(styleElementNetflix);
+}
 
 function afterDOMNetflix() {
     console.log('Fone Helper Rodando! - Netflix');
 
     inject();
+
+    setTimeout(() => {
+        addStyleElementNetflix();
+
+        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+        posicaoRodapeSliderInput.addEventListener('input', function () {
+            posicaoLegendaSliderRodapeNetflix = Number(this.value);
+            addStyleElementNetflix();
+        });
+
+        let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+        fonteLegendaRodapeInput.addEventListener('input', function () {
+            fonteLegendaRodapeNetflix = Number(this.value);
+            addStyleElementNetflix();
+        });
+
+        let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+        posicaoRodapeInput.addEventListener('input', function () {
+            posicaoLegendaRodapeNetflix = Number(this.value);
+            addStyleElementNetflix();
+        });
+
+        let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+        backgroundColorRodapeInput.addEventListener('input', function () {
+            backgroundColorRodapeNetflix = this.value;
+            addStyleElementNetflix();
+        });
+    }, 5000);
 
     setInterval(() => {
         var legenda = pegarLegendaNetflix();

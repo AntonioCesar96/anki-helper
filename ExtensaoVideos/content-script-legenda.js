@@ -20,12 +20,10 @@ var lagLegendaRodape = obterVariavel('lagLegendaRodape') ? obterVariavel('lagLeg
 var lagLegendaTopo = obterVariavel('lagLegendaTopo') ? obterVariavel('lagLegendaTopo') : 1100;
 var fonteLegendaTopo = obterVariavel('fonteLegendaTopo') ? obterVariavel('fonteLegendaTopo') : 34;
 var fonteLegendaRodape = obterVariavel('fonteLegendaRodape') ? obterVariavel('fonteLegendaRodape') : 34;
-var posicaoLegendaTopo = obterVariavel('posicaoLegendaTopo') ? obterVariavel('posicaoLegendaTopo') : 50;
-var posicaoLegendaRodape = obterVariavel('posicaoLegendaRodape') ? obterVariavel('posicaoLegendaRodape') : 50;
-
-var posicaoLegendaSliderTopo = obterVariavel('posicaoLegendaSliderTopo') ? obterVariavel('posicaoLegendaSliderTopo') : 50;
-var posicaoLegendaSliderRodape = obterVariavel('posicaoLegendaSliderRodape') ? obterVariavel('posicaoLegendaSliderRodape') : 50;
-
+var posicaoLegendaTopo = obterVariavel('posicaoLegendaTopo') ? obterVariavel('posicaoLegendaTopo') : 2;
+var posicaoLegendaRodape = obterVariavel('posicaoLegendaRodape') ? obterVariavel('posicaoLegendaRodape') : 5;
+var posicaoLegendaSliderTopo = obterVariavel('posicaoLegendaSliderTopo') ? obterVariavel('posicaoLegendaSliderTopo') : 2;
+var posicaoLegendaSliderRodape = obterVariavel('posicaoLegendaSliderRodape') ? obterVariavel('posicaoLegendaSliderRodape') : 10;
 var backgroundColorTopo = obterVariavel('backgroundColorTopo') ? obterVariavel('backgroundColorTopo') : '0.25';
 var backgroundColorRodape = obterVariavel('backgroundColorRodape') ? obterVariavel('backgroundColorRodape') : '0.25';
 
@@ -51,6 +49,8 @@ function salvarVariavel(nome, valor) {
 
 function afterDOMLegenda() {
     console.log('Fone Helper Rodando! - Legenda');
+
+    addFontToPage(localStorage.getItem('fontBase64'));
 
     setTimeout(() => {
         criarModal();
@@ -93,7 +93,7 @@ function criarLegendaRodape() {
     legenda.classList.add('legenda');
     legenda.style.position = 'fixed';
     legenda.style.zIndex = '99999999999';
-    legenda.style.bottom = posicaoLegendaRodape + 'px';
+    legenda.style.bottom = posicaoLegendaRodape + '%';
     legenda.style.left = '0';
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
@@ -112,7 +112,7 @@ function criarLegendaTopo() {
     legenda.classList.add('legenda');
     legenda.style.position = 'fixed';
     legenda.style.zIndex = '99999999999';
-    legenda.style.top = posicaoLegendaTopo + 'px';
+    legenda.style.top = posicaoLegendaTopo + '%';
     legenda.style.left = '0';
     legenda.style.width = '100%';
     legenda.style.color = '#fff';
@@ -220,59 +220,123 @@ function criarModal() {
     // Adiciona evento de clique no botão de fechar
     closeButton.addEventListener('click', closeModal);
 
-    // Cria os inputs de arquivo e as labels
+    // 
     var fontFileInput = document.createElement('input');
     fontFileInput.setAttribute('type', 'file');
     fontFileInput.setAttribute('id', 'fontFileInput');
     fontFileInput.style.fontSize = '13.3px';
     fontFileInput.addEventListener('change', handleFontFile, false);
-    function handleFontFile(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
 
-        reader.onload = function () {
-            const fontData = reader.result;
-            addFontToPage(fontData);
-        };
+    fontFileInput.style.display = 'none';
 
-        reader.readAsDataURL(file);
-    }
+    const buttonFontFileInput = document.createElement('button');
+    buttonFontFileInput.innerText = 'Fonte';
+    buttonFontFileInput.style.padding = '8px 16px';
+    buttonFontFileInput.style.border = 'none';
+    buttonFontFileInput.style.backgroundColor = '#007bff';
+    buttonFontFileInput.style.color = '#fff';
+    buttonFontFileInput.style.fontFamily = 'sans-serif';
+    buttonFontFileInput.style.cursor = 'pointer';
+    buttonFontFileInput.style.borderRadius = '5px';
 
-    function addFontToPage(fontData) {
-        const newFont = new FontFace('NovaFonte', `url(${fontData})`);
-        newFont.load().then(function (loadedFont) {
-            document.fonts.add(loadedFont);
-        }).catch(function (error) {
-            console.error('Erro ao carregar a fonte:', error);
-        });
-    }
+    buttonFontFileInput.addEventListener('click', function () {
+        fontFileInput.click();
+    });
 
-    // Cria os inputs de arquivo e as labels
+    //
     var inputTopo = document.createElement('input');
     inputTopo.setAttribute('type', 'file');
     inputTopo.setAttribute('id', 'legendaTopo');
     inputTopo.style.fontSize = '13.3px';
+    inputTopo.style.display = 'none';
+
+    const buttonInputTopo = document.createElement('button');
+    buttonInputTopo.innerText = 'Legenda Superior';
+    buttonInputTopo.style.padding = '8px 16px';
+    buttonInputTopo.style.border = 'none';
+    buttonInputTopo.style.backgroundColor = '#007bff';
+    buttonInputTopo.style.color = '#fff';
+    buttonInputTopo.style.fontFamily = 'sans-serif';
+    buttonInputTopo.style.cursor = 'pointer';
+    buttonInputTopo.style.borderRadius = '5px';
+    buttonInputTopo.style.marginTop = '5px';
+
+    buttonInputTopo.addEventListener('click', function () {
+        inputTopo.click();
+    });
 
     var inputRodape = document.createElement('input');
     inputRodape.setAttribute('type', 'file');
     inputRodape.setAttribute('id', 'legendaRodape');
     inputRodape.style.fontSize = '13.3px';
+    inputRodape.style.display = 'none';
+
+    const buttonInputRodape = document.createElement('button');
+    buttonInputRodape.innerText = 'Legenda Inferior';
+    buttonInputRodape.style.padding = '8px 16px';
+    buttonInputRodape.style.border = 'none';
+    buttonInputRodape.style.backgroundColor = '#28a745';
+    buttonInputRodape.style.color = '#fff';
+    buttonInputRodape.style.fontFamily = 'sans-serif';
+    buttonInputRodape.style.cursor = 'pointer';
+    buttonInputRodape.style.borderRadius = '5px';
+    buttonInputRodape.style.marginTop = '5px';
+
+    buttonInputRodape.addEventListener('click', function () {
+        inputRodape.click();
+    });
+
+
+    var buttonRemoverFonte = document.createElement('button');
+    buttonRemoverFonte.setAttribute('id', 'buttonRemoverFonte');
+    buttonRemoverFonte.innerText = 'Remover fonte';
+    buttonRemoverFonte.style.padding = '8px 16px';
+    buttonRemoverFonte.style.border = 'none';
+    buttonRemoverFonte.style.backgroundColor = '#28a745';
+    buttonRemoverFonte.style.color = '#fff';
+    buttonRemoverFonte.style.fontFamily = 'sans-serif';
+    buttonRemoverFonte.style.cursor = 'pointer';
+    buttonRemoverFonte.style.borderRadius = '5px';
+    buttonRemoverFonte.style.marginLeft = '10px';
+
+    buttonRemoverFonte.addEventListener('click', function () {
+        localStorage.removeItem('fontBase64');
+
+        while (getFontByName('NovaFonte')) {
+            let novaFonte = getFontByName('NovaFonte');
+            document.fonts.delete(novaFonte);
+        }
+
+        function getFontByName(fontName) {
+            for (const font of document.fonts.entries()) {
+                if (font[1].family === fontName) {
+                    return font[1];
+                }
+            }
+            return null;
+        }
+    });
 
     // Adiciona os elementos ao modal
     modalContent.appendChild(closeButton);
     modalContent.appendChild(inputTopo);
+    modalContent.appendChild(buttonInputTopo);
 
     addInputsTopo(modalContent);
 
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(inputRodape);
+    modalContent.appendChild(buttonInputRodape);
 
     addInputsRodape(modalContent);
 
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(fontFileInput);
+    modalContent.appendChild(buttonFontFileInput);
+
+    modalContent.appendChild(buttonRemoverFonte);
 
     modal.appendChild(modalContent);
 
@@ -328,7 +392,7 @@ function criarModal() {
                         legendaTopoHtml.style.display = 'block';
                     }
 
-                    legendaTopoHtml.style.top = obterVariacaoSeSliderVisivelTopo() + 'px';
+                    legendaTopoHtml.style.top = obterVariacaoSeSliderVisivelTopo() + '%';
                 } else {
                     legendaTopoHtml.innerHTML = '';
                     legendaTopoHtml.style.display = 'none';
@@ -387,7 +451,7 @@ function criarModal() {
                         legendaRodapeHtml.style.display = 'block';
                     }
 
-                    legendaRodapeHtml.style.bottom = obterVariacaoSeSliderVisivelRodape() + 'px';
+                    legendaRodapeHtml.style.bottom = obterVariacaoSeSliderVisivelRodape() + '%';
                 } else {
                     legendaRodapeHtml.innerHTML = '';
                     legendaRodapeHtml.style.display = 'none';
@@ -442,7 +506,7 @@ function addInputsTopo(modalContent) {
     var switchLegendaTopoButton = document.createElement('label');
     switchLegendaTopoButton.setAttribute('class', 'switch');
     switchLegendaTopoButton.setAttribute('for', 'switchLegendaTopoButton');
-    switchLegendaTopoButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar legenda Topo</span>';
+    switchLegendaTopoButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar Legenda Superior</span>';
     switchLegendaTopoButton.style.display = 'block';
     switchLegendaTopoButton.style.margin = '8px 5px 10px 0';
 
@@ -461,7 +525,7 @@ function addInputsTopo(modalContent) {
     // INPUTS Lag topo
     var lagTopoLabel = document.createElement('label');
     lagTopoLabel.setAttribute('for', 'lagTopo');
-    lagTopoLabel.innerHTML = 'Lag topo';
+    lagTopoLabel.innerHTML = 'Lag Superior';
     lagTopoLabel.style.display = 'inline-block';
     lagTopoLabel.style.marginRight = '5px';
 
@@ -485,7 +549,7 @@ function addInputsTopo(modalContent) {
     // INPUTS fonte topo
     var fonteTopoLabel = document.createElement('label');
     fonteTopoLabel.setAttribute('for', 'fonteTopo');
-    fonteTopoLabel.innerHTML = 'Fonte topo';
+    fonteTopoLabel.innerHTML = 'Fonte Superior';
     fonteTopoLabel.style.display = 'inline-block';
     fonteTopoLabel.style.marginRight = '5px';
 
@@ -510,13 +574,14 @@ function addInputsTopo(modalContent) {
     // INPUTS posição legenda topo
     var posicaoTopoLabel = document.createElement('label');
     posicaoTopoLabel.setAttribute('for', 'posicaoTopo');
-    posicaoTopoLabel.innerHTML = 'Posição topo';
+    posicaoTopoLabel.innerHTML = 'Posição Superior';
     posicaoTopoLabel.style.display = 'inline-block';
     posicaoTopoLabel.style.marginRight = '5px';
 
     var posicaoTopoInput = document.createElement('input');
     posicaoTopoInput.setAttribute('type', 'number');
     posicaoTopoInput.setAttribute('id', 'posicaoTopo');
+    posicaoTopoInput.setAttribute('max', '100');
     posicaoTopoInput.value = posicaoLegendaTopo;
     posicaoTopoInput.style.display = 'inline-block';
     posicaoTopoInput.style.width = '100px';
@@ -528,20 +593,21 @@ function addInputsTopo(modalContent) {
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
         if (legendaTopoHtml) {
-            legendaTopoHtml.style.top = posicaoLegendaTopo + 'px';
+            legendaTopoHtml.style.top = posicaoLegendaTopo + '%';
         }
     });
 
     // INPUTS posição legenda slider topo
     var posicaoTopoSliderLabel = document.createElement('label');
     posicaoTopoSliderLabel.setAttribute('for', 'posicaoSliderTopo');
-    posicaoTopoSliderLabel.innerHTML = 'Posição slider topo';
+    posicaoTopoSliderLabel.innerHTML = 'Posição Slider Superior';
     posicaoTopoSliderLabel.style.display = 'inline-block';
     posicaoTopoSliderLabel.style.marginRight = '5px';
-
+    
     var posicaoTopoSliderInput = document.createElement('input');
     posicaoTopoSliderInput.setAttribute('type', 'number');
     posicaoTopoSliderInput.setAttribute('id', 'posicaoSliderTopo');
+    posicaoTopoSliderInput.setAttribute('max', '100');
     posicaoTopoSliderInput.value = posicaoLegendaSliderTopo;
     posicaoTopoSliderInput.style.display = 'inline-block';
     posicaoTopoSliderInput.style.width = '100px';
@@ -553,14 +619,14 @@ function addInputsTopo(modalContent) {
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
         if (legendaTopoHtml) {
-            legendaTopoHtml.style.top = posicaoLegendaSliderTopo + 'px';
+            legendaTopoHtml.style.top = posicaoLegendaSliderTopo + '%';
         }
     });
 
     // INPUTS background color topo
     var backgroundColorTopoLabel = document.createElement('label');
     backgroundColorTopoLabel.setAttribute('for', 'backgroundColorTopo');
-    backgroundColorTopoLabel.innerHTML = 'BackgroundColor Topo';
+    backgroundColorTopoLabel.innerHTML = 'BackgroundColor Superior';
     backgroundColorTopoLabel.style.display = 'inline-block';
     backgroundColorTopoLabel.style.marginRight = '5px';
 
@@ -610,7 +676,7 @@ function addInputsRodape(modalContent) {
     var switchLegendaRodapeButton = document.createElement('label');
     switchLegendaRodapeButton.setAttribute('class', 'switch');
     switchLegendaRodapeButton.setAttribute('for', 'switchLegendaRodapeButton');
-    switchLegendaRodapeButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar legenda Rodape</span>';
+    switchLegendaRodapeButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar Legenda Inferior</span>';
     switchLegendaRodapeButton.style.display = 'block';
     switchLegendaRodapeButton.style.margin = '8px 5px 10px 0';
 
@@ -629,7 +695,7 @@ function addInputsRodape(modalContent) {
     // INPUTS Lag Rodape
     var lagRodapeLabel = document.createElement('label');
     lagRodapeLabel.setAttribute('for', 'lagRodape');
-    lagRodapeLabel.innerHTML = 'Lag Rodape';
+    lagRodapeLabel.innerHTML = 'Lag Inferior';
     lagRodapeLabel.style.display = 'inline-block';
     lagRodapeLabel.style.marginRight = '5px';
 
@@ -652,7 +718,7 @@ function addInputsRodape(modalContent) {
     // INPUTS fonte Rodape
     var fonteRodapeLabel = document.createElement('label');
     fonteRodapeLabel.setAttribute('for', 'fonteRodape');
-    fonteRodapeLabel.innerHTML = 'Fonte Rodape';
+    fonteRodapeLabel.innerHTML = 'Fonte Inferior';
     fonteRodapeLabel.style.display = 'inline-block';
     fonteRodapeLabel.style.marginRight = '5px';
 
@@ -676,13 +742,14 @@ function addInputsRodape(modalContent) {
     // INPUTS posição legenda Rodape
     var posicaoRodapeLabel = document.createElement('label');
     posicaoRodapeLabel.setAttribute('for', 'posicaoRodape');
-    posicaoRodapeLabel.innerHTML = 'Posição Rodape';
+    posicaoRodapeLabel.innerHTML = 'Posição Inferior';
     posicaoRodapeLabel.style.display = 'inline-block';
     posicaoRodapeLabel.style.marginRight = '5px';
 
     var posicaoRodapeInput = document.createElement('input');
     posicaoRodapeInput.setAttribute('type', 'number');
     posicaoRodapeInput.setAttribute('id', 'posicaoRodape');
+    posicaoRodapeInput.setAttribute('max', '100');
     posicaoRodapeInput.value = posicaoLegendaRodape;
     posicaoRodapeInput.style.display = 'inline-block';
     posicaoRodapeInput.style.width = '100px';
@@ -693,7 +760,7 @@ function addInputsRodape(modalContent) {
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
         if (legendaRodapeHtml) {
-            legendaRodapeHtml.style.bottom = posicaoLegendaRodape + 'px';
+            legendaRodapeHtml.style.bottom = posicaoLegendaRodape + '%';
         }
     });
 
@@ -701,13 +768,14 @@ function addInputsRodape(modalContent) {
     // INPUTS posição legenda slider topo
     var posicaoRodapeSliderLabel = document.createElement('label');
     posicaoRodapeSliderLabel.setAttribute('for', 'posicaoSliderRodape');
-    posicaoRodapeSliderLabel.innerHTML = 'Posição slider rodape';
+    posicaoRodapeSliderLabel.innerHTML = 'Posição Slider Inferior';
     posicaoRodapeSliderLabel.style.display = 'inline-block';
     posicaoRodapeSliderLabel.style.marginRight = '5px';
 
     var posicaoRodapeSliderInput = document.createElement('input');
     posicaoRodapeSliderInput.setAttribute('type', 'number');
     posicaoRodapeSliderInput.setAttribute('id', 'posicaoSliderRodape');
+    posicaoRodapeSliderInput.setAttribute('max', '100');
     posicaoRodapeSliderInput.value = posicaoLegendaSliderRodape;
     posicaoRodapeSliderInput.style.display = 'inline-block';
     posicaoRodapeSliderInput.style.width = '100px';
@@ -719,14 +787,14 @@ function addInputsRodape(modalContent) {
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
         if (legendaRodapeHtml) {
-            legendaRodapeHtml.style.bottom = posicaoLegendaSliderRodape + 'px';
+            legendaRodapeHtml.style.bottom = posicaoLegendaSliderRodape + '%';
         }
     });
 
     // INPUTS background color rodape
     var backgroundColorRodapeLabel = document.createElement('label');
     backgroundColorRodapeLabel.setAttribute('for', 'backgroundColorRodape');
-    backgroundColorRodapeLabel.innerHTML = 'BackgroundColor Rodape';
+    backgroundColorRodapeLabel.innerHTML = 'BackgroundColor Inferior';
     backgroundColorRodapeLabel.style.display = 'inline-block';
     backgroundColorRodapeLabel.style.marginRight = '5px';
 
@@ -768,4 +836,33 @@ function addInputsRodape(modalContent) {
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(backgroundColorRodapeLabel);
     modalContent.appendChild(backgroundColorRodapeInput);
+}
+
+
+function handleFontFile(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function () {
+        const fontData = reader.result;
+        addFontToPage(fontData);
+
+        localStorage.setItem('fontBase64', fontData);
+        document.querySelector("#fontFileInput").value = '';
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function addFontToPage(fontData) {
+    if (!fontData) {
+        return;
+    }
+
+    let novaFonte = new FontFace('NovaFonte', `url(${fontData})`);
+    novaFonte.load().then(function (loadedFont) {
+        document.fonts.add(loadedFont);
+    }).catch(function (error) {
+        console.error('Erro ao carregar a fonte:', error);
+    });
 }

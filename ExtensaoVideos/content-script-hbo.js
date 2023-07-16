@@ -128,7 +128,77 @@ function pularIntro2(tentativas) {
     }, (1000 * 60 * 1));
 }
 
+
+var styleElementHboMax;
+var posicaoLegendaSliderRodapeHboMax = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+var fonteLegendaRodapeHboMax = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
+var posicaoLegendaRodapeHboMax = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
+var backgroundColorRodapeHboMax = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+
+function addStyleElementHboMax() {
+    if (styleElementHboMax) {
+        styleElementHboMax.parentElement.removeChild(styleElementHboMax);
+    }
+
+    styleElementHboMax = document.createElement('style');
+
+    // talvez text-shadow: #000000 0px 0px 7px;
+    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-1rynq56 {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeHboMax}px !important; text-shadow: none !important; } `;
+    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-1rynq56 {background-color: rgba(0, 0, 0, ${backgroundColorRodapeHboMax}) !important; font-weight: normal !important;} `;
+    
+    // Comentar se começar a ficar zuado
+    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] > .css-175oi2r { top: ${posicaoLegendaRodapeHboMax}% !important; } `;
+    styleElementHboMax.innerHTML += `div[data-slider="true"] div[data-testid="CueBoxContainer"] > .css-175oi2r { top: ${posicaoLegendaSliderRodapeHboMax}% !important; } `;
+
+    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-175oi2r {position: fixed !important; left: 0 !important; right: 0 !important; } `;
+    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-1rynq56 {align-self: center !important;} `;
+    styleElementHboMax.innerHTML += `.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv { position: fixed !important; right: 5px !important; bottom: -20px; opacity: 0.2; }`;
+    styleElementHboMax.innerHTML += `.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv .css-1rynq56 { font-size: 14px !important; }`;
+
+    document.head.appendChild(styleElementHboMax);
+}
+
+var rnVideo;
 function afterDOMLoadedHbo() {
+
+    setInterval(() => {
+        if(!rnVideo) {
+            rnVideo = document.querySelector('#rn-video');
+        }
+
+        let timelineSlider = document.querySelector('div[data-testid="TimelineSlider"]');
+        if(rnVideo) {
+            rnVideo.parentElement.setAttribute('data-slider', !!timelineSlider);
+        }
+    }, 100);
+
+    setTimeout(() => {
+        addStyleElementHboMax();
+
+        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+        posicaoRodapeSliderInput.addEventListener('input', function () {
+            posicaoLegendaSliderRodapeHboMax = Number(this.value);
+            addStyleElementHboMax();
+        });
+
+        let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+        fonteLegendaRodapeInput.addEventListener('input', function () {
+            fonteLegendaRodapeHboMax = Number(this.value);
+            addStyleElementHboMax();
+        });
+
+        let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+        posicaoRodapeInput.addEventListener('input', function () {
+            posicaoLegendaRodapeHboMax = Number(this.value);
+            addStyleElementHboMax();
+        });
+
+        let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+        backgroundColorRodapeInput.addEventListener('input', function () {
+            backgroundColorRodapeHboMax = this.value;
+            addStyleElementHboMax();
+        });
+    }, 5000);
 
     setInterval(() => {
         let fundo = document.querySelector('div[aria-label="Ignorar Controles"]');
@@ -136,12 +206,6 @@ function afterDOMLoadedHbo() {
             fundo.previousSibling.style.height = '0px'
             fundo.previousSibling.previousSibling.style.height = '0px'
         }
-
-        let descricao = document.querySelector('.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv');
-        if (descricao) {
-            descricao.remove();
-        }
-
     }, (100));
 
 
@@ -492,7 +556,7 @@ function pegarLegendaHbo() {
             return '';
         }
     }
-    
+
     // if (!elemento) {
     //     elemento = document.querySelector('.css-175oi2r .css-175oi2r');
     //     if (!elemento) {

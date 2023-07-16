@@ -214,24 +214,80 @@ function reativarLegenda() {
     }, 2000);
 }
 
+
+var mudarTudoPraMinuscula = true;
+var styleElementPrime;
+var posicaoLegendaSliderRodapePrime = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+var fonteLegendaRodapePrime = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
+var posicaoLegendaRodapePrime = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
+var backgroundColorRodapePrime = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+
+function addStyleElementPrime() {
+    if (styleElementPrime) {
+        styleElementPrime.parentElement.removeChild(styleElementPrime);
+    }
+
+    styleElementPrime = document.createElement('style');
+
+    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay.f1d63tv1 .f1iwgj00 > div {bottom: ${posicaoLegendaSliderRodapePrime}% !important;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay:not(.f1d63tv1) .f1iwgj00 > div {bottom: ${posicaoLegendaRodapePrime}% !important;} `;
+    
+    styleElementPrime.innerHTML += `.f1d63tv1 {opacity: 1 !important;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapePrime}px !important;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {background-color: rgba(0, 0, 0, ${backgroundColorRodapePrime}) !important;} `;
+    
+    styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f124tp54  {position: absolute; right: 5px; bottom: 3px; opacity: .2} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f124tp54.hide {opacity: 0} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .fkpovp9.f8hspre  {display: none !important;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container h1 {font-size: 16px !important; display: none;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container h2 {font-size: 14px !important;} `;
+    
+    styleElementPrime.innerHTML += `.atvwebplayersdk-hideabletopbuttons-container img {opacity: .3} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-closebutton-wrapper img {opacity: .3} `;
+    
+    styleElementPrime.innerHTML += `.collapsibleXrayHeader .xrayHeaderTitle {font-size: 14px !important; opacity: .5} `;
+    styleElementPrime.innerHTML += `.collapsibleXrayHeader .xrayHeaderViewAll {font-size: 14px !important; opacity: .5} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f2ptdfh.fz8eask { margin-left: -35px !important; opacity: .5} `;
+
+    if(mudarTudoPraMinuscula) {
+        styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {text-transform: lowercase !important;} `;
+    }
+
+    document.head.appendChild(styleElementPrime);
+}
+
 function afterDOMLoadedPrime() {
     pularIntroducao(1);
     pularPropaganda(1);
 
-    setInterval(() => {
-        let legenda = document.querySelector('.f1iwgj00');
-        if(legenda) {
-            legenda.style.fontFamily = 'NovaFonte, Arial, sans-serif';
-        }
-    }, 1);
 
-    setInterval(() => {
-        let fundo = document.querySelector('.atvwebplayersdk-overlays-container .fkpovp9.f8hspre');
-        if (fundo) {
-            fundo.style.display = 'none';
-        }
+    setTimeout(() => {
+        addStyleElementPrime();
 
-    }, (5000));
+        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+        posicaoRodapeSliderInput.addEventListener('input', function () {
+            posicaoLegendaSliderRodapePrime = Number(this.value);
+            addStyleElementPrime();
+        });
+
+        let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+        fonteLegendaRodapeInput.addEventListener('input', function () {
+            fonteLegendaRodapePrime = Number(this.value);
+            addStyleElementPrime();
+        });
+
+        let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+        posicaoRodapeInput.addEventListener('input', function () {
+            posicaoLegendaRodapePrime = Number(this.value);
+            addStyleElementPrime();
+        });
+
+        let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+        backgroundColorRodapeInput.addEventListener('input', function () {
+            backgroundColorRodapePrime = this.value;
+            addStyleElementPrime();
+        });
+    }, 5000);
 
     setInterval(() => {
         var legenda = pegarLegendaPrime();
@@ -285,7 +341,12 @@ function afterDOMLoadedPrime() {
             e = e || window.event;
             var video = getVideo();
 
-            // console.log(e.keyCode);
+            console.log(e.keyCode);
+
+            if (e.keyCode == '52') { // 4
+                mudarTudoPraMinuscula = !mudarTudoPraMinuscula;
+                addStyleElementPrime();
+            }
 
             if (e.keyCode == '78') { // N
                 var ingles = document.querySelector(site.seletorLegendaIngles);
