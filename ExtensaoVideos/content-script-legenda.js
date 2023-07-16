@@ -202,7 +202,7 @@ function criarModal() {
     modalContent.style.padding = '20px';
     modalContent.style.paddingTop = '0';
     modalContent.style.border = '1px solid #888';
-    modalContent.style.maxWidth = '290px';
+    modalContent.style.width = '400px';
     modalContent.style.boxSizing = 'content-box';
     modalContent.style.color = '#000';
     modalContent.style.fontSize = '15px';
@@ -546,69 +546,44 @@ function addInputsTopo(modalContent) {
     lagTopoAviso.innerHTML = '<i>*não aperte APAGAR na HBO Max, aperte DEL</i>'
     lagTopoAviso.innerHTML += '<br><i>HBO MAX: 1100</i>'
 
-    // INPUTS fonte topo
+    // Slider Fonte Superior
     var fonteTopoLabel = document.createElement('label');
     fonteTopoLabel.setAttribute('for', 'fonteTopo');
     fonteTopoLabel.innerHTML = 'Fonte Superior';
     fonteTopoLabel.style.display = 'inline-block';
     fonteTopoLabel.style.marginRight = '5px';
 
-    var fonteTopoInput = document.createElement('input');
-    fonteTopoInput.setAttribute('type', 'number');
-    fonteTopoInput.setAttribute('id', 'fonteTopo');
-    fonteTopoInput.value = fonteLegendaTopo;
-    fonteTopoInput.style.display = 'inline-block';
-    fonteTopoInput.style.width = '100px';
-    fonteTopoInput.style.height = '18px';
+    const sliderFonteTopoInput = document.createElement('input');
+    sliderFonteTopoInput.type = 'range';
+    sliderFonteTopoInput.min = 10;
+    sliderFonteTopoInput.max = 60;
+    sliderFonteTopoInput.setAttribute('id', 'fonteTopo');
+    sliderFonteTopoInput.value = fonteLegendaTopo;
 
+    sliderFonteTopoInput.style.width = '200px'; // Defina a largura desejada
+    sliderFonteTopoInput.style.appearance = 'none';
+    sliderFonteTopoInput.style.height = '10px';
+    sliderFonteTopoInput.style.background = '#d3d3d3';
+    sliderFonteTopoInput.style.outline = 'none';
+    sliderFonteTopoInput.style.borderRadius = '5px';
+    sliderFonteTopoInput.style.opacity = '0.7';
+    sliderFonteTopoInput.style.transition = 'opacity 0.2s';
 
+    const valueDisplaySliderFonteTopoInput = document.createElement('span');
+    valueDisplaySliderFonteTopoInput.style.marginLeft = '10px'; // Defina o espaçamento desejado
+    valueDisplaySliderFonteTopoInput.textContent = sliderFonteTopoInput.value;
 
-    // AAAAAAAAA
-    // Criar o elemento de slider
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = -10;
-    slider.max = 100;
-
-    // Adicionar estilos personalizados ao slider
-    slider.style.width = '200px'; // Defina a largura desejada
-    slider.style.appearance = 'none';
-    slider.style.height = '10px';
-    slider.style.background = '#d3d3d3';
-    slider.style.outline = 'none';
-    slider.style.borderRadius = '5px';
-    slider.style.opacity = '0.7';
-    slider.style.transition = 'opacity 0.2s';
-
-    const valueDisplay = document.createElement('span');
-    valueDisplay.style.marginLeft = '10px'; // Defina o espaçamento desejado
-
-    // Adicionar evento de atualização de estilo no hover do slider
-    slider.addEventListener('mouseover', function () {
-        slider.style.opacity = '1';
+    sliderFonteTopoInput.addEventListener('mouseover', function () {
+        sliderFonteTopoInput.style.opacity = '1';
     });
 
-    slider.addEventListener('mouseout', function () {
-        slider.style.opacity = '0.7';
+    sliderFonteTopoInput.addEventListener('mouseout', function () {
+        sliderFonteTopoInput.style.opacity = '0.7';
     });
 
-    // Adicionar evento de atualização do valor selecionado
-    slider.addEventListener('input', function () {
-        valueDisplay.textContent = slider.value;
-    });
-
-    // Adicionar o slider ao corpo do documento
-    document.body.appendChild(slider);
-
-
-    // AAAAAA
-
-
-
-
-
-    fonteTopoInput.addEventListener('input', function () {
-        fonteLegendaTopo = Number(this.value);
+    sliderFonteTopoInput.addEventListener('input', function () {
+        valueDisplaySliderFonteTopoInput.textContent = sliderFonteTopoInput.value;
+        fonteLegendaTopo = Number(sliderFonteTopoInput.value);
         salvarVariavel('fonteLegendaTopo', fonteLegendaTopo);
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
@@ -616,6 +591,7 @@ function addInputsTopo(modalContent) {
             legendaTopoHtml.style.fontSize = fonteLegendaTopo + 'px';
         }
     });
+    // FIM Slider Fonte Superior
 
     // INPUTS posição legenda topo
     var posicaoTopoLabel = document.createElement('label');
@@ -702,11 +678,11 @@ function addInputsTopo(modalContent) {
     modalContent.appendChild(lagTopoInput);
     // modalContent.appendChild(lagTopoAviso);
     modalContent.appendChild(document.createElement('br'));
-    
+
     modalContent.appendChild(fonteTopoLabel);
-    modalContent.appendChild(fonteTopoInput);
-    modalContent.appendChild(slider);
-    modalContent.appendChild(valueDisplay);
+    // modalContent.appendChild(fonteTopoInput);
+    modalContent.appendChild(sliderFonteTopoInput);
+    modalContent.appendChild(valueDisplaySliderFonteTopoInput);
 
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoTopoLabel);
@@ -761,26 +737,44 @@ function addInputsRodape(modalContent) {
         salvarVariavel('lagLegendaRodape', lagLegendaRodape);
     });
 
-    var lagRodapeAviso = document.createElement('span');
-    lagRodapeAviso.innerHTML = '<i>*não aperte APAGAR na HBO Max, aperte DEL</i>'
-    lagRodapeAviso.innerHTML += '<br><i>HBO MAX: 1100</i>'
-
-    // INPUTS fonte Rodape
+    // Fonte Inferior
     var fonteRodapeLabel = document.createElement('label');
     fonteRodapeLabel.setAttribute('for', 'fonteRodape');
     fonteRodapeLabel.innerHTML = 'Fonte Inferior';
     fonteRodapeLabel.style.display = 'inline-block';
     fonteRodapeLabel.style.marginRight = '5px';
 
-    var fonteRodapeInput = document.createElement('input');
-    fonteRodapeInput.setAttribute('type', 'number');
-    fonteRodapeInput.setAttribute('id', 'fonteRodape');
-    fonteRodapeInput.value = fonteLegendaRodape;
-    fonteRodapeInput.style.display = 'inline-block';
-    fonteRodapeInput.style.width = '100px';
+    const sliderFonteRodapeInput = document.createElement('input');
+    sliderFonteRodapeInput.type = 'range';
+    sliderFonteRodapeInput.min = 0;
+    sliderFonteRodapeInput.max = 60;
+    sliderFonteRodapeInput.setAttribute('id', 'fonteRodape');
+    sliderFonteRodapeInput.value = fonteLegendaRodape;
 
-    fonteRodapeInput.addEventListener('input', function () {
-        fonteLegendaRodape = Number(this.value);
+    sliderFonteRodapeInput.style.width = '200px';
+    sliderFonteRodapeInput.style.appearance = 'none';
+    sliderFonteRodapeInput.style.height = '10px';
+    sliderFonteRodapeInput.style.background = '#d3d3d3';
+    sliderFonteRodapeInput.style.outline = 'none';
+    sliderFonteRodapeInput.style.borderRadius = '5px';
+    sliderFonteRodapeInput.style.opacity = '0.7';
+    sliderFonteRodapeInput.style.transition = 'opacity 0.2s';
+
+    const valueDisplaySliderFonteRodapeInput = document.createElement('span');
+    valueDisplaySliderFonteRodapeInput.style.marginLeft = '10px';
+    valueDisplaySliderFonteRodapeInput.textContent = sliderFonteRodapeInput.value;
+
+    sliderFonteRodapeInput.addEventListener('mouseover', function () {
+        sliderFonteRodapeInput.style.opacity = '1';
+    });
+
+    sliderFonteRodapeInput.addEventListener('mouseout', function () {
+        sliderFonteRodapeInput.style.opacity = '0.7';
+    });
+
+    sliderFonteRodapeInput.addEventListener('input', function () {
+        valueDisplaySliderFonteRodapeInput.textContent = sliderFonteRodapeInput.value;
+        fonteLegendaRodape = Number(sliderFonteRodapeInput.value);
         salvarVariavel('fonteLegendaRodape', fonteLegendaRodape);
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
@@ -788,24 +782,46 @@ function addInputsRodape(modalContent) {
             legendaRodapeHtml.style.fontSize = fonteLegendaRodape + 'px';
         }
     });
+    // FIM Fonte Inferior
 
-    // INPUTS posição legenda Rodape
+    // Posição Inferior 1
     var posicaoRodapeLabel = document.createElement('label');
     posicaoRodapeLabel.setAttribute('for', 'posicaoRodape');
-    posicaoRodapeLabel.innerHTML = 'Posição Inferior';
+    posicaoRodapeLabel.innerHTML = 'Posição Inferior 1';
     posicaoRodapeLabel.style.display = 'inline-block';
     posicaoRodapeLabel.style.marginRight = '5px';
 
-    var posicaoRodapeInput = document.createElement('input');
-    posicaoRodapeInput.setAttribute('type', 'number');
-    posicaoRodapeInput.setAttribute('id', 'posicaoRodape');
-    posicaoRodapeInput.setAttribute('max', '100');
-    posicaoRodapeInput.value = posicaoLegendaRodape;
-    posicaoRodapeInput.style.display = 'inline-block';
-    posicaoRodapeInput.style.width = '100px';
+    const sliderPosicaoRodapeInput = document.createElement('input');
+    sliderPosicaoRodapeInput.type = 'range';
+    sliderPosicaoRodapeInput.min = 0;
+    sliderPosicaoRodapeInput.max = 100;
+    sliderPosicaoRodapeInput.setAttribute('id', 'posicaoRodape');
+    sliderPosicaoRodapeInput.value = posicaoLegendaRodape;
 
-    posicaoRodapeInput.addEventListener('input', function () {
-        posicaoLegendaRodape = Number(this.value);
+    sliderPosicaoRodapeInput.style.width = '200px';
+    sliderPosicaoRodapeInput.style.appearance = 'none';
+    sliderPosicaoRodapeInput.style.height = '10px';
+    sliderPosicaoRodapeInput.style.background = '#d3d3d3';
+    sliderPosicaoRodapeInput.style.outline = 'none';
+    sliderPosicaoRodapeInput.style.borderRadius = '5px';
+    sliderPosicaoRodapeInput.style.opacity = '0.7';
+    sliderPosicaoRodapeInput.style.transition = 'opacity 0.2s';
+
+    const valueDisplaySliderPosicaoRodapeInput = document.createElement('span');
+    valueDisplaySliderPosicaoRodapeInput.style.marginLeft = '10px';
+    valueDisplaySliderPosicaoRodapeInput.textContent = sliderPosicaoRodapeInput.value;
+
+    sliderPosicaoRodapeInput.addEventListener('mouseover', function () {
+        sliderPosicaoRodapeInput.style.opacity = '1';
+    });
+
+    sliderPosicaoRodapeInput.addEventListener('mouseout', function () {
+        sliderPosicaoRodapeInput.style.opacity = '0.7';
+    });
+
+    sliderPosicaoRodapeInput.addEventListener('input', function () {
+        valueDisplaySliderPosicaoRodapeInput.textContent = sliderPosicaoRodapeInput.value;
+        posicaoLegendaRodape = Number(sliderPosicaoRodapeInput.value);
         salvarVariavel('posicaoLegendaRodape', posicaoLegendaRodape);
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
@@ -813,26 +829,46 @@ function addInputsRodape(modalContent) {
             legendaRodapeHtml.style.bottom = posicaoLegendaRodape + '%';
         }
     });
+    // FIM Posição Inferior 1
 
-
-    // INPUTS posição legenda slider topo
+    // Posição Inferior 2
     var posicaoRodapeSliderLabel = document.createElement('label');
     posicaoRodapeSliderLabel.setAttribute('for', 'posicaoSliderRodape');
-    posicaoRodapeSliderLabel.innerHTML = 'Posição Slider Inferior';
+    posicaoRodapeSliderLabel.innerHTML = 'Posição Inferior 2';
     posicaoRodapeSliderLabel.style.display = 'inline-block';
     posicaoRodapeSliderLabel.style.marginRight = '5px';
 
-    var posicaoRodapeSliderInput = document.createElement('input');
-    posicaoRodapeSliderInput.setAttribute('type', 'number');
-    posicaoRodapeSliderInput.setAttribute('id', 'posicaoSliderRodape');
-    posicaoRodapeSliderInput.setAttribute('max', '100');
-    posicaoRodapeSliderInput.value = posicaoLegendaSliderRodape;
-    posicaoRodapeSliderInput.style.display = 'inline-block';
-    posicaoRodapeSliderInput.style.width = '100px';
-    posicaoRodapeSliderInput.style.height = '18px';
+    const sliderPosicaoRodapeSliderLabel = document.createElement('input');
+    sliderPosicaoRodapeSliderLabel.type = 'range';
+    sliderPosicaoRodapeSliderLabel.min = -30;
+    sliderPosicaoRodapeSliderLabel.max = 100;
+    sliderPosicaoRodapeSliderLabel.setAttribute('id', 'posicaoSliderRodape');
+    sliderPosicaoRodapeSliderLabel.value = posicaoLegendaSliderRodape;
 
-    posicaoRodapeSliderInput.addEventListener('input', function () {
-        posicaoLegendaSliderRodape = Number(this.value);
+    sliderPosicaoRodapeSliderLabel.style.width = '200px';
+    sliderPosicaoRodapeSliderLabel.style.appearance = 'none';
+    sliderPosicaoRodapeSliderLabel.style.height = '10px';
+    sliderPosicaoRodapeSliderLabel.style.background = '#d3d3d3';
+    sliderPosicaoRodapeSliderLabel.style.outline = 'none';
+    sliderPosicaoRodapeSliderLabel.style.borderRadius = '5px';
+    sliderPosicaoRodapeSliderLabel.style.opacity = '0.7';
+    sliderPosicaoRodapeSliderLabel.style.transition = 'opacity 0.2s';
+
+    const valueDisplaySliderPosicaoRodapeSliderLabel = document.createElement('span');
+    valueDisplaySliderPosicaoRodapeSliderLabel.style.marginLeft = '10px';
+    valueDisplaySliderPosicaoRodapeSliderLabel.textContent = sliderPosicaoRodapeSliderLabel.value;
+
+    sliderPosicaoRodapeSliderLabel.addEventListener('mouseover', function () {
+        sliderPosicaoRodapeSliderLabel.style.opacity = '1';
+    });
+
+    sliderPosicaoRodapeSliderLabel.addEventListener('mouseout', function () {
+        sliderPosicaoRodapeSliderLabel.style.opacity = '0.7';
+    });
+
+    sliderPosicaoRodapeSliderLabel.addEventListener('input', function () {
+        valueDisplaySliderPosicaoRodapeSliderLabel.textContent = sliderPosicaoRodapeSliderLabel.value;
+        posicaoLegendaSliderRodape = Number(sliderPosicaoRodapeSliderLabel.value);
         salvarVariavel('posicaoLegendaSliderRodape', posicaoLegendaSliderRodape);
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
@@ -840,26 +876,47 @@ function addInputsRodape(modalContent) {
             legendaRodapeHtml.style.bottom = posicaoLegendaSliderRodape + '%';
         }
     });
+    // FIM Posição Inferior 2
 
-    // INPUTS background color rodape
+    // Fundo Cor Inferior
     var backgroundColorRodapeLabel = document.createElement('label');
     backgroundColorRodapeLabel.setAttribute('for', 'backgroundColorRodape');
-    backgroundColorRodapeLabel.innerHTML = 'BackgroundColor Inferior';
+    backgroundColorRodapeLabel.innerHTML = 'Fundo Cor Inferior';
     backgroundColorRodapeLabel.style.display = 'inline-block';
     backgroundColorRodapeLabel.style.marginRight = '5px';
 
-    var backgroundColorRodapeInput = document.createElement('input');
-    backgroundColorRodapeInput.setAttribute('type', 'text');
-    backgroundColorRodapeInput.setAttribute('id', 'backgroundColorRodape');
-    backgroundColorRodapeInput.value = backgroundColorRodape;
-    backgroundColorRodapeInput.style.display = 'inline-block';
-    backgroundColorRodapeInput.style.width = '100px';
-    backgroundColorRodapeInput.style.height = '18px';
+    const sliderBackgroundColorRodapeInput = document.createElement('input');
+    sliderBackgroundColorRodapeInput.type = 'range';
+    sliderBackgroundColorRodapeInput.min = 0.0;
+    sliderBackgroundColorRodapeInput.max = 1.0;
+    sliderBackgroundColorRodapeInput.step = 0.05;
+    sliderBackgroundColorRodapeInput.setAttribute('id', 'backgroundColorRodape');
+    sliderBackgroundColorRodapeInput.value = backgroundColorRodape;
 
-    backgroundColorRodapeInput.addEventListener('input', function (e) {
-        e.preventDefault();
+    sliderBackgroundColorRodapeInput.style.width = '200px';
+    sliderBackgroundColorRodapeInput.style.appearance = 'none';
+    sliderBackgroundColorRodapeInput.style.height = '10px';
+    sliderBackgroundColorRodapeInput.style.background = '#d3d3d3';
+    sliderBackgroundColorRodapeInput.style.outline = 'none';
+    sliderBackgroundColorRodapeInput.style.borderRadius = '5px';
+    sliderBackgroundColorRodapeInput.style.opacity = '0.7';
+    sliderBackgroundColorRodapeInput.style.transition = 'opacity 0.2s';
 
-        backgroundColorRodape = this.value;
+    const valueDisplaySliderBackgroundColorRodapeInput = document.createElement('span');
+    valueDisplaySliderBackgroundColorRodapeInput.style.marginLeft = '10px';
+    valueDisplaySliderBackgroundColorRodapeInput.textContent = sliderBackgroundColorRodapeInput.value;
+
+    sliderBackgroundColorRodapeInput.addEventListener('mouseover', function () {
+        sliderBackgroundColorRodapeInput.style.opacity = '1';
+    });
+
+    sliderBackgroundColorRodapeInput.addEventListener('mouseout', function () {
+        sliderBackgroundColorRodapeInput.style.opacity = '0.7';
+    });
+
+    sliderBackgroundColorRodapeInput.addEventListener('input', function () {
+        valueDisplaySliderBackgroundColorRodapeInput.textContent = sliderBackgroundColorRodapeInput.value;
+        backgroundColorRodape = Number(sliderBackgroundColorRodapeInput.value);
         salvarVariavel('backgroundColorRodape', backgroundColorRodape);
 
         let legendaRodapeHtml = document.getElementById('legendaRodapeHtml');
@@ -870,22 +927,33 @@ function addInputsRodape(modalContent) {
             }
         }
     });
+    // FIM Fundo Cor Inferior
 
     modalContent.appendChild(switchLegendaRodapeButton);
     modalContent.appendChild(lagRodapeLabel);
     modalContent.appendChild(lagRodapeInput);
     modalContent.appendChild(document.createElement('br'));
+
     modalContent.appendChild(fonteRodapeLabel);
-    modalContent.appendChild(fonteRodapeInput);
+    modalContent.appendChild(sliderFonteRodapeInput);
+    modalContent.appendChild(valueDisplaySliderFonteRodapeInput);
+
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoRodapeLabel);
-    modalContent.appendChild(posicaoRodapeInput);
+    modalContent.appendChild(sliderPosicaoRodapeInput);
+    modalContent.appendChild(valueDisplaySliderPosicaoRodapeInput);
+
+
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoRodapeSliderLabel);
-    modalContent.appendChild(posicaoRodapeSliderInput);
+    modalContent.appendChild(sliderPosicaoRodapeSliderLabel);
+    modalContent.appendChild(valueDisplaySliderPosicaoRodapeSliderLabel);
+
+
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(backgroundColorRodapeLabel);
-    modalContent.appendChild(backgroundColorRodapeInput);
+    modalContent.appendChild(sliderBackgroundColorRodapeInput);
+    modalContent.appendChild(valueDisplaySliderBackgroundColorRodapeInput);
 }
 
 
