@@ -142,6 +142,11 @@ function parsearArquivoLegenda(legendas) {
             }
 
             if (contaLinha > 2) {
+                if (linha.includes('{\\an8}')) {
+                    blocoObjeto.superior = true;
+                }
+
+                linha = linha.replace('{\\an8}', '');
                 blocoObjeto.legendas.push(linha);
                 blocoObjeto.legenda += `<div style="padding: 0px 0px 0; line-height: normal;">
                     <span style="background-color: rgba(0, 0, 0, 0.5); padding: 0px 0px 0; margin: 0;">${linha}</span>
@@ -352,53 +357,14 @@ function criarModal() {
         reader.onload = (e) => {
             const contents = e.target.result;
 
-            if (!document.getElementById('legendaTopoHtml')) {
-                legendaTopoHtml = criarLegendaTopo();
-                document.body.appendChild(legendaTopoHtml);
-            }
-
-            document.getElementById('switchLegendaTopoButton').checked = true;
-            legendaTopoLigar = true;
-
             let legendas = parsearArquivoLegenda(contents);
 
-            clearInterval(legendaTopoInterval);
-            legendaTopoInterval = setInterval(() => {
+            if (legendas.some(x => x.superior)) {
+                tratarLegendaDupla(legendas);
+                return;
+            }
 
-                const video = document.querySelector('video');
-                if (!video) {
-                    return;
-                }
-
-                if (!legendaTopoLigar) {
-                    legendaTopoHtml.innerHTML = '';
-                    legendaTopoHtml.style.display = 'none';
-                    return;
-                }
-
-                const currentTime = (video.currentTime * 1000) + lagLegendaTopo;
-                const subtitle = legendas.find(sub => currentTime >= sub.inicio && currentTime <= sub.fim);
-
-                if (subtitle) {
-                    let innerHTML = "";
-                    for (let i = 0; i < subtitle.legendas.length; i++) {
-                        innerHTML += `<div style="padding: 0px 0px 0; line-height: normal;">
-                            <span style="background-color: rgba(0, 0, 0, ${backgroundColorTopo}); padding: 0px 0px 0; margin: 0;">${subtitle.legendas[i]}</span>
-                            </div>`;
-                    }
-
-                    if (legendaTopoHtml.innerHTML != innerHTML) {
-                        legendaTopoHtml.innerHTML = innerHTML;
-                        legendaTopoHtml.style.display = 'block';
-                    }
-
-                    legendaTopoHtml.style.top = obterVariacaoSeSliderVisivelTopo() + '%';
-                } else {
-                    legendaTopoHtml.innerHTML = '';
-                    legendaTopoHtml.style.display = 'none';
-                }
-
-            }, 10);
+            tratarLegendaTopo(legendas);
         };
         reader.readAsText(file);
     });
@@ -412,55 +378,120 @@ function criarModal() {
         reader.onload = (e) => {
             const contents = e.target.result;
 
-            if (!document.getElementById('legendaRodapeHtml')) {
-                legendaRodapeHtml = criarLegendaRodape();
-                document.body.appendChild(legendaRodapeHtml);
-            }
-
-            document.getElementById('switchLegendaRodapeButton').checked = true;
-            legendaRodapeLigar = true;
-
             let legendas = parsearArquivoLegenda(contents);
 
-            clearInterval(legendaRodapeInterval);
-            legendaRodapeInterval = setInterval(() => {
-                const video = document.querySelector('video');
-                if (!video) {
-                    return;
-                }
+            if (legendas.some(x => x.superior)) {
+                tratarLegendaDupla(legendas);
+                return;
+            }
 
-                if (!legendaRodapeLigar) {
-                    legendaRodapeHtml.innerHTML = '';
-                    legendaRodapeHtml.style.display = 'none';
-                    return;
-                }
-
-                const currentTime = (video.currentTime * 1000) + lagLegendaRodape;
-                const subtitle = legendas.find(sub => currentTime >= sub.inicio && currentTime <= sub.fim);
-
-                if (subtitle) {
-                    let innerHTML = "";
-                    for (let i = 0; i < subtitle.legendas.length; i++) {
-                        innerHTML += `<div style="padding: 0px 0px 0; line-height: normal;">
-                            <span style="background-color: rgba(0, 0, 0, ${backgroundColorRodape}); padding: 0px 0px 0; margin: 0;">${subtitle.legendas[i]}</span>
-                            </div>`;
-                    }
-
-                    if (legendaRodapeHtml.innerHTML != innerHTML) {
-                        legendaRodapeHtml.innerHTML = innerHTML;
-                        legendaRodapeHtml.style.display = 'block';
-                    }
-
-                    legendaRodapeHtml.style.bottom = obterVariacaoSeSliderVisivelRodape() + '%';
-                } else {
-                    legendaRodapeHtml.innerHTML = '';
-                    legendaRodapeHtml.style.display = 'none';
-                }
-
-            }, 10);
+            tratarLegendaRodape(legendas);
         };
         reader.readAsText(file);
     });
+}
+
+function tratarLegendaDupla(legendas) {
+    let legendaSuperior = legendas.filter(x => x.superior);
+    let legendaInferior = legendas.filter(x => !x.superior);
+
+    tratarLegendaTopo(legendaSuperior);
+    tratarLegendaRodape(legendaInferior);
+}
+
+function tratarLegendaTopo(legendas) {
+    if (!document.getElementById('legendaTopoHtml')) {
+        legendaTopoHtml = criarLegendaTopo();
+        document.body.appendChild(legendaTopoHtml);
+    }
+
+    document.getElementById('switchLegendaTopoButton').checked = true;
+    legendaTopoLigar = true;
+
+    clearInterval(legendaTopoInterval);
+    legendaTopoInterval = setInterval(() => {
+
+        const video = document.querySelector('video');
+        if (!video) {
+            return;
+        }
+
+        if (!legendaTopoLigar) {
+            legendaTopoHtml.innerHTML = '';
+            legendaTopoHtml.style.display = 'none';
+            return;
+        }
+
+        const currentTime = (video.currentTime * 1000) + lagLegendaTopo;
+        const subtitle = legendas.find(sub => currentTime >= sub.inicio && currentTime <= sub.fim);
+
+        if (subtitle) {
+            let innerHTML = "";
+            for (let i = 0; i < subtitle.legendas.length; i++) {
+                innerHTML += `<div style="padding: 0px 0px 0; line-height: normal;">
+                <span style="background-color: rgba(0, 0, 0, ${backgroundColorTopo}); padding: 0px 0px 0; margin: 0;">${subtitle.legendas[i]}</span>
+                </div>`;
+            }
+
+            if (legendaTopoHtml.innerHTML != innerHTML) {
+                legendaTopoHtml.innerHTML = innerHTML;
+                legendaTopoHtml.style.display = 'block';
+            }
+
+            legendaTopoHtml.style.top = obterVariacaoSeSliderVisivelTopo() + '%';
+        } else {
+            legendaTopoHtml.innerHTML = '';
+            legendaTopoHtml.style.display = 'none';
+        }
+
+    }, 10);
+}
+
+function tratarLegendaRodape(legendas) {
+    if (!document.getElementById('legendaRodapeHtml')) {
+        legendaRodapeHtml = criarLegendaRodape();
+        document.body.appendChild(legendaRodapeHtml);
+    }
+
+    document.getElementById('switchLegendaRodapeButton').checked = true;
+    legendaRodapeLigar = true;
+
+    clearInterval(legendaRodapeInterval);
+    legendaRodapeInterval = setInterval(() => {
+        const video = document.querySelector('video');
+        if (!video) {
+            return;
+        }
+
+        if (!legendaRodapeLigar) {
+            legendaRodapeHtml.innerHTML = '';
+            legendaRodapeHtml.style.display = 'none';
+            return;
+        }
+
+        const currentTime = (video.currentTime * 1000) + lagLegendaRodape;
+        const subtitle = legendas.find(sub => currentTime >= sub.inicio && currentTime <= sub.fim);
+
+        if (subtitle) {
+            let innerHTML = "";
+            for (let i = 0; i < subtitle.legendas.length; i++) {
+                innerHTML += `<div style="padding: 0px 0px 0; line-height: normal;">
+                            <span style="background-color: rgba(0, 0, 0, ${backgroundColorRodape}); padding: 0px 0px 0; margin: 0;">${subtitle.legendas[i]}</span>
+                            </div>`;
+            }
+
+            if (legendaRodapeHtml.innerHTML != innerHTML) {
+                legendaRodapeHtml.innerHTML = innerHTML;
+                legendaRodapeHtml.style.display = 'block';
+            }
+
+            legendaRodapeHtml.style.bottom = obterVariacaoSeSliderVisivelRodape() + '%';
+        } else {
+            legendaRodapeHtml.innerHTML = '';
+            legendaRodapeHtml.style.display = 'none';
+        }
+
+    }, 10);
 }
 
 function obterVariacaoSeSliderVisivelRodape() {
@@ -508,12 +539,12 @@ function addInputsTopo(modalContent) {
     switchLegendaTopoButton.setAttribute('for', 'switchLegendaTopoButton');
     switchLegendaTopoButton.style.display = 'inline-block';
     switchLegendaTopoButton.style.margin = '8px 5px 10px 10px';
-    
+
     var switchLegendaTopo = document.createElement('input');
     switchLegendaTopo.setAttribute('type', 'checkbox');
     switchLegendaTopo.setAttribute('id', 'switchLegendaTopoButton');
     switchLegendaTopo.style.margin = '0';
-    
+
     switchLegendaTopoButton.appendChild(switchLegendaTopo);
     switchLegendaTopoButton.innerHTML += '<span style=" vertical-align: text-bottom; margin-left: 3px;">Desligar Legenda Superior</span>';
 
@@ -769,12 +800,12 @@ function addInputsRodape(modalContent) {
     switchLegendaRodapeButton.setAttribute('for', 'switchLegendaRodapeButton');
     switchLegendaRodapeButton.style.display = 'inline-block';
     switchLegendaRodapeButton.style.margin = '8px 5px 10px 10px';
-    
+
     var switchLegendaRodape = document.createElement('input');
     switchLegendaRodape.setAttribute('type', 'checkbox');
     switchLegendaRodape.setAttribute('id', 'switchLegendaRodapeButton');
     switchLegendaRodape.style.margin = '0';
-    
+
     switchLegendaRodapeButton.appendChild(switchLegendaRodape);
     switchLegendaRodapeButton.innerHTML += '<span style=" vertical-align: text-bottom; margin-left: 3px;">Desligar Legenda Inferior</span>';
 
