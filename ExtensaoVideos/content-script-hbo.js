@@ -147,8 +147,8 @@ function addStyleElementHboMax() {
     styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-1rynq56 {background-color: rgba(0, 0, 0, ${backgroundColorRodapeHboMax}) !important; font-weight: normal !important;} `;
     
     // Comentar se começar a ficar zuado
-    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] > .css-175oi2r { top: ${posicaoLegendaRodapeHboMax}% !important; } `;
-    styleElementHboMax.innerHTML += `div[data-slider="true"] div[data-testid="CueBoxContainer"] > .css-175oi2r { top: ${posicaoLegendaSliderRodapeHboMax}% !important; } `;
+    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-175oi2r { bottom: ${posicaoLegendaRodapeHboMax}% !important; } `;
+    styleElementHboMax.innerHTML += `div[data-slider="true"] div[data-testid="CueBoxContainer"] .css-175oi2r .css-175oi2r { bottom: ${posicaoLegendaSliderRodapeHboMax}% !important; } `;
 
     styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-175oi2r {position: fixed !important; left: 0 !important; right: 0 !important; } `;
     styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-1rynq56 {align-self: center !important;} `;
@@ -162,12 +162,12 @@ var rnVideo;
 function afterDOMLoadedHbo() {
 
     setInterval(() => {
-        if(!rnVideo) {
+        if(!rnVideo || !rnVideo.parentElement) {
             rnVideo = document.querySelector('#rn-video');
         }
 
         let timelineSlider = document.querySelector('div[data-testid="TimelineSlider"]');
-        if(rnVideo) {
+        if(rnVideo && rnVideo.parentElement) {
             rnVideo.parentElement.setAttribute('data-slider', !!timelineSlider);
         }
     }, 100);
@@ -551,7 +551,8 @@ async function sleep(msec) {
 function pegarLegendaHbo() {
     var elemento = document.querySelector('div[data-testid="CueBoxContainer"]');
     if (!elemento) {
-        elemento = document.getElementById('legendaRodapeHtml');
+        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
+        elemento = document.getElementById('legendaRodapeHtml'); 
         if (!elemento) {
             return '';
         }

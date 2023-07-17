@@ -196,7 +196,7 @@ function afterDOMNetflix() {
                         legendaIngles.click();
                     }
                 }
-
+                
                 document.querySelector('.ltr-4dcwks')?.classList.remove('show');
             }
 
@@ -309,7 +309,11 @@ function afterDOMNetflix() {
 function pegarLegendaNetflix() {
     var elemento = document.querySelector('.player-timedtext');
     if (!elemento) {
-        return '';
+        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
+        elemento = document.getElementById('legendaRodapeHtml'); 
+        if (!elemento) {
+            return '';
+        }
     }
 
     var legenda = elemento.innerText;

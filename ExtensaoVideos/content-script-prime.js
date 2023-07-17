@@ -232,8 +232,10 @@ function addStyleElementPrime() {
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay.f1d63tv1 .f1iwgj00 > div {bottom: ${posicaoLegendaSliderRodapePrime}% !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay:not(.f1d63tv1) .f1iwgj00 > div {bottom: ${posicaoLegendaRodapePrime}% !important;} `;
     
+    // em ultimo caso fazer a caixa da legenda receber position: fixed, resetar todos os atributos e usar BOTTOM em todos os sites
     styleElementPrime.innerHTML += `.f1d63tv1 {opacity: 1 !important;} `;
-    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapePrime}px !important;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay .f1iwgj00 > div {position: fixed !important;} `;
+    styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapePrime}px !important; padding: 0px 5px !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {background-color: rgba(0, 0, 0, ${backgroundColorRodapePrime}) !important;} `;
     
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f124tp54  {position: absolute; right: 5px; bottom: 3px; opacity: .2} `;
@@ -551,7 +553,11 @@ function pegarLegendaPrime2222() {
 function pegarLegendaPrime() {
     var elemento = document.querySelector('div p span');
     if (!elemento) {
-        return '';
+        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
+        elemento = document.getElementById('legendaRodapeHtml'); 
+        if (!elemento) {
+            return '';
+        }
     }
 
     var legenda = document.querySelector('div p span').innerText;

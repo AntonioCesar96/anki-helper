@@ -199,8 +199,8 @@ function criarModal() {
     modalContent.setAttribute('id', 'modal-content');
     modalContent.style.backgroundColor = '#fefefe';
     modalContent.style.margin = '0 0 0 auto';
-    modalContent.style.padding = '20px';
-    modalContent.style.paddingTop = '0';
+    modalContent.style.padding = '10px 20px 13px';
+    modalContent.style.paddingTop = '10px';
     modalContent.style.border = '1px solid #888';
     modalContent.style.width = '400px';
     modalContent.style.boxSizing = 'content-box';
@@ -506,16 +506,16 @@ function addInputsTopo(modalContent) {
     var switchLegendaTopoButton = document.createElement('label');
     switchLegendaTopoButton.setAttribute('class', 'switch');
     switchLegendaTopoButton.setAttribute('for', 'switchLegendaTopoButton');
-    switchLegendaTopoButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar Legenda Superior</span>';
-    switchLegendaTopoButton.style.display = 'block';
-    switchLegendaTopoButton.style.margin = '8px 5px 10px 0';
-
+    switchLegendaTopoButton.style.display = 'inline-block';
+    switchLegendaTopoButton.style.margin = '8px 5px 10px 10px';
+    
     var switchLegendaTopo = document.createElement('input');
     switchLegendaTopo.setAttribute('type', 'checkbox');
     switchLegendaTopo.setAttribute('id', 'switchLegendaTopoButton');
     switchLegendaTopo.style.margin = '0';
-
+    
     switchLegendaTopoButton.appendChild(switchLegendaTopo);
+    switchLegendaTopoButton.innerHTML += '<span style=" vertical-align: text-bottom; margin-left: 3px;">Desligar Legenda Superior</span>';
 
     // Adiciona o ouvinte de evento ao checkbox
     switchLegendaTopo.addEventListener('change', function () {
@@ -525,9 +525,10 @@ function addInputsTopo(modalContent) {
     // INPUTS Lag topo
     var lagTopoLabel = document.createElement('label');
     lagTopoLabel.setAttribute('for', 'lagTopo');
-    lagTopoLabel.innerHTML = 'Lag Superior';
+    lagTopoLabel.innerHTML = 'Lag Legenda Superior';
     lagTopoLabel.style.display = 'inline-block';
     lagTopoLabel.style.marginRight = '5px';
+    lagTopoLabel.style.marginTop = '10px';
 
     var lagTopoInput = document.createElement('input');
     lagTopoInput.setAttribute('type', 'number');
@@ -542,11 +543,7 @@ function addInputsTopo(modalContent) {
         salvarVariavel('lagLegendaTopo', lagLegendaTopo);
     });
 
-    var lagTopoAviso = document.createElement('span');
-    lagTopoAviso.innerHTML = '<i>*não aperte APAGAR na HBO Max, aperte DEL</i>'
-    lagTopoAviso.innerHTML += '<br><i>HBO MAX: 1100</i>'
-
-    // Slider Fonte Superior
+    // Fonte Superior
     var fonteTopoLabel = document.createElement('label');
     fonteTopoLabel.setAttribute('for', 'fonteTopo');
     fonteTopoLabel.innerHTML = 'Fonte Superior';
@@ -555,12 +552,12 @@ function addInputsTopo(modalContent) {
 
     const sliderFonteTopoInput = document.createElement('input');
     sliderFonteTopoInput.type = 'range';
-    sliderFonteTopoInput.min = 10;
+    sliderFonteTopoInput.min = 0;
     sliderFonteTopoInput.max = 60;
     sliderFonteTopoInput.setAttribute('id', 'fonteTopo');
     sliderFonteTopoInput.value = fonteLegendaTopo;
 
-    sliderFonteTopoInput.style.width = '200px'; // Defina a largura desejada
+    sliderFonteTopoInput.style.width = '200px';
     sliderFonteTopoInput.style.appearance = 'none';
     sliderFonteTopoInput.style.height = '10px';
     sliderFonteTopoInput.style.background = '#d3d3d3';
@@ -570,7 +567,7 @@ function addInputsTopo(modalContent) {
     sliderFonteTopoInput.style.transition = 'opacity 0.2s';
 
     const valueDisplaySliderFonteTopoInput = document.createElement('span');
-    valueDisplaySliderFonteTopoInput.style.marginLeft = '10px'; // Defina o espaçamento desejado
+    valueDisplaySliderFonteTopoInput.style.marginLeft = '10px';
     valueDisplaySliderFonteTopoInput.textContent = sliderFonteTopoInput.value;
 
     sliderFonteTopoInput.addEventListener('mouseover', function () {
@@ -591,77 +588,141 @@ function addInputsTopo(modalContent) {
             legendaTopoHtml.style.fontSize = fonteLegendaTopo + 'px';
         }
     });
-    // FIM Slider Fonte Superior
+    // FIM Fonte Superior
 
-    // INPUTS posição legenda topo
+    // Posição Superior 1
     var posicaoTopoLabel = document.createElement('label');
     posicaoTopoLabel.setAttribute('for', 'posicaoTopo');
-    posicaoTopoLabel.innerHTML = 'Posição Superior';
+    posicaoTopoLabel.innerHTML = 'Posição Superior 1';
     posicaoTopoLabel.style.display = 'inline-block';
     posicaoTopoLabel.style.marginRight = '5px';
 
-    var posicaoTopoInput = document.createElement('input');
-    posicaoTopoInput.setAttribute('type', 'number');
-    posicaoTopoInput.setAttribute('id', 'posicaoTopo');
-    posicaoTopoInput.setAttribute('max', '100');
-    posicaoTopoInput.value = posicaoLegendaTopo;
-    posicaoTopoInput.style.display = 'inline-block';
-    posicaoTopoInput.style.width = '100px';
-    posicaoTopoInput.style.height = '18px';
+    const sliderPosicaoTopoInput = document.createElement('input');
+    sliderPosicaoTopoInput.type = 'range';
+    sliderPosicaoTopoInput.min = -5;
+    sliderPosicaoTopoInput.max = 100;
+    sliderPosicaoTopoInput.setAttribute('id', 'posicaoTopo');
+    sliderPosicaoTopoInput.value = posicaoLegendaTopo;
 
-    posicaoTopoInput.addEventListener('input', function () {
-        posicaoLegendaTopo = Number(this.value);
+    sliderPosicaoTopoInput.style.width = '200px';
+    sliderPosicaoTopoInput.style.appearance = 'none';
+    sliderPosicaoTopoInput.style.height = '10px';
+    sliderPosicaoTopoInput.style.background = '#d3d3d3';
+    sliderPosicaoTopoInput.style.outline = 'none';
+    sliderPosicaoTopoInput.style.borderRadius = '5px';
+    sliderPosicaoTopoInput.style.opacity = '0.7';
+    sliderPosicaoTopoInput.style.transition = 'opacity 0.2s';
+
+    const valueDisplaySliderPosicaoTopoInput = document.createElement('span');
+    valueDisplaySliderPosicaoTopoInput.style.marginLeft = '10px';
+    valueDisplaySliderPosicaoTopoInput.textContent = sliderPosicaoTopoInput.value;
+
+    sliderPosicaoTopoInput.addEventListener('mouseover', function () {
+        sliderPosicaoTopoInput.style.opacity = '1';
+    });
+
+    sliderPosicaoTopoInput.addEventListener('mouseout', function () {
+        sliderPosicaoTopoInput.style.opacity = '0.7';
+    });
+
+    sliderPosicaoTopoInput.addEventListener('input', function () {
+        valueDisplaySliderPosicaoTopoInput.textContent = sliderPosicaoTopoInput.value;
+        posicaoLegendaTopo = Number(sliderPosicaoTopoInput.value);
         salvarVariavel('posicaoLegendaTopo', posicaoLegendaTopo);
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
         if (legendaTopoHtml) {
-            legendaTopoHtml.style.top = posicaoLegendaTopo + '%';
+            legendaTopoHtml.style.bottom = posicaoLegendaTopo + '%';
         }
     });
+    // FIM Posição Superior 1
 
-    // INPUTS posição legenda slider topo
+    // Posição Superior 2
     var posicaoTopoSliderLabel = document.createElement('label');
     posicaoTopoSliderLabel.setAttribute('for', 'posicaoSliderTopo');
-    posicaoTopoSliderLabel.innerHTML = 'Posição Slider Superior';
+    posicaoTopoSliderLabel.innerHTML = 'Posição Superior 2';
     posicaoTopoSliderLabel.style.display = 'inline-block';
     posicaoTopoSliderLabel.style.marginRight = '5px';
 
-    var posicaoTopoSliderInput = document.createElement('input');
-    posicaoTopoSliderInput.setAttribute('type', 'number');
-    posicaoTopoSliderInput.setAttribute('id', 'posicaoSliderTopo');
-    posicaoTopoSliderInput.setAttribute('max', '100');
-    posicaoTopoSliderInput.value = posicaoLegendaSliderTopo;
-    posicaoTopoSliderInput.style.display = 'inline-block';
-    posicaoTopoSliderInput.style.width = '100px';
-    posicaoTopoSliderInput.style.height = '18px';
+    const sliderPosicaoTopoSliderLabel = document.createElement('input');
+    sliderPosicaoTopoSliderLabel.type = 'range';
+    sliderPosicaoTopoSliderLabel.min = -5;
+    sliderPosicaoTopoSliderLabel.max = 100;
+    sliderPosicaoTopoSliderLabel.setAttribute('id', 'posicaoSliderTopo');
+    sliderPosicaoTopoSliderLabel.value = posicaoLegendaSliderTopo;
 
-    posicaoTopoSliderInput.addEventListener('input', function () {
-        posicaoLegendaSliderTopo = Number(this.value);
+    sliderPosicaoTopoSliderLabel.style.width = '200px';
+    sliderPosicaoTopoSliderLabel.style.appearance = 'none';
+    sliderPosicaoTopoSliderLabel.style.height = '10px';
+    sliderPosicaoTopoSliderLabel.style.background = '#d3d3d3';
+    sliderPosicaoTopoSliderLabel.style.outline = 'none';
+    sliderPosicaoTopoSliderLabel.style.borderRadius = '5px';
+    sliderPosicaoTopoSliderLabel.style.opacity = '0.7';
+    sliderPosicaoTopoSliderLabel.style.transition = 'opacity 0.2s';
+
+    const valueDisplaySliderPosicaoTopoSliderLabel = document.createElement('span');
+    valueDisplaySliderPosicaoTopoSliderLabel.style.marginLeft = '10px';
+    valueDisplaySliderPosicaoTopoSliderLabel.textContent = sliderPosicaoTopoSliderLabel.value;
+
+    sliderPosicaoTopoSliderLabel.addEventListener('mouseover', function () {
+        sliderPosicaoTopoSliderLabel.style.opacity = '1';
+    });
+
+    sliderPosicaoTopoSliderLabel.addEventListener('mouseout', function () {
+        sliderPosicaoTopoSliderLabel.style.opacity = '0.7';
+    });
+
+    sliderPosicaoTopoSliderLabel.addEventListener('input', function () {
+        valueDisplaySliderPosicaoTopoSliderLabel.textContent = sliderPosicaoTopoSliderLabel.value;
+        posicaoLegendaSliderTopo = Number(sliderPosicaoTopoSliderLabel.value);
         salvarVariavel('posicaoLegendaSliderTopo', posicaoLegendaSliderTopo);
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
         if (legendaTopoHtml) {
-            legendaTopoHtml.style.top = posicaoLegendaSliderTopo + '%';
+            legendaTopoHtml.style.bottom = posicaoLegendaSliderTopo + '%';
         }
     });
+    // FIM Posição Superior 2
 
-    // INPUTS background color topo
+    // Fundo Cor Superior
     var backgroundColorTopoLabel = document.createElement('label');
     backgroundColorTopoLabel.setAttribute('for', 'backgroundColorTopo');
-    backgroundColorTopoLabel.innerHTML = 'BackgroundColor Superior';
+    backgroundColorTopoLabel.innerHTML = 'Fundo Cor Superior';
     backgroundColorTopoLabel.style.display = 'inline-block';
     backgroundColorTopoLabel.style.marginRight = '5px';
 
-    var backgroundColorTopoInput = document.createElement('input');
-    backgroundColorTopoInput.setAttribute('type', 'text');
-    backgroundColorTopoInput.setAttribute('id', 'backgroundColorTopo');
-    backgroundColorTopoInput.value = backgroundColorTopo;
-    backgroundColorTopoInput.style.display = 'inline-block';
-    backgroundColorTopoInput.style.width = '100px';
-    backgroundColorTopoInput.style.height = '18px';
+    const sliderBackgroundColorTopoInput = document.createElement('input');
+    sliderBackgroundColorTopoInput.type = 'range';
+    sliderBackgroundColorTopoInput.min = 0.0;
+    sliderBackgroundColorTopoInput.max = 1.0;
+    sliderBackgroundColorTopoInput.step = 0.05;
+    sliderBackgroundColorTopoInput.setAttribute('id', 'backgroundColorTopo');
+    sliderBackgroundColorTopoInput.value = backgroundColorTopo;
 
-    backgroundColorTopoInput.addEventListener('input', function () {
-        backgroundColorTopo = this.value;
+    sliderBackgroundColorTopoInput.style.width = '200px';
+    sliderBackgroundColorTopoInput.style.appearance = 'none';
+    sliderBackgroundColorTopoInput.style.height = '10px';
+    sliderBackgroundColorTopoInput.style.background = '#d3d3d3';
+    sliderBackgroundColorTopoInput.style.outline = 'none';
+    sliderBackgroundColorTopoInput.style.borderRadius = '5px';
+    sliderBackgroundColorTopoInput.style.opacity = '0.7';
+    sliderBackgroundColorTopoInput.style.transition = 'opacity 0.2s';
+
+    const valueDisplaySliderBackgroundColorTopoInput = document.createElement('span');
+    valueDisplaySliderBackgroundColorTopoInput.style.marginLeft = '10px';
+    valueDisplaySliderBackgroundColorTopoInput.textContent = sliderBackgroundColorTopoInput.value;
+
+    sliderBackgroundColorTopoInput.addEventListener('mouseover', function () {
+        sliderBackgroundColorTopoInput.style.opacity = '1';
+    });
+
+    sliderBackgroundColorTopoInput.addEventListener('mouseout', function () {
+        sliderBackgroundColorTopoInput.style.opacity = '0.7';
+    });
+
+    sliderBackgroundColorTopoInput.addEventListener('input', function () {
+        valueDisplaySliderBackgroundColorTopoInput.textContent = sliderBackgroundColorTopoInput.value;
+        backgroundColorTopo = Number(sliderBackgroundColorTopoInput.value);
         salvarVariavel('backgroundColorTopo', backgroundColorTopo);
 
         let legendaTopoHtml = document.getElementById('legendaTopoHtml');
@@ -672,27 +733,31 @@ function addInputsTopo(modalContent) {
             }
         }
     });
+    // FIM Fundo Cor Superior
 
     modalContent.appendChild(switchLegendaTopoButton);
     modalContent.appendChild(lagTopoLabel);
     modalContent.appendChild(lagTopoInput);
-    // modalContent.appendChild(lagTopoAviso);
     modalContent.appendChild(document.createElement('br'));
 
     modalContent.appendChild(fonteTopoLabel);
-    // modalContent.appendChild(fonteTopoInput);
     modalContent.appendChild(sliderFonteTopoInput);
     modalContent.appendChild(valueDisplaySliderFonteTopoInput);
 
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoTopoLabel);
-    modalContent.appendChild(posicaoTopoInput);
+    modalContent.appendChild(sliderPosicaoTopoInput);
+    modalContent.appendChild(valueDisplaySliderPosicaoTopoInput);
+
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoTopoSliderLabel);
-    modalContent.appendChild(posicaoTopoSliderInput);
+    modalContent.appendChild(sliderPosicaoTopoSliderLabel);
+    modalContent.appendChild(valueDisplaySliderPosicaoTopoSliderLabel);
+
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(backgroundColorTopoLabel);
-    modalContent.appendChild(backgroundColorTopoInput);
+    modalContent.appendChild(sliderBackgroundColorTopoInput);
+    modalContent.appendChild(valueDisplaySliderBackgroundColorTopoInput);
 }
 
 
@@ -702,16 +767,16 @@ function addInputsRodape(modalContent) {
     var switchLegendaRodapeButton = document.createElement('label');
     switchLegendaRodapeButton.setAttribute('class', 'switch');
     switchLegendaRodapeButton.setAttribute('for', 'switchLegendaRodapeButton');
-    switchLegendaRodapeButton.innerHTML = '<span style=" vertical-align: text-bottom;">Desligar Legenda Inferior</span>';
-    switchLegendaRodapeButton.style.display = 'block';
-    switchLegendaRodapeButton.style.margin = '8px 5px 10px 0';
-
+    switchLegendaRodapeButton.style.display = 'inline-block';
+    switchLegendaRodapeButton.style.margin = '8px 5px 10px 10px';
+    
     var switchLegendaRodape = document.createElement('input');
     switchLegendaRodape.setAttribute('type', 'checkbox');
     switchLegendaRodape.setAttribute('id', 'switchLegendaRodapeButton');
     switchLegendaRodape.style.margin = '0';
-
+    
     switchLegendaRodapeButton.appendChild(switchLegendaRodape);
+    switchLegendaRodapeButton.innerHTML += '<span style=" vertical-align: text-bottom; margin-left: 3px;">Desligar Legenda Inferior</span>';
 
     // Adiciona o ouvinte de evento ao checkbox
     switchLegendaRodape.addEventListener('change', function () {
@@ -721,9 +786,10 @@ function addInputsRodape(modalContent) {
     // INPUTS Lag Rodape
     var lagRodapeLabel = document.createElement('label');
     lagRodapeLabel.setAttribute('for', 'lagRodape');
-    lagRodapeLabel.innerHTML = 'Lag Inferior';
+    lagRodapeLabel.innerHTML = 'Lag Legenda Inferior';
     lagRodapeLabel.style.display = 'inline-block';
     lagRodapeLabel.style.marginRight = '5px';
+    lagRodapeLabel.style.marginTop = '10px';
 
     var lagRodapeInput = document.createElement('input');
     lagRodapeInput.setAttribute('type', 'number');
@@ -793,7 +859,7 @@ function addInputsRodape(modalContent) {
 
     const sliderPosicaoRodapeInput = document.createElement('input');
     sliderPosicaoRodapeInput.type = 'range';
-    sliderPosicaoRodapeInput.min = 0;
+    sliderPosicaoRodapeInput.min = -5;
     sliderPosicaoRodapeInput.max = 100;
     sliderPosicaoRodapeInput.setAttribute('id', 'posicaoRodape');
     sliderPosicaoRodapeInput.value = posicaoLegendaRodape;
@@ -840,7 +906,7 @@ function addInputsRodape(modalContent) {
 
     const sliderPosicaoRodapeSliderLabel = document.createElement('input');
     sliderPosicaoRodapeSliderLabel.type = 'range';
-    sliderPosicaoRodapeSliderLabel.min = -30;
+    sliderPosicaoRodapeSliderLabel.min = -5;
     sliderPosicaoRodapeSliderLabel.max = 100;
     sliderPosicaoRodapeSliderLabel.setAttribute('id', 'posicaoSliderRodape');
     sliderPosicaoRodapeSliderLabel.value = posicaoLegendaSliderRodape;
@@ -943,12 +1009,10 @@ function addInputsRodape(modalContent) {
     modalContent.appendChild(sliderPosicaoRodapeInput);
     modalContent.appendChild(valueDisplaySliderPosicaoRodapeInput);
 
-
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(posicaoRodapeSliderLabel);
     modalContent.appendChild(sliderPosicaoRodapeSliderLabel);
     modalContent.appendChild(valueDisplaySliderPosicaoRodapeSliderLabel);
-
 
     modalContent.appendChild(document.createElement('br'));
     modalContent.appendChild(backgroundColorRodapeLabel);

@@ -70,8 +70,10 @@ function addStyleElementStar() {
     styleElementStar = document.createElement('style');
 
     styleElementStar.innerHTML = `.dss-subtitle-renderer-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeStar}px !important;} `;
-    styleElementStar.innerHTML += `.btm-media-player:not(.btm-media-player-idle) .dss-subtitle-renderer-cue-positioning-box {top: ${posicaoLegendaSliderRodapeStar}% !important;} `;
-    styleElementStar.innerHTML += `.btm-media-player.btm-media-player-idle .dss-subtitle-renderer-cue-positioning-box {top: ${posicaoLegendaRodapeStar}% !important;} `;
+    
+    styleElementStar.innerHTML += `.btm-media-player:not(.btm-media-player-idle) .dss-subtitle-renderer-cue-positioning-box {position: fixed !important; bottom: ${posicaoLegendaSliderRodapeStar}% !important; top: auto !important; left: 0 !important; right: 0 !important;} `;
+    styleElementStar.innerHTML += `.btm-media-player.btm-media-player-idle .dss-subtitle-renderer-cue-positioning-box { position: fixed !important; bottom: ${posicaoLegendaRodapeStar}% !important; top: auto !important; left: 0 !important; right: 0 !important;} `;
+
     styleElementStar.innerHTML += `.dss-subtitle-renderer-line {background-color: rgba(0, 0, 0, ${backgroundColorRodapeStar}) !important;} `;
     styleElementStar.innerHTML += `.controls__footer { padding-bottom: 5px !important;} `;
     styleElementStar.innerHTML += `.controls__header:before { display: none !important;} `;
@@ -178,6 +180,9 @@ function afterDOMDisney() {
 
             if (e.keyCode == '86') { // V
                 var subOff = getBotao('Off', 'sub');
+                if(!subOff) {
+                    subOff = getBotao('Não', 'sub');
+                }
                 var subIngles = getBotao('English', 'sub');
 
                 if (subIngles.parentElement.querySelector('input').checked) {
@@ -189,6 +194,9 @@ function afterDOMDisney() {
 
             if (e.keyCode == '80') { // P
                 var subOff = getBotao('Off', 'sub');
+                if(!subOff) {
+                    subOff = getBotao('Não', 'sub');
+                }
                 var subPortugues = getBotao('Português (Brasil)', 'sub');
 
                 if (subPortugues.parentElement.querySelector('input').checked) {
@@ -268,9 +276,12 @@ function getBotao(texto, sessao) {
 function pegarLegendaStar() {
     var elemento = document.querySelector('.dss-subtitle-renderer-cue-window');
     if (!elemento) {
-        return '';
+        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
+        elemento = document.getElementById('legendaRodapeHtml'); 
+        if (!elemento) {
+            return '';
+        }
     }
-
     var legenda = elemento.innerText;
     if (!legenda) {
         return '';
