@@ -37,7 +37,7 @@ function addStyleElementNetflix() {
     //styleElementNetflix.innerHTML += `.active .player-timedtext-text-container {bottom: ${posicaoLegendaSliderRodapeNetflix}% !important;} `;
     // styleElementNetflix.innerHTML += `.player-timedtext-text-container {text-align: center !important; left: 0 !important; right: 0 !important;} `;
     // styleElementNetflix.innerHTML += `.active .player-timedtext-text-container {bottom: ${posicaoLegendaSliderRodapeNetflix}% !important;} `;
-    
+
     styleElementNetflix.innerHTML += `.player-timedtext {position: fixed !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaRodapeNetflix}%!important;} `;
     styleElementNetflix.innerHTML += `.active .player-timedtext { bottom: ${posicaoLegendaSliderRodapeNetflix}%!important;} `;
     styleElementNetflix.innerHTML += `.player-timedtext-text-container { position: static !important; text-align: center !important; } `;
@@ -50,33 +50,37 @@ function afterDOMNetflix() {
 
     inject();
 
-    setTimeout(() => {
-        addStyleElementNetflix();
-
-        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
-        posicaoRodapeSliderInput.addEventListener('input', function () {
-            posicaoLegendaSliderRodapeNetflix = Number(this.value);
+    let intervalCriarModal = setInterval(() => {
+        if (document.querySelector('#posicaoSliderRodape')) {
             addStyleElementNetflix();
-        });
 
-        let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
-        fonteLegendaRodapeInput.addEventListener('input', function () {
-            fonteLegendaRodapeNetflix = Number(this.value);
-            addStyleElementNetflix();
-        });
+            let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+            posicaoRodapeSliderInput.addEventListener('input', function () {
+                posicaoLegendaSliderRodapeNetflix = Number(this.value);
+                addStyleElementNetflix();
+            });
 
-        let posicaoRodapeInput = document.querySelector('#posicaoRodape');
-        posicaoRodapeInput.addEventListener('input', function () {
-            posicaoLegendaRodapeNetflix = Number(this.value);
-            addStyleElementNetflix();
-        });
+            let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+            fonteLegendaRodapeInput.addEventListener('input', function () {
+                fonteLegendaRodapeNetflix = Number(this.value);
+                addStyleElementNetflix();
+            });
 
-        let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
-        backgroundColorRodapeInput.addEventListener('input', function () {
-            backgroundColorRodapeNetflix = this.value;
-            addStyleElementNetflix();
-        });
-    }, 5000);
+            let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+            posicaoRodapeInput.addEventListener('input', function () {
+                posicaoLegendaRodapeNetflix = Number(this.value);
+                addStyleElementNetflix();
+            });
+
+            let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+            backgroundColorRodapeInput.addEventListener('input', function () {
+                backgroundColorRodapeNetflix = this.value;
+                addStyleElementNetflix();
+            });
+
+            clearInterval(intervalCriarModal);
+        }
+    }, 500);
 
     setInterval(() => {
         var legenda = pegarLegendaNetflix();
@@ -196,7 +200,7 @@ function afterDOMNetflix() {
                         legendaIngles.click();
                     }
                 }
-                
+
                 document.querySelector('.ltr-4dcwks')?.classList.remove('show');
             }
 
@@ -307,16 +311,15 @@ function afterDOMNetflix() {
 }
 
 function pegarLegendaNetflix() {
-    var elemento = document.querySelector('.player-timedtext');
-    if (!elemento) {
+    var legenda = document.querySelector('.player-timedtext')?.innerText;
+    if (!legenda) {
         //alterar para 'legendaTopoHtml' se o ingles estiver em cima
-        elemento = document.getElementById('legendaRodapeHtml'); 
-        if (!elemento) {
+        legenda = document.getElementById('legendaRodapeHtml')?.innerText;
+        if (!legenda) {
             return '';
         }
     }
 
-    var legenda = elemento.innerText;
     if (!legenda) {
         return '';
     }

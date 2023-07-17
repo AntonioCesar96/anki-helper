@@ -231,27 +231,27 @@ function addStyleElementPrime() {
 
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay.f1d63tv1 .f1iwgj00 > div {bottom: ${posicaoLegendaSliderRodapePrime}% !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay:not(.f1d63tv1) .f1iwgj00 > div {bottom: ${posicaoLegendaRodapePrime}% !important;} `;
-    
+
     // em ultimo caso fazer a caixa da legenda receber position: fixed, resetar todos os atributos e usar BOTTOM em todos os sites
     styleElementPrime.innerHTML += `.f1d63tv1 {opacity: 1 !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay .f1iwgj00 > div {position: fixed !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapePrime}px !important; padding: 0px 5px !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {background-color: rgba(0, 0, 0, ${backgroundColorRodapePrime}) !important;} `;
-    
+
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f124tp54  {position: absolute; right: 5px; bottom: 3px; opacity: .2} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f124tp54.hide {opacity: 0} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .fkpovp9.f8hspre  {display: none !important;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container h1 {font-size: 16px !important; display: none;} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container h2 {font-size: 14px !important;} `;
-    
+
     styleElementPrime.innerHTML += `.atvwebplayersdk-hideabletopbuttons-container img {opacity: .3} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-closebutton-wrapper img {opacity: .3} `;
-    
+
     styleElementPrime.innerHTML += `.collapsibleXrayHeader .xrayHeaderTitle {font-size: 14px !important; opacity: .5} `;
     styleElementPrime.innerHTML += `.collapsibleXrayHeader .xrayHeaderViewAll {font-size: 14px !important; opacity: .5} `;
     styleElementPrime.innerHTML += `.atvwebplayersdk-overlays-container .f2ptdfh.fz8eask { margin-left: -35px !important; opacity: .5} `;
 
-    if(mudarTudoPraMinuscula) {
+    if (mudarTudoPraMinuscula) { // Tecla 4
         styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {text-transform: lowercase !important;} `;
     }
 
@@ -262,34 +262,37 @@ function afterDOMLoadedPrime() {
     pularIntroducao(1);
     pularPropaganda(1);
 
-
-    setTimeout(() => {
-        addStyleElementPrime();
-
-        let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
-        posicaoRodapeSliderInput.addEventListener('input', function () {
-            posicaoLegendaSliderRodapePrime = Number(this.value);
+    let intervalCriarModal = setInterval(() => {
+        if (document.querySelector('#posicaoSliderRodape')) {
             addStyleElementPrime();
-        });
 
-        let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
-        fonteLegendaRodapeInput.addEventListener('input', function () {
-            fonteLegendaRodapePrime = Number(this.value);
-            addStyleElementPrime();
-        });
+            let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+            posicaoRodapeSliderInput.addEventListener('input', function () {
+                posicaoLegendaSliderRodapePrime = Number(this.value);
+                addStyleElementPrime();
+            });
 
-        let posicaoRodapeInput = document.querySelector('#posicaoRodape');
-        posicaoRodapeInput.addEventListener('input', function () {
-            posicaoLegendaRodapePrime = Number(this.value);
-            addStyleElementPrime();
-        });
+            let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+            fonteLegendaRodapeInput.addEventListener('input', function () {
+                fonteLegendaRodapePrime = Number(this.value);
+                addStyleElementPrime();
+            });
 
-        let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
-        backgroundColorRodapeInput.addEventListener('input', function () {
-            backgroundColorRodapePrime = this.value;
-            addStyleElementPrime();
-        });
-    }, 5000);
+            let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+            posicaoRodapeInput.addEventListener('input', function () {
+                posicaoLegendaRodapePrime = Number(this.value);
+                addStyleElementPrime();
+            });
+
+            let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+            backgroundColorRodapeInput.addEventListener('input', function () {
+                backgroundColorRodapePrime = this.value;
+                addStyleElementPrime();
+            });
+
+            clearInterval(intervalCriarModal);
+        }
+    }, 500);
 
     setInterval(() => {
         var legenda = pegarLegendaPrime();
@@ -551,18 +554,13 @@ function pegarLegendaPrime2222() {
 }
 
 function pegarLegendaPrime() {
-    var elemento = document.querySelector('div p span');
-    if (!elemento) {
+    var legenda = document.querySelector('div p span')?.innerText;
+    if (!legenda) {
         //alterar para 'legendaTopoHtml' se o ingles estiver em cima
-        elemento = document.getElementById('legendaRodapeHtml'); 
-        if (!elemento) {
+        legenda = document.getElementById('legendaRodapeHtml')?.innerText;
+        if (!legenda) {
             return '';
         }
-    }
-
-    var legenda = document.querySelector('div p span').innerText;
-    if (!legenda) {
-        return '';
     }
 
     legenda = legenda.replaceAll('\n', ' ');

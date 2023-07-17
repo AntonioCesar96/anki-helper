@@ -1,13 +1,16 @@
 var sitesHome = [
     { host: "www.netflix.com", },
-    { host: "www.primevideo.com" },
+    { host: "primevideo" },
     { host: "play.hbomax.com" },
     { host: "www.disneyplus.com" },
     { host: "www.starplus.com" },
     { host: "www.southparkstudios.com.br" },
+    { host: "ssoap2day" },
+    { host: "fmovies" },
+    { host: "soaper" },
 ]
 
-var siteHome = sitesHome.filter(x => x.host === location.host)[0];
+var siteHome = sitesHome.filter(x => location.host.includes(x.host))[0];
 if (siteHome) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMLegenda);
@@ -52,14 +55,6 @@ function afterDOMLegenda() {
 
     addFontToPage(localStorage.getItem('fontBase64'));
 
-    setTimeout(() => {
-        criarModal();
-    }, 1000);
-
-    setTimeout(() => {
-        openModal();
-    }, 1100);
-
     document.addEventListener('keydown', checkKey);
 
     async function checkKey(e) {
@@ -68,10 +63,16 @@ function afterDOMLegenda() {
         console.log(e.keyCode);
 
         if (e.keyCode == '49') { // 1
-            if (document.getElementById('modal').style.display === 'block') {
-                closeModal();
-            } else {
-                openModal();
+            if (!document.getElementById('modal') && document.querySelector('video')) {
+                criarModal();
+            }
+
+            if (document.getElementById('modal')) {
+                if (document.getElementById('modal').style.display === 'block') {
+                    closeModal();
+                } else {
+                    openModal();
+                }
             }
         }
 
@@ -183,7 +184,6 @@ function converterParaMilissegundos(tempo) {
 
 
 function criarModal() {
-
     if (document.getElementById('modal')) {
         return;
     }
@@ -346,7 +346,12 @@ function criarModal() {
     modal.appendChild(modalContent);
 
     // Adiciona o modal ao body
-    document.body.appendChild(modal);
+    if(location.host.includes("netflix")) {
+        document.querySelector('video').parentElement
+        .parentElement.parentElement.parentElement.appendChild(modal);
+    } else {
+        document.querySelector('video').parentElement.parentElement.appendChild(modal);
+    }
 
     // Topo
     inputTopo.addEventListener('change', (event) => {
@@ -402,7 +407,12 @@ function tratarLegendaDupla(legendas) {
 function tratarLegendaTopo(legendas) {
     if (!document.getElementById('legendaTopoHtml')) {
         legendaTopoHtml = criarLegendaTopo();
-        document.body.appendChild(legendaTopoHtml);
+
+        if (document.querySelector('video')) {
+            document.querySelector('video').parentElement.appendChild(legendaTopoHtml);
+        } else {
+            document.body.appendChild(legendaTopoHtml);
+        }
     }
 
     document.getElementById('switchLegendaTopoButton').checked = true;
@@ -450,7 +460,12 @@ function tratarLegendaTopo(legendas) {
 function tratarLegendaRodape(legendas) {
     if (!document.getElementById('legendaRodapeHtml')) {
         legendaRodapeHtml = criarLegendaRodape();
-        document.body.appendChild(legendaRodapeHtml);
+
+        if (document.querySelector('video')) {
+            document.querySelector('video').parentElement.appendChild(legendaRodapeHtml);
+        } else {
+            document.body.appendChild(legendaRodapeHtml);
+        }
     }
 
     document.getElementById('switchLegendaRodapeButton').checked = true;
@@ -583,6 +598,7 @@ function addInputsTopo(modalContent) {
 
     const sliderFonteTopoInput = document.createElement('input');
     sliderFonteTopoInput.type = 'range';
+    sliderFonteTopoInput.style.display = 'inline-block';
     sliderFonteTopoInput.min = 0;
     sliderFonteTopoInput.max = 60;
     sliderFonteTopoInput.setAttribute('id', 'fonteTopo');
@@ -630,6 +646,7 @@ function addInputsTopo(modalContent) {
 
     const sliderPosicaoTopoInput = document.createElement('input');
     sliderPosicaoTopoInput.type = 'range';
+    sliderPosicaoTopoInput.style.display = 'inline-block';
     sliderPosicaoTopoInput.min = -5;
     sliderPosicaoTopoInput.max = 100;
     sliderPosicaoTopoInput.setAttribute('id', 'posicaoTopo');
@@ -677,6 +694,7 @@ function addInputsTopo(modalContent) {
 
     const sliderPosicaoTopoSliderLabel = document.createElement('input');
     sliderPosicaoTopoSliderLabel.type = 'range';
+    sliderPosicaoTopoSliderLabel.style.display = 'inline-block';
     sliderPosicaoTopoSliderLabel.min = -5;
     sliderPosicaoTopoSliderLabel.max = 100;
     sliderPosicaoTopoSliderLabel.setAttribute('id', 'posicaoSliderTopo');
@@ -724,6 +742,7 @@ function addInputsTopo(modalContent) {
 
     const sliderBackgroundColorTopoInput = document.createElement('input');
     sliderBackgroundColorTopoInput.type = 'range';
+    sliderBackgroundColorTopoInput.style.display = 'inline-block';
     sliderBackgroundColorTopoInput.min = 0.0;
     sliderBackgroundColorTopoInput.max = 1.0;
     sliderBackgroundColorTopoInput.step = 0.05;
@@ -843,6 +862,7 @@ function addInputsRodape(modalContent) {
 
     const sliderFonteRodapeInput = document.createElement('input');
     sliderFonteRodapeInput.type = 'range';
+    sliderFonteRodapeInput.style.display = 'inline-block';
     sliderFonteRodapeInput.min = 0;
     sliderFonteRodapeInput.max = 60;
     sliderFonteRodapeInput.setAttribute('id', 'fonteRodape');
@@ -890,6 +910,7 @@ function addInputsRodape(modalContent) {
 
     const sliderPosicaoRodapeInput = document.createElement('input');
     sliderPosicaoRodapeInput.type = 'range';
+    sliderPosicaoRodapeInput.style.display = 'inline-block';
     sliderPosicaoRodapeInput.min = -5;
     sliderPosicaoRodapeInput.max = 100;
     sliderPosicaoRodapeInput.setAttribute('id', 'posicaoRodape');
@@ -937,6 +958,7 @@ function addInputsRodape(modalContent) {
 
     const sliderPosicaoRodapeSliderLabel = document.createElement('input');
     sliderPosicaoRodapeSliderLabel.type = 'range';
+    sliderPosicaoRodapeSliderLabel.style.display = 'inline-block';
     sliderPosicaoRodapeSliderLabel.min = -5;
     sliderPosicaoRodapeSliderLabel.max = 100;
     sliderPosicaoRodapeSliderLabel.setAttribute('id', 'posicaoSliderRodape');
@@ -984,6 +1006,7 @@ function addInputsRodape(modalContent) {
 
     const sliderBackgroundColorRodapeInput = document.createElement('input');
     sliderBackgroundColorRodapeInput.type = 'range';
+    sliderBackgroundColorRodapeInput.style.display = 'inline-block';
     sliderBackgroundColorRodapeInput.min = 0.0;
     sliderBackgroundColorRodapeInput.max = 1.0;
     sliderBackgroundColorRodapeInput.step = 0.05;
