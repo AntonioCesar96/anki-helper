@@ -431,6 +431,7 @@ function afterDOMLoadedHbo() {
             }
 
             // Repete Pedaço do video
+            /* 
             if (e.keyCode == '81') { // Q
                 tempoInicial = video.currentTime;
                 console.log("Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal);
@@ -464,7 +465,7 @@ function afterDOMLoadedHbo() {
                 clearInterval(timer);
                 // console.log("Interval cancelado!")
             }
-
+*/
             if (e.keyCode == '106') { // *
                 var acelerar = localStorage.getItem("acelerar") === "false" ? true : false;
                 localStorage.setItem("acelerar", acelerar);
