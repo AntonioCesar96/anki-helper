@@ -569,8 +569,13 @@ function addInputsTopo(modalContent) {
     switchLegendaTopo.setAttribute('id', 'switchLegendaTopoButton');
     switchLegendaTopo.style.margin = '0';
 
+    var spanSwitchLegendaTopo = document.createElement('span');
+    spanSwitchLegendaTopo.textContent = 'Desligar Legenda Superior';
+    spanSwitchLegendaTopo.style.verticalAlign = 'text-bottom';
+    spanSwitchLegendaTopo.style.marginLeft = '3px';
+    
     switchLegendaTopoButton.appendChild(switchLegendaTopo);
-    switchLegendaTopoButton.innerHTML += '<span style=" vertical-align: text-bottom; margin-left: 3px;">Desligar Legenda Superior</span>';
+    switchLegendaTopoButton.appendChild(spanSwitchLegendaTopo);
 
     // Adiciona o ouvinte de evento ao checkbox
     switchLegendaTopo.addEventListener('change', function () {
@@ -834,8 +839,13 @@ function addInputsRodape(modalContent) {
     switchLegendaRodape.setAttribute('id', 'switchLegendaRodapeButton');
     switchLegendaRodape.style.margin = '0';
 
+    var spanSwitchLegendaRodape = document.createElement('span');
+    spanSwitchLegendaRodape.textContent = 'Desligar Legenda Inferior';
+    spanSwitchLegendaRodape.style.verticalAlign = 'text-bottom';
+    spanSwitchLegendaRodape.style.marginLeft = '3px';
+
     switchLegendaRodapeButton.appendChild(switchLegendaRodape);
-    switchLegendaRodapeButton.innerHTML += '<span style=" vertical-align: text-bottom; margin-left: 3px;">Desligar Legenda Inferior</span>';
+    switchLegendaRodapeButton.appendChild(spanSwitchLegendaRodape);
 
     // Adiciona o ouvinte de evento ao checkbox
     switchLegendaRodape.addEventListener('change', function () {

@@ -114,7 +114,6 @@ function afterDOMSoaper() {
                 video.currentTime = video.currentTime - 6;
             }
 
-
             if (e.keyCode == '78') { // N
 
                 // console.log("Trocar audio e legenda");
