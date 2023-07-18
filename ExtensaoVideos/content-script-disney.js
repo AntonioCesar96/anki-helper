@@ -150,12 +150,12 @@ function afterDOMDisney() {
             // TODO
             // quando aparecer document.querySelector('.overlay__loading')
             // apertar voltar 10s e ir pra frente 10s
-            if (e.keyCode == '96' || e.code == 'KeyZ') { // 0
-                video.currentTime = video.currentTime - 4;
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
             }
 
-            if (e.keyCode == '110' || e.code == 'KeyX') { // ,
-                video.currentTime = video.currentTime - 6;
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
             }
 
 
@@ -251,12 +251,13 @@ function afterDOMDisney() {
                 copyToClipboard(legenda)
 
                 function copyToClipboard(text) {
+                    var video = document.querySelector('video');
                     const elem = document.createElement('textarea');
                     elem.value = text;
-                    document.body.appendChild(elem);
+                    video.parentElement.appendChild(elem);
                     elem.select();
                     document.execCommand('copy');
-                    document.body.removeChild(elem);
+                    video.parentElement.removeChild(elem);
                 }
             }
         }
@@ -277,8 +278,8 @@ function getBotao(texto, sessao) {
 function pegarLegendaStar() {
     var legenda = document.querySelector('.dss-subtitle-renderer-cue-window')?.innerText;
     if (!legenda) {
-        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
-        legenda = document.getElementById('legendaRodapeHtml')?.innerText;
+        let qualLegendaCopiar = localStorage.getItem('qualLegendaCopiar');
+        legenda = document.getElementById(`${qualLegendaCopiar}`)?.innerText;
         if (!legenda) {
             return '';
         }

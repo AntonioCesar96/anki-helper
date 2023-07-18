@@ -1,3 +1,169 @@
+afterDOMGambiDaGambi();
+
+var legendas = [];
+var styleElementGambiDaGambi;
+var posicaoLegendaSliderRodapeGambiDaGambi = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+var fonteLegendaRodapeGambiDaGambi = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
+var posicaoLegendaRodapeGambiDaGambi = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
+var backgroundColorRodapeGambiDaGambi = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+
+function addStyleElementGambiDaGambi() {
+    if (styleElementGambiDaGambi) {
+        styleElementGambiDaGambi.parentElement.removeChild(styleElementGambiDaGambi);
+    }
+
+    styleElementGambiDaGambi = document.createElement('style');
+
+    styleElementGambiDaGambi.innerHTML = `.legenda {position: absolute !important;} `;
+    styleElementGambiDaGambi.innerHTML += `.jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaSliderRodapeGambiDaGambi}% !important; line-height: 1.27 !important;}  `;
+    styleElementGambiDaGambi.innerHTML += `.jw-flag-user-inactive .jw-text-track-display { bottom: ${posicaoLegendaRodapeGambiDaGambi}% !important;} `;
+
+    styleElementGambiDaGambi.innerHTML += `.jw-text-track-display .jw-text-track-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeGambiDaGambi}px !important; padding: 0px 5px !important;} `;
+    styleElementGambiDaGambi.innerHTML += `.jw-text-track-display .jw-text-track-cue {background-color: rgba(0, 0, 0, ${backgroundColorRodapeGambiDaGambi}) !important; line-height: inherit !important;} `;
+    styleElementGambiDaGambi.innerHTML += `.jw-text-track-display .jw-text-track-cue {color: #fff !important; text-shadow: none !important;} `;
+    styleElementGambiDaGambi.innerHTML += `.jw-captions {overflow: auto !important;} `;
+
+    styleElementGambiDaGambi.innerHTML += `.full-video #player {height: 100% !important; position: fixed !important; z-index: 99999 !important; top: 0 !important; left: 0 !important; right: 0 !important;} `;
+    styleElementGambiDaGambi.innerHTML += `.full-video {overflow: hidden !important;} `;
+
+    document.head.appendChild(styleElementGambiDaGambi);
+}
+
+function afterDOMGambiDaGambi() {
+    if (!localStorage.getItem('qualLegendaCopiar')) {
+        localStorage.setItem('qualLegendaCopiar', 'legendaTopoHtml')
+    }
+
+    afterDOMLegenda();
+
+    setInterval(() => {
+        var legenda = pegarLegendaGambi();
+        if (!legenda) {
+            return;
+        }
+
+        var achou = legendas.filter(x => x == legenda);
+        if (achou.length === 0) {
+            legendas.push(legenda);
+        }
+
+    }, 250);
+
+    let intervalCriarModal = setInterval(() => {
+        if (document.querySelector('#posicaoSliderRodape')) {
+            addStyleElementGambiDaGambi();
+
+            let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+            posicaoRodapeSliderInput.addEventListener('input', function () {
+                posicaoLegendaSliderRodapeGambiDaGambi = Number(this.value);
+                addStyleElementGambiDaGambi();
+            });
+
+            let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+            fonteLegendaRodapeInput.addEventListener('input', function () {
+                fonteLegendaRodapeGambiDaGambi = Number(this.value);
+                addStyleElementGambiDaGambi();
+            });
+
+            let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+            posicaoRodapeInput.addEventListener('input', function () {
+                posicaoLegendaRodapeGambiDaGambi = Number(this.value);
+                addStyleElementGambiDaGambi();
+            });
+
+            let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+            backgroundColorRodapeInput.addEventListener('input', function () {
+                backgroundColorRodapeGambiDaGambi = this.value;
+                addStyleElementGambiDaGambi();
+            });
+
+            clearInterval(intervalCriarModal);
+        }
+    }, 500);
+
+    document.addEventListener('keydown', checkKey);
+
+    async function checkKey(e) {
+        e = e || window.event;
+        var video = document.querySelector('video');
+
+        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+            video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
+        }
+
+        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+            video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
+        }
+
+        if (e.keyCode == '192') { // . /
+            var legenda = pegarLegendaGambi();
+            if (!legenda) {
+                if (legendas && legendas.length > 0) {
+                    legenda = legendas[legendas.length - 1]
+                } else {
+                    return;
+                }
+            }
+
+            var achou = legendas.filter(x => x == legenda);
+            if (achou.length > 0) {
+                legenda = '';
+                var index = legendas.indexOf(achou[0]);
+
+                for (let i = 5; i >= 0; i--) {
+                    if ((index - i) >= 0) {
+                        legenda += legendas[index - i] + ' ';
+                    }
+                }
+
+                for (let i = 1; i <= 3; i++) {
+                    if (legendas.length > (index + i)) {
+                        legenda += legendas[index + i] + ' ';
+                    }
+                }
+            }
+
+            copyToClipboard(legenda)
+
+                   function copyToClipboard(text) {
+                    var video = document.querySelector('video');
+                    const elem = document.createElement('textarea');
+                    elem.value = text;
+                    video.parentElement.appendChild(elem);
+                    elem.select();
+                    document.execCommand('copy');
+                    video.parentElement.removeChild(elem);
+                }
+        }
+    }
+
+    function pegarLegendaGambi() {
+        var legenda = document.querySelector('.jw-text-track-display')?.innerText;
+        if (!legenda) {
+            let qualLegendaCopiar = localStorage.getItem('qualLegendaCopiar');
+            legenda = document.getElementById(`${qualLegendaCopiar}`)?.innerText;
+            if (!legenda) {
+                return '';
+            }
+        }
+
+        if (!legenda) {
+            return '';
+        }
+
+        legenda = legenda.replaceAll('\n', ' ');
+        legenda = legenda.replaceAll('>> ', '');
+        legenda = legenda.replaceAll('[', '(');
+        legenda = legenda.replaceAll(']', ')');
+        legenda = legenda.trim();
+
+        return legenda
+    }
+}
+
+
+// Copiar conteudo do arquivo content-script-legenda.js e colar aqui em baixo, só copiar e colar
+/////////////////////////////////////////
 var sitesHome = [
     { host: "www.netflix.com", },
     { host: "primevideo" },

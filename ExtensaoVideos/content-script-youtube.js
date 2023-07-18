@@ -142,12 +142,13 @@ function afterDOMLoadedYoutube() {
                 copyToClipboard(legenda)
 
                 function copyToClipboard(text) {
+                    var video = document.querySelector('video');
                     const elem = document.createElement('textarea');
                     elem.value = text;
-                    document.body.appendChild(elem);
+                    video.parentElement.appendChild(elem);
                     elem.select();
                     document.execCommand('copy');
-                    document.body.removeChild(elem);
+                    video.parentElement.removeChild(elem);
                 }
             }
 
@@ -226,12 +227,13 @@ function afterDOMLoadedYoutube() {
                         console.log('Legenda copiada!')
 
                         function copyToClipboard(text) {
+                            var video = document.querySelector('video');
                             const elem = document.createElement('textarea');
                             elem.value = text;
-                            document.body.appendChild(elem);
+                            video.parentElement.appendChild(elem);
                             elem.select();
                             document.execCommand('copy');
-                            document.body.removeChild(elem);
+                            video.parentElement.removeChild(elem);
                         }
                     }, 3000);
 

@@ -87,7 +87,7 @@ function afterDOMSoaper() {
 
     setTimeout(() => {
 
-        document.onkeydown = checkKey;
+        document.addEventListener('keydown', checkKey);
 
         async function checkKey(e) {
             e = e || window.event;
@@ -106,72 +106,14 @@ function afterDOMSoaper() {
                 }
             }
 
-            if (e.keyCode == '96' || e.code == 'KeyZ') { // 0
-                video.currentTime = video.currentTime - 4;
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
             }
-
-            if (e.keyCode == '110' || e.code == 'KeyX') { // ,
-                video.currentTime = video.currentTime - 6;
+    
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
             }
-
-            if (e.keyCode == '78') { // N
-
-                // console.log("Trocar audio e legenda");
-
-                var audioPortugues = getBotao('Português (Brasil)', 'audio');
-                var audioIngles = getBotao('English', 'audio');
-                var subPortugues = getBotao('Português (Brasil)', 'sub');
-                var subIngles = getBotao('English', 'sub');
-
-                if (audioIngles) {
-                    if (audioIngles.parentElement.querySelector('input').checked) {
-                        audioPortugues.click();
-                        subPortugues.click();
-                    } else {
-                        audioIngles.click();
-                        subIngles.click();
-                    }
-                }
-            }
-
-            if (e.keyCode == '86') { // V
-                var subOff = getBotao('Off', 'sub');
-                if (!subOff) {
-                    subOff = getBotao('Não', 'sub');
-                }
-                var subIngles = getBotao('English', 'sub');
-
-                if (subIngles.parentElement.querySelector('input').checked) {
-                    subOff.click();
-                } else {
-                    subIngles.click();
-                }
-            }
-
-            if (e.keyCode == '80') { // P
-                var subOff = getBotao('Off', 'sub');
-                if (!subOff) {
-                    subOff = getBotao('Não', 'sub');
-                }
-                var subPortugues = getBotao('Português (Brasil)', 'sub');
-
-                if (subPortugues.parentElement.querySelector('input').checked) {
-                    subOff.click();
-                } else {
-                    subPortugues.click();
-                }
-            }
-
-            if (e.keyCode == '66') { // B
-                var audioPortugues = getBotao('Português (Brasil)', 'audio');
-                var audioIngles = getBotao('English', 'audio');
-
-                if (audioIngles.parentElement.querySelector('input').checked) {
-                    audioPortugues.click();
-                } else {
-                    audioIngles.click();
-                }
-            }
+    
 
             if (e.keyCode == '192') { // . /
                 var legenda = pegarLegendaSoaper();
@@ -206,34 +148,24 @@ function afterDOMSoaper() {
                 copyToClipboard(legenda)
 
                 function copyToClipboard(text) {
+                    var video = document.querySelector('video');
                     const elem = document.createElement('textarea');
                     elem.value = text;
-                    document.body.appendChild(elem);
+                    video.parentElement.appendChild(elem);
                     elem.select();
                     document.execCommand('copy');
-                    document.body.removeChild(elem);
+                    video.parentElement.removeChild(elem);
                 }
             }
         }
     }, 5000);
 }
 
-
-function getBotao(texto, sessao) {
-    var labels = document.querySelectorAll('label');
-
-    for (let i = 0; i < labels.length; i++) {
-        if (labels[i].textContent.SoapertsWith(texto) && labels[i].getAttribute('for').SoapertsWith(sessao)) {
-            return labels[i];
-        }
-    }
-}
-
 function pegarLegendaSoaper() {
-    var legenda = document.querySelector('.dss-subtitle-renderer-cue-window')?.innerText;
+    var legenda = document.querySelector('.jw-text-track-display')?.innerText;
     if (!legenda) {
-        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
-        legenda = document.getElementById('legendaRodapeHtml')?.innerText;
+        let qualLegendaCopiar = localStorage.getItem('qualLegendaCopiar');
+        legenda = document.getElementById(`${qualLegendaCopiar}`)?.innerText;
         if (!legenda) {
             return '';
         }

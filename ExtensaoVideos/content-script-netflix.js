@@ -298,12 +298,13 @@ function afterDOMNetflix() {
                 copyToClipboard(legenda)
 
                 function copyToClipboard(text) {
+                    var video = document.querySelector('video');
                     const elem = document.createElement('textarea');
                     elem.value = text;
-                    document.body.appendChild(elem);
+                    video.parentElement.appendChild(elem);
                     elem.select();
                     document.execCommand('copy');
-                    document.body.removeChild(elem);
+                    video.parentElement.removeChild(elem);
                 }
             }
         }
@@ -313,13 +314,12 @@ function afterDOMNetflix() {
 function pegarLegendaNetflix() {
     var legenda = document.querySelector('.player-timedtext')?.innerText;
     if (!legenda) {
-        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
-        legenda = document.getElementById('legendaRodapeHtml')?.innerText;
+        let qualLegendaCopiar = localStorage.getItem('qualLegendaCopiar');
+        legenda = document.getElementById(`${qualLegendaCopiar}`)?.innerText;
         if (!legenda) {
             return '';
         }
     }
-
     if (!legenda) {
         return '';
     }

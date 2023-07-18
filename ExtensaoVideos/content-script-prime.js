@@ -430,12 +430,12 @@ function afterDOMLoadedPrime() {
                 }
             }
 
-            if (e.keyCode == '96' || e.code == 'KeyZ') { // 0
-                video.currentTime = video.currentTime - 4;
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
             }
 
-            if (e.keyCode == '110' || e.code == 'KeyX') { // ,
-                video.currentTime = video.currentTime - 6;
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -
@@ -514,12 +514,13 @@ function afterDOMLoadedPrime() {
                 copyToClipboard(legenda)
 
                 function copyToClipboard(text) {
+                    var video = document.querySelector('video');
                     const elem = document.createElement('textarea');
                     elem.value = text;
-                    document.body.appendChild(elem);
+                    video.parentElement.appendChild(elem);
                     elem.select();
                     document.execCommand('copy');
-                    document.body.removeChild(elem);
+                    video.parentElement.removeChild(elem);
                 }
             }
         }
@@ -557,8 +558,8 @@ function pegarLegendaPrime2222() {
 function pegarLegendaPrime() {
     var legenda = document.querySelector('div p span')?.innerText;
     if (!legenda) {
-        //alterar para 'legendaTopoHtml' se o ingles estiver em cima
-        legenda = document.getElementById('legendaRodapeHtml')?.innerText;
+        let qualLegendaCopiar = localStorage.getItem('qualLegendaCopiar');
+        legenda = document.getElementById(`${qualLegendaCopiar}`)?.innerText;
         if (!legenda) {
             return '';
         }

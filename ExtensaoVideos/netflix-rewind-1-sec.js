@@ -4,19 +4,14 @@ window.netflixRewindPlugin.player = undefined;
 window.netflixRewindPlugin.seek = function (e) {
     if (window.netflixRewindPlugin.player) {
         let currentTime = window.netflixRewindPlugin.player.getCurrentTime();
-        switch (e.key) {
-            case '0':
-                window.netflixRewindPlugin.player.seek(currentTime - 4 * 1000);
-                break;
-            case 'z':
-                window.netflixRewindPlugin.player.seek(currentTime - 4 * 1000);
-                break;
-            case ',':
-                window.netflixRewindPlugin.player.seek(currentTime - 6 * 1000);
-                break;
-            case 'x':
-                window.netflixRewindPlugin.player.seek(currentTime - 6 * 1000);
-                break;
+
+        console.log('Se não voltar, dar F5 com o video aberto, ele perde a referencia por algum motivo')
+
+        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) {
+            window.netflixRewindPlugin.player.seek(currentTime - Number(localStorage.getItem('valorTempo1')) * 1000);
+        }
+        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) {
+            window.netflixRewindPlugin.player.seek(currentTime - Number(localStorage.getItem('valorTempo2')) * 1000);
         }
     } else {
         window.netflixRewindPlugin.initPluginLogic();
