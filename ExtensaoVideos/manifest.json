@@ -42,7 +42,8 @@
                 "content-script-disney.js",
                 "content-script-netflix.js",
                 "content-script-instagram.js",
-                "content-script-legenda.js"
+                "content-script-legenda.js",
+                "content-script-soaper.js"
             ]
         }
     ]

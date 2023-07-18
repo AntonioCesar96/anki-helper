@@ -8,8 +8,14 @@ window.netflixRewindPlugin.seek = function (e) {
             case '0':
                 window.netflixRewindPlugin.player.seek(currentTime - 4 * 1000);
                 break;
+            case 'z':
+                window.netflixRewindPlugin.player.seek(currentTime - 4 * 1000);
+                break;
             case ',':
-                window.netflixRewindPlugin.player.seek(currentTime - 7 * 1000);
+                window.netflixRewindPlugin.player.seek(currentTime - 6 * 1000);
+                break;
+            case 'x':
+                window.netflixRewindPlugin.player.seek(currentTime - 6 * 1000);
                 break;
         }
     } else {

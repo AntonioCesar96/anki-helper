@@ -430,11 +430,11 @@ function afterDOMLoadedPrime() {
                 }
             }
 
-            if (e.keyCode == '96') { // 0
-                video.currentTime = video.currentTime - skipTime;
+            if (e.keyCode == '96' || e.code == 'KeyZ') { // 0
+                video.currentTime = video.currentTime - 4;
             }
 
-            if (e.keyCode == '110') { // ` '
+            if (e.keyCode == '110' || e.code == 'KeyX') { // ,
                 video.currentTime = video.currentTime - 6;
             }
 

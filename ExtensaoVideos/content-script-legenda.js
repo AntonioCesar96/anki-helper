@@ -5,8 +5,6 @@ var sitesHome = [
     { host: "www.disneyplus.com" },
     { host: "www.starplus.com" },
     { host: "www.southparkstudios.com.br" },
-    { host: "ssoap2day" },
-    { host: "fmovies" },
     { host: "soaper" },
 ]
 
@@ -55,14 +53,21 @@ function afterDOMLegenda() {
 
     addFontToPage(localStorage.getItem('fontBase64'));
 
+    let intervalCriarModal = setInterval(() => {
+        if (document.querySelector('video')) {
+            criarModal();
+            clearInterval(intervalCriarModal);
+        }
+    }, 500);
+
     document.addEventListener('keydown', checkKey);
 
     async function checkKey(e) {
         e = e || window.event;
 
-        console.log(e.keyCode);
-
-        if (e.keyCode == '49') { // 1
+        // console.log(e);
+        // e.ctrlKey && 
+        if (e.code == 'KeyQ') { 
             if (!document.getElementById('modal') && document.querySelector('video')) {
                 criarModal();
             }
@@ -76,12 +81,12 @@ function afterDOMLegenda() {
             }
         }
 
-        if (e.keyCode == '50') { // 2
+        if (e.code == 'KeyW') { 
             legendaTopoLigar = !legendaTopoLigar;
             document.getElementById('switchLegendaTopoButton').checked = legendaTopoLigar;
         }
 
-        if (e.keyCode == '51') { // 3
+        if (e.code == 'KeyE') {
             legendaRodapeLigar = !legendaRodapeLigar;
             document.getElementById('switchLegendaRodapeButton').checked = legendaRodapeLigar;
         }
@@ -346,9 +351,9 @@ function criarModal() {
     modal.appendChild(modalContent);
 
     // Adiciona o modal ao body
-    if(location.host.includes("netflix")) {
+    if (location.host.includes("netflix")) {
         document.querySelector('video').parentElement
-        .parentElement.parentElement.parentElement.appendChild(modal);
+            .parentElement.parentElement.parentElement.appendChild(modal);
     } else {
         document.querySelector('video').parentElement.parentElement.appendChild(modal);
     }
@@ -513,8 +518,10 @@ function obterVariacaoSeSliderVisivelRodape() {
     if ((document.querySelector('div[data-testid="TimelineSlider"]') ||
         document.querySelector('.atvwebplayersdk-seekbar-container.show') ||
         document.querySelector('.overlay__controls--visually-show') ||
-        document.querySelector('div[data-uia="timeline-bar"]')) &&
-        posicaoLegendaRodape < posicaoLegendaSliderRodape) {
+        document.querySelector('div[data-uia="timeline-bar"]') ||
+        document.querySelector('div[id="player"]:not(.jw-flag-user-inactive)'))
+        // && posicaoLegendaRodape < posicaoLegendaSliderRodape
+    ) {
         return posicaoLegendaSliderRodape;
     }
 
@@ -527,8 +534,10 @@ function obterVariacaoSeSliderVisivelTopo() {
     if ((document.querySelector('div[data-testid="TimelineSlider"]') ||
         document.querySelector('.atvwebplayersdk-seekbar-container.show') ||
         document.querySelector('.overlay__controls--visually-show') ||
-        document.querySelector('div[data-uia="timeline-bar"]')) &&
-        posicaoLegendaTopo < posicaoLegendaSliderTopo) {
+        document.querySelector('div[data-uia="timeline-bar"]') ||
+        document.querySelector('div[id="player"]:not(.jw-flag-user-inactive)'))
+        // && posicaoLegendaTopo < posicaoLegendaSliderTopo
+    ) {
         return posicaoLegendaSliderTopo;
     }
 

@@ -408,16 +408,12 @@ function afterDOMLoadedHbo() {
                 });
             }
 
-
-
-            if (e.keyCode == '96') { // 0
-                // voltarNoTempo(skipTime)
-                video.currentTime = video.currentTime - skipTime;
+            if (e.keyCode == '96' || e.code == 'KeyZ') { // 0
+                video.currentTime = video.currentTime - 4;
             }
 
-            if (e.keyCode == '110') { // ` '
-                // voltarNoTempo(7)
-                video.currentTime = video.currentTime - 7;
+            if (e.keyCode == '110' || e.code == 'KeyX') { // ,
+                video.currentTime = video.currentTime - 6;
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -

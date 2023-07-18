@@ -1,131 +1,79 @@
-if (location.host === "www.disneyplus.com" || location.host === "www.starplus.com"
-    || location.host === "www.southparkstudios.com.br") {
+if (location.host.includes('soaper')) {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', afterDOMDisney);
+        document.addEventListener('DOMContentLoaded', afterDOMSoaper);
     } else {
-        afterDOMDisney();
+        afterDOMSoaper();
     }
-}
-
-function foneStar() {
-
-    function pularIntro() {
-
-        var skipButton = document.querySelector('div[aria-label="Pular abertura"]');
-        if (skipButton) {
-            skipButton.click()
-            return true;
-        }
-
-        return false;
-    }
-
-    if (!navigator.mediaSession) {
-        return;
-    }
-
-    navigator.mediaSession.setActionHandler('previoustrack', function () {
-        if (pularIntro()) {
-            return;
-        }
-
-        document.querySelector('[aria-label="Skip back 10 seconds"]').click();
-    });
-
-    navigator.mediaSession.setActionHandler('nexttrack', function () {
-        if (pularIntro()) {
-            return;
-        }
-
-        let audioPortugues = getBotao('Português (Brasil)', 'audio');
-        let audioIngles = getBotao('English', 'audio');
-        let subPortugues = getBotao('Português (Brasil)', 'sub');
-        let subIngles = getBotao('English', 'sub');
-
-        if (audioIngles) {
-            if (audioIngles.parentElement.querySelector('input').checked) {
-                audioPortugues.click();
-                subPortugues.click();
-            } else {
-                audioIngles.click();
-                subIngles.click();
-            }
-        }
-
-    });
 }
 
 var legendas = [];
-var styleElementStar;
-var posicaoLegendaSliderRodapeStar = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
-var fonteLegendaRodapeStar = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
-var posicaoLegendaRodapeStar = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
-var backgroundColorRodapeStar = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var styleElementSoaper;
+var posicaoLegendaSliderRodapeSoaper = localStorage.getItem('posicaoLegendaSliderRodape') ? Number(localStorage.getItem('posicaoLegendaSliderRodape')) : 450;
+var fonteLegendaRodapeSoaper = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
+var posicaoLegendaRodapeSoaper = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
+var backgroundColorRodapeSoaper = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
 
-function addStyleElementStar() {
-    if (styleElementStar) {
-        styleElementStar.parentElement.removeChild(styleElementStar);
+function addStyleElementSoaper() {
+    if (styleElementSoaper) {
+        styleElementSoaper.parentElement.removeChild(styleElementSoaper);
     }
 
-    styleElementStar = document.createElement('style');
+    styleElementSoaper = document.createElement('style');
 
-    styleElementStar.innerHTML = `.dss-subtitle-renderer-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeStar}px !important;} `;
+    styleElementSoaper.innerHTML = `.legenda {position: absolute !important;} `;
+    styleElementSoaper.innerHTML += `.jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaSliderRodapeSoaper}% !important; line-height: 1.27 !important;}  `;
+    styleElementSoaper.innerHTML += `.jw-flag-user-inactive .jw-text-track-display { bottom: ${posicaoLegendaRodapeSoaper}% !important;} `;
+    
+    styleElementSoaper.innerHTML += `.jw-text-track-display .jw-text-track-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeSoaper}px !important; padding: 0px 5px !important;} `;
+    styleElementSoaper.innerHTML += `.jw-text-track-display .jw-text-track-cue {background-color: rgba(0, 0, 0, ${backgroundColorRodapeSoaper}) !important; line-height: inherit !important;} `;
+    styleElementSoaper.innerHTML += `.jw-captions {overflow: auto !important;} `;
 
-    styleElementStar.innerHTML += `.btm-media-player:not(.btm-media-player-idle) .dss-subtitle-renderer-cue-positioning-box {position: fixed !important; bottom: ${posicaoLegendaSliderRodapeStar}% !important; top: auto !important; left: 0 !important; right: 0 !important;} `;
-    styleElementStar.innerHTML += `.btm-media-player.btm-media-player-idle .dss-subtitle-renderer-cue-positioning-box { position: fixed !important; bottom: ${posicaoLegendaRodapeStar}% !important; top: auto !important; left: 0 !important; right: 0 !important;} `;
+    styleElementSoaper.innerHTML += `.full-video #player {height: 100% !important; position: fixed !important; z-index: 99999 !important; top: 0 !important; left: 0 !important; right: 0 !important;} `;
+    styleElementSoaper.innerHTML += `.full-video {overflow: hidden !important;} `;
 
-    styleElementStar.innerHTML += `.dss-subtitle-renderer-line {background-color: rgba(0, 0, 0, ${backgroundColorRodapeStar}) !important;} `;
-    styleElementStar.innerHTML += `.controls__footer { padding-bottom: 5px !important;} `;
-    styleElementStar.innerHTML += `.controls__header:before { display: none !important;} `;
-    styleElementStar.innerHTML += `.controls__footer:before { height: 11% !important;} `;
-
-    document.head.appendChild(styleElementStar);
+    document.head.appendChild(styleElementSoaper);
 }
 
-function afterDOMDisney() {
-    console.log('Fone Helper Rodando! - Star ou Disney');
+function afterDOMSoaper() {
+    console.log('Fone Helper Rodando! - Soaper ou Soaper');
 
-    setTimeout(() => {
-        console.log('Fone Helper Rodando! - Star ou Disney');
-
-        foneStar();
-
-    }, 15000);
 
     let intervalCriarModal = setInterval(() => {
         if (document.querySelector('#posicaoSliderRodape')) {
-            addStyleElementStar();
+            addStyleElementSoaper();
 
             let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
             posicaoRodapeSliderInput.addEventListener('input', function () {
-                posicaoLegendaSliderRodapeStar = Number(this.value);
-                addStyleElementStar();
+                posicaoLegendaSliderRodapeSoaper = Number(this.value);
+                addStyleElementSoaper();
             });
 
             let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
             fonteLegendaRodapeInput.addEventListener('input', function () {
-                fonteLegendaRodapeStar = Number(this.value);
-                addStyleElementStar();
+                fonteLegendaRodapeSoaper = Number(this.value);
+                addStyleElementSoaper();
             });
 
             let posicaoRodapeInput = document.querySelector('#posicaoRodape');
             posicaoRodapeInput.addEventListener('input', function () {
-                posicaoLegendaRodapeStar = Number(this.value);
-                addStyleElementStar();
+                posicaoLegendaRodapeSoaper = Number(this.value);
+                addStyleElementSoaper();
             });
 
             let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
             backgroundColorRodapeInput.addEventListener('input', function () {
-                backgroundColorRodapeStar = this.value;
-                addStyleElementStar();
+                backgroundColorRodapeSoaper = this.value;
+                addStyleElementSoaper();
             });
 
             clearInterval(intervalCriarModal);
         }
     }, 500);
 
+
+
     setInterval(() => {
-        var legenda = pegarLegendaStar();
+        var legenda = pegarLegendaSoaper();
         if (!legenda) {
             return;
         }
@@ -143,13 +91,21 @@ function afterDOMDisney() {
 
         async function checkKey(e) {
             e = e || window.event;
-            var video = getVideo();
+            var video = document.querySelector('video');
 
-            // console.log(e.keyCode);
+            console.log(e.keyCode);
 
-            // TODO
-            // quando aparecer document.querySelector('.overlay__loading')
-            // apertar voltar 10s e ir pra frente 10s
+            
+            if (e.code == 'KeyR') { 
+                addStyleElementSoaper();
+
+                if(!document.body.classList.contains('full-video')) {
+                    document.body.classList.add('full-video');
+                } else {
+                    document.body.classList.remove('full-video');
+                }
+            }
+
             if (e.keyCode == '96' || e.code == 'KeyZ') { // 0
                 video.currentTime = video.currentTime - 4;
             }
@@ -219,7 +175,7 @@ function afterDOMDisney() {
             }
 
             if (e.keyCode == '192') { // . /
-                var legenda = pegarLegendaStar();
+                var legenda = pegarLegendaSoaper();
                 if (!legenda) {
                     if (legendas && legendas.length > 0) {
                         legenda = legendas[legendas.length - 1]
@@ -268,13 +224,13 @@ function getBotao(texto, sessao) {
     var labels = document.querySelectorAll('label');
 
     for (let i = 0; i < labels.length; i++) {
-        if (labels[i].textContent.startsWith(texto) && labels[i].getAttribute('for').startsWith(sessao)) {
+        if (labels[i].textContent.SoapertsWith(texto) && labels[i].getAttribute('for').SoapertsWith(sessao)) {
             return labels[i];
         }
     }
 }
 
-function pegarLegendaStar() {
+function pegarLegendaSoaper() {
     var legenda = document.querySelector('.dss-subtitle-renderer-cue-window')?.innerText;
     if (!legenda) {
         //alterar para 'legendaTopoHtml' se o ingles estiver em cima
