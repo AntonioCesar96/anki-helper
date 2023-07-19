@@ -134,6 +134,7 @@ var posicaoLegendaSliderRodapeHboMax = localStorage.getItem('posicaoLegendaSlide
 var fonteLegendaRodapeHboMax = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
 var posicaoLegendaRodapeHboMax = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapeHboMax = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var esconderBarra = false;
 
 function addStyleElementHboMax() {
     if (styleElementHboMax) {
@@ -154,6 +155,12 @@ function addStyleElementHboMax() {
     styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-1rynq56 {align-self: center !important;} `;
     styleElementHboMax.innerHTML += `.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv { position: fixed !important; right: 5px !important; bottom: -20px; opacity: 0.2; }`;
     styleElementHboMax.innerHTML += `.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv .css-1rynq56 { font-size: 14px !important; }`;
+
+    if (esconderBarra) {
+        styleElementHboMax.innerHTML += `.css-175oi2r.r-1niwhzg.r-13awgt0.r-17s6mgv.r-12vffkv, div[aria-label="Voltar"] { display: none !important; }`;
+        styleElementHboMax.innerHTML += `div[data-slider="true"] div[data-testid="CueBoxContainer"] .css-175oi2r .css-175oi2r { bottom: ${posicaoLegendaRodapeHboMax}% !important; } `;
+
+    }
 
     document.head.appendChild(styleElementHboMax);
 }
@@ -213,8 +220,6 @@ function afterDOMLoadedHbo() {
         }
     }, (100));
 
-
-
     setInterval(() => {
         var legenda = pegarLegendaHbo();
         if (!legenda) {
@@ -271,6 +276,11 @@ function afterDOMLoadedHbo() {
 
             console.log(e.keyCode);
 
+            if (e.key === '.') {
+                esconderBarra = !esconderBarra;
+                addStyleElementHboMax();
+            }
+
             if (e.keyCode == '78') { // N
 
                 proxy(() => {
@@ -281,9 +291,17 @@ function afterDOMLoadedHbo() {
                     // audio
                     var portugues = document.querySelector('div[aria-label="Áudio"] div[aria-label="Português (Brasil)"]');
 
-                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    // var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    // if (!ingles) {
+                    //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                    // if (!ingles) {
+                    //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
+                    // }
+                    // }
+
+                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
                     if (!ingles) {
-                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
                     }
 
                     if (ingles) {
@@ -323,7 +341,6 @@ function afterDOMLoadedHbo() {
 
             }
 
-
             if (e.keyCode == '86') { // V     
                 proxy(() => {
                     // console.log("Trocar legenda ingles");
@@ -349,8 +366,6 @@ function afterDOMLoadedHbo() {
                     }
                 });
             }
-
-
 
             if (e.keyCode == '80') { // P      
                 proxy(() => {
@@ -378,8 +393,6 @@ function afterDOMLoadedHbo() {
                 });
             }
 
-
-
             if (e.keyCode == '66') { // B    
                 proxy(() => {
                     // console.log("Trocar audio");
@@ -388,10 +401,19 @@ function afterDOMLoadedHbo() {
 
                     var portugues = document.querySelector('div[aria-label="Áudio"] div[aria-label="Português (Brasil)"]');
 
-                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    // var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    // if (!ingles) {
+                    //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                    // if (!ingles) {
+                    //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
+                    // }
+                    // }
+
+                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
                     if (!ingles) {
-                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
                     }
+
 
                     if (ingles) {
 
@@ -408,11 +430,11 @@ function afterDOMLoadedHbo() {
                 });
             }
 
-            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) {
                 video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
             }
 
-            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) {
                 video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
             }
 

@@ -21,6 +21,7 @@ var posicaoLegendaSliderRodapeNetflix = localStorage.getItem('posicaoLegendaSlid
 var fonteLegendaRodapeNetflix = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
 var posicaoLegendaRodapeNetflix = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapeNetflix = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var esconderBarra = false;
 
 function addStyleElementNetflix() {
     if (styleElementNetflix) {
@@ -41,6 +42,12 @@ function addStyleElementNetflix() {
     styleElementNetflix.innerHTML += `.player-timedtext {position: fixed !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaRodapeNetflix}%!important;} `;
     styleElementNetflix.innerHTML += `.active .player-timedtext { bottom: ${posicaoLegendaSliderRodapeNetflix}%!important;} `;
     styleElementNetflix.innerHTML += `.player-timedtext-text-container { position: static !important; text-align: center !important; } `;
+
+    if (esconderBarra) {
+        styleElementNetflix.innerHTML += `.watch-video--bottom-controls-container { display: none !important; }`;
+        styleElementNetflix.innerHTML += `button[data-uia="control-flag"], button[data-uia="control-nav-back"] { display: none !important; }`;
+        styleElementNetflix.innerHTML += `.active .player-timedtext { bottom: ${posicaoLegendaRodapeNetflix}%!important;} `;
+    }
 
     document.head.appendChild(styleElementNetflix);
 }
@@ -103,6 +110,11 @@ function afterDOMNetflix() {
             e = e || window.event;
 
             // console.log(e.keyCode);
+
+            if (e.key === '.') {
+                esconderBarra = !esconderBarra;
+                addStyleElementNetflix();
+            }
 
             if (e.keyCode == '78') { // N
 

@@ -6,6 +6,7 @@ var posicaoLegendaSliderRodapeGambiDaGambi = localStorage.getItem('posicaoLegend
 var fonteLegendaRodapeGambiDaGambi = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
 var posicaoLegendaRodapeGambiDaGambi = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapeGambiDaGambi = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var esconderBarra = false;
 
 function addStyleElementGambiDaGambi() {
     if (styleElementGambiDaGambi) {
@@ -21,10 +22,15 @@ function addStyleElementGambiDaGambi() {
     styleElementGambiDaGambi.innerHTML += `.jw-text-track-display .jw-text-track-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeGambiDaGambi}px !important; padding: 0px 5px !important;} `;
     styleElementGambiDaGambi.innerHTML += `.jw-text-track-display .jw-text-track-cue {background-color: rgba(0, 0, 0, ${backgroundColorRodapeGambiDaGambi}) !important; line-height: inherit !important;} `;
     styleElementGambiDaGambi.innerHTML += `.jw-text-track-display .jw-text-track-cue {color: #fff !important; text-shadow: none !important;} `;
-    styleElementGambiDaGambi.innerHTML += `.jw-captions {overflow: auto !important;} `;
+    styleElementGambiDaGambi.innerHTML += `.jw-captions {overflow: hidden !important; max-height: 100% !important} `;
 
     styleElementGambiDaGambi.innerHTML += `.full-video #player {height: 100% !important; position: fixed !important; z-index: 99999 !important; top: 0 !important; left: 0 !important; right: 0 !important;} `;
     styleElementGambiDaGambi.innerHTML += `.full-video {overflow: hidden !important;} `;
+
+    if (esconderBarra) {
+        styleElementGambiDaGambi.innerHTML += `.jw-controlbar, .jw-controls-backdrop { display: none !important; }`;
+        styleElementGambiDaGambi.innerHTML += `.jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaRodapeGambiDaGambi}% !important; line-height: 1.27 !important;}  `;
+    }
 
     document.head.appendChild(styleElementGambiDaGambi);
 }
@@ -85,13 +91,19 @@ function afterDOMGambiDaGambi() {
 
     async function checkKey(e) {
         e = e || window.event;
+
+        if (e.key === '.') {
+            esconderBarra = !esconderBarra;
+            addStyleElementGambiDaGambi();
+        }
+
         var video = document.querySelector('video');
 
-        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) {
             video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
         }
 
-        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+        if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) {
             video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
         }
 
@@ -125,15 +137,15 @@ function afterDOMGambiDaGambi() {
 
             copyToClipboard(legenda)
 
-                   function copyToClipboard(text) {
-                    var video = document.querySelector('video');
-                    const elem = document.createElement('textarea');
-                    elem.value = text;
-                    video.parentElement.appendChild(elem);
-                    elem.select();
-                    document.execCommand('copy');
-                    video.parentElement.removeChild(elem);
-                }
+            function copyToClipboard(text) {
+                var video = document.querySelector('video');
+                const elem = document.createElement('textarea');
+                elem.value = text;
+                video.parentElement.appendChild(elem);
+                elem.select();
+                document.execCommand('copy');
+                video.parentElement.removeChild(elem);
+            }
         }
     }
 
@@ -386,7 +398,7 @@ function criarModal() {
     modal.style.position = 'fixed';
     modal.style.zIndex = '99999999999';
     modal.style.right = '0';
-    modal.style.top = '14%';
+    modal.style.top = '5%';
     modal.style.overflow = 'auto';
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 
@@ -579,6 +591,8 @@ function criarModal() {
     var labelTempo2 = document.createElement('label');
     labelTempo2.textContent = 'Tempo 2';
     labelTempo2.style.marginRight = '5px';
+    labelTempo2.style.marginBottom = '5px';
+    labelTempo2.style.display = 'inline-block';
 
     var inputTecla2 = document.createElement('input');
     inputTecla2.type = 'text';

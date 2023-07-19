@@ -12,6 +12,7 @@ var posicaoLegendaSliderRodapeSoaper = localStorage.getItem('posicaoLegendaSlide
 var fonteLegendaRodapeSoaper = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
 var posicaoLegendaRodapeSoaper = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapeSoaper = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var esconderBarra = false;
 
 function addStyleElementSoaper() {
     if (styleElementSoaper) {
@@ -26,17 +27,21 @@ function addStyleElementSoaper() {
     
     styleElementSoaper.innerHTML += `.jw-text-track-display .jw-text-track-cue {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeSoaper}px !important; padding: 0px 5px !important;} `;
     styleElementSoaper.innerHTML += `.jw-text-track-display .jw-text-track-cue {background-color: rgba(0, 0, 0, ${backgroundColorRodapeSoaper}) !important; line-height: inherit !important;} `;
-    styleElementSoaper.innerHTML += `.jw-captions {overflow: auto !important;} `;
+    styleElementSoaper.innerHTML += `.jw-captions {overflow: hidden !important; max-height: 100% !important} `;
 
     styleElementSoaper.innerHTML += `.full-video #player {height: 100% !important; position: fixed !important; z-index: 99999 !important; top: 0 !important; left: 0 !important; right: 0 !important;} `;
     styleElementSoaper.innerHTML += `.full-video {overflow: hidden !important;} `;
+
+    if (esconderBarra) {
+        styleElementSoaper.innerHTML += `.jw-controlbar, .jw-controls-backdrop { display: none !important; }`;
+        styleElementSoaper.innerHTML += `.jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaRodapeSoaper}% !important; line-height: 1.27 !important;}  `;
+    }
 
     document.head.appendChild(styleElementSoaper);
 }
 
 function afterDOMSoaper() {
     console.log('Fone Helper Rodando! - Soaper ou Soaper');
-
 
     let intervalCriarModal = setInterval(() => {
         if (document.querySelector('#posicaoSliderRodape')) {
@@ -70,8 +75,6 @@ function afterDOMSoaper() {
         }
     }, 500);
 
-
-
     setInterval(() => {
         var legenda = pegarLegendaSoaper();
         if (!legenda) {
@@ -95,7 +98,11 @@ function afterDOMSoaper() {
 
             console.log(e.keyCode);
 
-            
+            if (e.key === '.') {
+                esconderBarra = !esconderBarra;
+                addStyleElementSoaper();
+            }
+
             if (e.code == 'KeyR') { 
                 addStyleElementSoaper();
 

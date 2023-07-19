@@ -61,6 +61,7 @@ var posicaoLegendaSliderRodapeStar = localStorage.getItem('posicaoLegendaSliderR
 var fonteLegendaRodapeStar = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
 var posicaoLegendaRodapeStar = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapeStar = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var esconderBarra = false;
 
 function addStyleElementStar() {
     if (styleElementStar) {
@@ -78,6 +79,11 @@ function addStyleElementStar() {
     styleElementStar.innerHTML += `.controls__footer { padding-bottom: 5px !important;} `;
     styleElementStar.innerHTML += `.controls__header:before { display: none !important;} `;
     styleElementStar.innerHTML += `.controls__footer:before { height: 11% !important;} `;
+
+    if (esconderBarra) {
+        styleElementStar.innerHTML += `.controls.controls__content  { display: none !important; }`;
+        styleElementStar.innerHTML += `.btm-media-player:not(.btm-media-player-idle) .dss-subtitle-renderer-cue-positioning-box {position: fixed !important; bottom: ${posicaoLegendaRodapeStar}% !important; top: auto !important; left: 0 !important; right: 0 !important;} `;
+    }
 
     document.head.appendChild(styleElementStar);
 }
@@ -146,6 +152,11 @@ function afterDOMDisney() {
             var video = getVideo();
 
             // console.log(e.keyCode);
+
+            if (e.key === '.') {
+                esconderBarra = !esconderBarra;
+                addStyleElementStar();
+            }
 
             // TODO
             // quando aparecer document.querySelector('.overlay__loading')

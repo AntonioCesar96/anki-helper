@@ -220,7 +220,7 @@ function criarModal() {
     modal.style.position = 'fixed';
     modal.style.zIndex = '99999999999';
     modal.style.right = '0';
-    modal.style.top = '14%';
+    modal.style.top = '5%';
     modal.style.overflow = 'auto';
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 
@@ -413,6 +413,8 @@ function criarModal() {
     var labelTempo2 = document.createElement('label');
     labelTempo2.textContent = 'Tempo 2';
     labelTempo2.style.marginRight = '5px';
+    labelTempo2.style.marginBottom = '5px';
+    labelTempo2.style.display = 'inline-block';
 
     var inputTecla2 = document.createElement('input');
     inputTecla2.type = 'text';

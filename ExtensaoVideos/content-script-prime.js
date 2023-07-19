@@ -1,3 +1,13 @@
+/*
+    . = esconder tudo
+    4 = colocar em letra minuscula
+    Q = abrir menu
+    W = desligar legenda superior
+    E = desligar legenda inferior
+    + = acelerar
+    - = desacelerar
+*/
+
 site = {
     host: "www.primevideo.com",
     seletorAudioIngles: '.atvwebplayersdk-audiomenu-container [aria-label="English"]',
@@ -160,7 +170,6 @@ function pularIntroducao(tentativas) {
     }, (1000 * 60 * 5));
 }
 
-
 function pularPropaganda(tentativas) {
     var pular = document.querySelector('.fu4rd6c.f1cw2swo');
 
@@ -221,6 +230,7 @@ var posicaoLegendaSliderRodapePrime = localStorage.getItem('posicaoLegendaSlider
 var fonteLegendaRodapePrime = localStorage.getItem('fonteLegendaRodape') ? Number(localStorage.getItem('fonteLegendaRodape')) : 34;
 var posicaoLegendaRodapePrime = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapePrime = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
+var esconderBarra = false;
 
 function addStyleElementPrime() {
     if (styleElementPrime) {
@@ -253,6 +263,12 @@ function addStyleElementPrime() {
 
     if (mudarTudoPraMinuscula) { // Tecla 4
         styleElementPrime.innerHTML += `.atvwebplayersdk-captions-text {text-transform: lowercase !important;} `;
+    }
+
+    if (esconderBarra) {
+        styleElementPrime.innerHTML += `.atvwebplayersdk-bottompanel-container, .xrayQuickView { display: none !important; }`;
+        styleElementPrime.innerHTML += `.atvwebplayersdk-hideabletopbuttons-container, .atvwebplayersdk-closebutton-wrapper { display: none !important; }`;
+        styleElementPrime.innerHTML += `.atvwebplayersdk-captions-overlay.f1d63tv1 .f1iwgj00 > div {bottom: ${posicaoLegendaRodapePrime}% !important;} `;
     }
 
     document.head.appendChild(styleElementPrime);
@@ -348,6 +364,11 @@ function afterDOMLoadedPrime() {
 
             console.log(e.keyCode);
 
+            if (e.key === '.') {
+                esconderBarra = !esconderBarra;
+                addStyleElementPrime();
+            }
+
             if (e.keyCode == '52') { // 4
                 mudarTudoPraMinuscula = !mudarTudoPraMinuscula;
                 addStyleElementPrime();
@@ -430,11 +451,11 @@ function afterDOMLoadedPrime() {
                 }
             }
 
-            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) {
                 video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
             }
 
-            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) {
                 video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
             }
 
