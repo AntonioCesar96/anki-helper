@@ -44,7 +44,8 @@ function addStyleElementNetflix() {
     styleElementNetflix.innerHTML += `.player-timedtext-text-container { position: static !important; text-align: center !important; } `;
 
     if (esconderBarra) {
-        styleElementNetflix.innerHTML += `.watch-video--bottom-controls-container { display: none !important; }`;
+        // styleElementNetflix.innerHTML += `.watch-video--bottom-controls-container { display: none !important; }`;
+        styleElementNetflix.innerHTML += `.watch-video--bottom-controls-container { visibility: hidden !important; }`;
         styleElementNetflix.innerHTML += `button[data-uia="control-flag"], button[data-uia="control-nav-back"] { display: none !important; }`;
         styleElementNetflix.innerHTML += `.active .player-timedtext { bottom: ${posicaoLegendaRodapeNetflix}%!important;} `;
     }
