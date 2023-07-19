@@ -67,6 +67,27 @@ var tempo = 0;
 var timer = 0;
 var legendas = [];
 
+var styleElementYoutube;
+var esconderBarra = false;
+
+function addstyleElementYoutube() {
+    if (styleElementYoutube) {
+        styleElementYoutube.parentElement.removeChild(styleElementYoutube);
+    }
+
+    styleElementYoutube = document.createElement('style');
+
+    styleElementYoutube.innerHTML = ``;
+    
+    if (esconderBarra) {
+        styleElementYoutube.innerHTML += `.caption-window.ytp-caption-window-bottom { margin-bottom: 0 !important; }`;
+        styleElementYoutube.innerHTML += `.ytp-chrome-bottom, .ytp-gradient-bottom { display: none !important; }`;
+        styleElementYoutube.innerHTML += `.jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: ${posicaoLegendaRodapeSoaper}% !important; line-height: 1.27 !important;}  `;
+    }
+
+    document.head.appendChild(styleElementYoutube);
+}
+
 function afterDOMLoadedYoutube() {
     setInterval(() => {
         // document.querySelectorAll('.ytp-panel-menu [role="menuitem"] .ytp-menuitem-content')
@@ -104,6 +125,11 @@ function afterDOMLoadedYoutube() {
             var video = getVideo();
 
             console.log(e.keyCode);
+
+            if (e.key === '.') {
+                esconderBarra = !esconderBarra;
+                addstyleElementYoutube();
+            }
 
             if (e.keyCode == '110') { // ,
                 video.currentTime = video.currentTime - 3;
@@ -201,7 +227,7 @@ function afterDOMLoadedYoutube() {
                 window.open(location.href.replace('youtube.com', 'youtubezz.com'));
             }
 
-            if (e.keyCode == '194' || e.keyCode == '111') { // . /
+            if (e.keyCode == '111') { //    /
                 document.querySelector('button[aria-label="More actions"]').click();
 
                 setTimeout(() => {

@@ -179,9 +179,10 @@ function afterDOMLoadedHome() {
             oImg.setAttribute('src', imagem);
 
             var container = document.querySelector(`.imagens-cache`);
-            container.appendChild(oImg);
-
-            container.style.display = 'none';
+            if(container) {
+                container.appendChild(oImg);
+                container.style.display = 'none';
+            }
         }
     }, 5000);
 
