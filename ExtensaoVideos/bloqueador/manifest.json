@@ -1,0 +1,41 @@
+{
+    "name": "Bloqueador",
+    "manifest_version": 3,
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "webRequest"
+    ],
+    "action": {
+        "default_icon": {
+            "16": "video.png",
+            "24": "video.png",
+            "32": "video.png"
+        }
+    },
+    "host_permissions": [
+        "https://*/"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "youtube.html"
+            ],
+            "matches": [
+                "https://*/*"
+            ]
+        }
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
+                "content-script-home.js",
+                "content-script-instagram.js"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "name": "Video Utils",
+    "manifest_version": 3,
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "webRequest"
+    ],
+    "action": {
+        "default_icon": {
+            "16": "video.png",
+            "24": "video.png",
+            "32": "video.png"
+        }
+    },
+    "host_permissions": [
+        "https://*/"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "netflix-rewind-1-sec.js"
+            ],
+            "matches": [
+                "https://*/*"
+            ]
+        }
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
+                "content-script-youtube.js",
+                "content-script-prime.js",
+                "content-script-hbo.js",
+                "content-script-disney.js",
+                "content-script-netflix.js",
+                "content-script-legenda.js",
+                "content-script-soaper.js"
+            ]
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 {
-    "name": "Video Helper",
+    "name": "Cifra Club",
     "manifest_version": 3,
     "version": "1.0",
     "permissions": [
@@ -20,8 +20,6 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "youtube.html",
-                "netflix-rewind-1-sec.js"
             ],
             "matches": [
                 "https://*/*"
@@ -34,16 +32,7 @@
                 "https://*/*"
             ],
             "js": [
-                "content-script-home.js",
-                "content-script-youtube.js",
-                "content-script-prime.js",
-                "content-script-hbo.js",
-                "content-script-cifraclub.js",
-                "content-script-disney.js",
-                "content-script-netflix.js",
-                "content-script-instagram.js",
-                "content-script-legenda.js",
-                "content-script-soaper.js"
+                "content-script-cifraclub.js"
             ]
         }
     ]

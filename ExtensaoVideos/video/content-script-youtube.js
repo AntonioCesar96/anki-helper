@@ -6,6 +6,12 @@ if (location.host === "www.youtube.com") {
     }
 }
 
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', afterDOMLoadedPronunciation);
+} else {
+    afterDOMLoadedPronunciation();
+}
+
 var skipTime = 4;
 
 function getVideo() {
@@ -78,7 +84,7 @@ function addstyleElementYoutube() {
     styleElementYoutube = document.createElement('style');
 
     styleElementYoutube.innerHTML = ``;
-    
+
     if (esconderBarra) {
         styleElementYoutube.innerHTML += `.caption-window.ytp-caption-window-bottom { margin-bottom: 0 !important; }`;
         styleElementYoutube.innerHTML += `.ytp-chrome-bottom, .ytp-gradient-bottom { display: none !important; }`;
@@ -89,6 +95,7 @@ function addstyleElementYoutube() {
 }
 
 function afterDOMLoadedYoutube() {
+
     setInterval(() => {
         // document.querySelectorAll('.ytp-panel-menu [role="menuitem"] .ytp-menuitem-content')
 
@@ -104,10 +111,6 @@ function afterDOMLoadedYoutube() {
         }
 
     }, 250);
-
-    setTimeout(() => {
-        readTextFile();
-    }, 500);
 
     setInterval(() => {
         fone();
@@ -223,7 +226,7 @@ function afterDOMLoadedYoutube() {
                 console.log("Interval cancelado!")
             }
 
-            if (e.keyCode == '220' || e.keyCode == '221') { // ] [
+            if (e.ctrlKey === false && (e.keyCode == '220' || e.keyCode == '221')) { // ] [
                 window.open(location.href.replace('youtube.com', 'youtubezz.com'));
             }
 
@@ -300,4 +303,44 @@ function pegarLegendaYoutube() {
     // legenda = legenda.charAt(0) + legenda.substring(1).toLowerCase();
 
     return legenda
+}
+
+
+
+
+function afterDOMLoadedPronunciation() {
+
+    console.log("Pronunciation");
+
+    setTimeout(() => {
+        document.addEventListener('contextmenu', function (e) {
+
+            let palavraMarcada = window.getSelection()?.toString().trim() ?? "";
+
+            if (e.ctrlKey) {
+                e.preventDefault();
+
+                var audio = new Audio(`http://localhost:3000/google/pronunciation?palavra=${palavraMarcada}`);
+                audio.play();
+
+            }
+        }, true);
+
+        document.addEventListener('keydown', function (e) {
+
+            let palavraMarcada = window.getSelection()?.toString().trim() ?? "";
+
+            if (e.ctrlKey === true && (e.keyCode == '220' || e.keyCode == '221')) { // ] [
+
+                window.open("https://www.google.com/search?q=" + palavraMarcada + "+pronunciation+english");
+            }
+
+            if (e.ctrlKey === true && e.keyCode == '194') { // ] [
+
+                window.open("https://context.reverso.net/traducao/ingles-portugues/" + palavraMarcada);
+            }
+
+        });
+    }, 1000);
+
 }
