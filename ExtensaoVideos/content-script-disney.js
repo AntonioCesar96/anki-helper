@@ -158,17 +158,90 @@ function afterDOMDisney() {
                 addStyleElementStar();
             }
 
-            // TODO
-            // quando aparecer document.querySelector('.overlay__loading')
-            // apertar voltar 10s e ir pra frente 10s
-            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) { 
-                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo1'));
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo1').toUpperCase()) {
+                let tempoEsperado = video.currentTime - Number(localStorage.getItem('valorTempo1'));
+                video.currentTime = tempoEsperado;
+
+                corrigirProblema(tempoEsperado);
             }
 
-            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) { 
-                video.currentTime = video.currentTime - Number(localStorage.getItem('valorTempo2'));
+            if (e.key.toUpperCase() === localStorage.getItem('teclaTempo2').toUpperCase()) {
+                let tempoEsperado = video.currentTime - Number(localStorage.getItem('valorTempo2'));
+                video.currentTime = tempoEsperado;
+
+                corrigirProblema(tempoEsperado);
             }
 
+            function corrigirProblema(tempoEsperado) {
+                validarSeDaraProblema();
+                var dataInicial = new Date();
+
+                function passouUmSegundo() {
+                    var dataAtual = new Date();
+                    var diferenca = dataAtual - dataInicial;
+                    var segundos = Math.floor(diferenca / 1000);
+
+                    return segundos >= 1;
+                }
+
+                function validarSeDaraProblema() {
+                    // console.log("video.readyState = " + video.readyState)
+                    setTimeout(function () {
+                        if (document.querySelector('.overlay__loading')) {
+                            voltar10segundos();
+                            return;
+                        }
+
+                        if (passouUmSegundo()) {
+                            console.log("Já passou um segundo!");
+                        } else {
+                            validarSeDaraProblema();
+                        }
+                    }, 1);
+                }
+
+                function voltar10segundos() {
+                    video.muted = true;
+                    document.querySelector('[aria-label="Skip back 10 seconds"]').click();
+
+                    avancar10segundos();
+                }
+
+                function avancar10segundos() {
+                    setTimeout(function () {
+                        if (video.readyState === 4) {
+                            video.currentTime = tempoEsperado;
+                            video.muted = false;
+                            clearInterval(intervalReadyState);
+                            return;
+                        }
+
+                        avancar10segundos();
+                    }, 1);
+                }
+
+                
+                // function avancar10segundos() {
+                //     console.log("video.readyState = " + video.readyState)
+
+                //     setTimeout(function () {
+                //         if (!document.querySelector('.overlay__loading')) { // devez enquando pode ser que nao esteja avançanmdp
+                //             // por questao dele sumir e aparecer bem rapido
+
+                //             let intervalReadyState = setInterval(() => {
+                //                 if (video.readyState === 4) {
+                //                     video.currentTime = tempoEsperado;
+                //                     video.muted = false;
+                //                     clearInterval(intervalReadyState);
+                //                 }
+                //             }, 1);
+                //             return;
+                //         }
+
+                //         avancar10segundos();
+                //     }, 1);
+                // }
+            }
 
             if (e.keyCode == '78') { // N
 
