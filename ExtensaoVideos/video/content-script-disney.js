@@ -79,6 +79,7 @@ function addStyleElementStar() {
     styleElementStar.innerHTML += `.controls__footer { padding-bottom: 5px !important;} `;
     styleElementStar.innerHTML += `.controls__header:before { display: none !important;} `;
     styleElementStar.innerHTML += `.controls__footer:before { height: 11% !important;} `;
+    styleElementStar.innerHTML += `video, body { outline: none !important;} `;
 
     if (esconderBarra) {
         styleElementStar.innerHTML += `.controls.controls__content  { display: none !important; }`;

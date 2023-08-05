@@ -288,6 +288,15 @@ function afterDOMLegenda() {
             legendaRodapeLigar = !legendaRodapeLigar;
             document.getElementById('switchLegendaRodapeButton').checked = legendaRodapeLigar;
         }
+
+        let video = document.querySelector('video');
+        if (e.keyCode == '107' || e.keyCode == '187') { // -
+            video.playbackRate = Number((video.playbackRate + 0.05).toPrecision(3));
+        }
+
+        if (e.keyCode == '109' || e.keyCode == '189') { // +
+            video.playbackRate = Number((video.playbackRate - 0.05).toPrecision(3));
+        }
     }
 }
 

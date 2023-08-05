@@ -135,6 +135,7 @@ var fonteLegendaRodapeHboMax = localStorage.getItem('fonteLegendaRodape') ? Numb
 var posicaoLegendaRodapeHboMax = localStorage.getItem('posicaoLegendaRodape') ? Number(localStorage.getItem('posicaoLegendaRodape')) : 500;
 var backgroundColorRodapeHboMax = localStorage.getItem('backgroundColorRodape') ? localStorage.getItem('backgroundColorRodape') : '0.25';
 var esconderBarra = false;
+var mudarTudoPraMinuscula = false;
 
 function addStyleElementHboMax() {
     if (styleElementHboMax) {
@@ -155,6 +156,10 @@ function addStyleElementHboMax() {
     styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r .css-1rynq56 {align-self: center !important;} `;
     styleElementHboMax.innerHTML += `.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv { position: fixed !important; right: 5px !important; bottom: -20px; opacity: 0.2; }`;
     styleElementHboMax.innerHTML += `.css-175oi2r.r-1d09ksm.r-1niwhzg.r-1h0z5md.r-rabhyy.r-12vffkv .css-1rynq56 { font-size: 14px !important; }`;
+
+    if (mudarTudoPraMinuscula) { // Tecla 4
+        styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-175oi2r {text-transform: lowercase !important;} `;
+    }
 
     if (esconderBarra) {
         styleElementHboMax.innerHTML += `.css-175oi2r.r-1niwhzg.r-13awgt0.r-17s6mgv.r-12vffkv, div[aria-label="Voltar"] { display: none !important; }`;
@@ -275,6 +280,11 @@ function afterDOMLoadedHbo() {
             var video = getVideo();
 
             console.log(e.keyCode);
+
+            if (e.keyCode == '52') { // 4
+                mudarTudoPraMinuscula = !mudarTudoPraMinuscula;
+                addStyleElementHboMax();
+            }
 
             if (e.key === '.') {
                 esconderBarra = !esconderBarra;

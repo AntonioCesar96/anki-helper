@@ -135,6 +135,14 @@ function afterDOMLoadedYoutube() {
             }
 
             if (e.keyCode == '110') { // ,
+                video.currentTime = video.currentTime - 4;
+            }
+
+            if (e.code == 'KeyZ') { 
+                video.currentTime = video.currentTime - 3.5;
+            }
+            
+            if (e.code == 'KeyX') { 
                 video.currentTime = video.currentTime - 3;
             }
 

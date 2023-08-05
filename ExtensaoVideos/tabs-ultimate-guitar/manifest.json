@@ -1,0 +1,39 @@
+{
+    "name": "Tabs Ultimate Guitar",
+    "manifest_version": 3,
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "webRequest"
+    ],
+    "action": {
+        "default_icon": {
+            "16": "video.png",
+            "24": "video.png",
+            "32": "video.png"
+        }
+    },
+    "host_permissions": [
+        "https://*/"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+            ],
+            "matches": [
+                "https://*/*"
+            ]
+        }
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
+                "content-script-tabs-ultimate-guitar.js"
+            ]
+        }
+    ]
+}
