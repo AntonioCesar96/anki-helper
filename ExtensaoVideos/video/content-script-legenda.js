@@ -569,9 +569,6 @@ function criarModal() {
             let linhas = contents.split('\r\n');
             if (linhas[0].includes(':')) {
                 let legendasYoutube = parsearArquivoLegendaYoutube(contents);
-
-                console.log(legendasYoutube);
-
                 tratarLegendaTopo(legendasYoutube);
                 return;
             }

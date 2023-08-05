@@ -236,6 +236,7 @@ function afterDOMLoadedYoutube() {
 
             if (e.ctrlKey === false && (e.keyCode == '220' || e.keyCode == '221')) { // ] [
                 window.open(location.href.replace('youtube.com', 'youtubezz.com'));
+                window.open(`https://pt.onlymp3.to/TIL/?url=${location.href}`);
             }
 
             if (e.keyCode == '111') { //    /

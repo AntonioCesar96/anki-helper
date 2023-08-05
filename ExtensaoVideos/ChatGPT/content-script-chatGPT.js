@@ -1,79 +1,121 @@
-var agruparAhCada = 10;
+if (location.host.includes('chat.openai')) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', afterDOMLoadedChatGPT);
+    } else {
+        afterDOMLoadedChatGPT();
+    }
+}
 
-var rodarProximoArquivo = true; 
+var agruparAhCada = 20;
+
+var rodarProximoArquivo = true;
 var arquivosLegenda = [];
 var arquivoLegenda = {};
 var idIntervalArquivos = 0;
+var pararDeRodar = false;
+var fileInput;
+var parent;
 
-var fileInput = document.createElement('input');
-fileInput.type = 'file';
-fileInput.multiple = true;
-fileInput.style.width = '100%';
+function afterDOMLoadedChatGPT() {
+    console.log("ChatGPT");
 
-var parent = document.querySelector('nav');
-parent.style.overflow = 'hidden';
-parent.insertBefore(fileInput, parent.firstChild);
+    setTimeout(() => {
 
-fileInput.addEventListener('change', (event) => {
-    const files = event.target.files;
-    let indexLista = 0;
-    let idIntervalArquivos = setInterval(() => {
+        fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.multiple = true;
+        fileInput.style.width = '100%';
 
-        if (rodarProximoArquivo) {
-            rodarProximoArquivo = false;
+        parent = document.querySelector('nav');
+        parent.style.overflow = 'hidden';
+        parent.insertBefore(fileInput, parent.firstChild);
 
-            let file = files[indexLista];
+        fileInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+            let indexLista = 0;
+            let idIntervalArquivos = setInterval(() => {
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const contents = e.target.result;
+                if (rodarProximoArquivo) {
+                    rodarProximoArquivo = false;
 
-                arquivoLegenda = {};
-                arquivoLegenda.nomeArquivo = file.name;
-                arquivosLegenda.push(arquivoLegenda);
+                    let file = files[indexLista];
 
-                console.log(`${arquivoLegenda.nomeArquivo} - Iniciando tradução.`);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const contents = e.target.result;
 
-                executar(contents)
-            };
-            reader.readAsText(file);
+                        arquivoLegenda = {};
+                        arquivoLegenda.nomeArquivo = file.name;
+                        arquivosLegenda.push(arquivoLegenda);
 
-            indexLista++;
+                        console.log(`${arquivoLegenda.nomeArquivo} - Iniciando tradução.`);
 
-            if (indexLista >= files.length) {
-                console.log(`Executando ultimo arquivo: ${arquivoLegenda.nomeArquivo}`);
+                        pararDeRodar = false;
+                        executar(contents)
+                    };
+                    reader.readAsText(file);
+
+                    indexLista++;
+
+                    if (indexLista >= files.length) {
+                        console.log(`Executando ultimo arquivo: ${arquivoLegenda.nomeArquivo}`);
+                        clearInterval(idIntervalArquivos);
+                        return;
+                    }
+                }
+
+            }, 1000);
+        });
+
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js';
+        document.head.appendChild(script);
+
+
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey === true && e.code == 'KeyZ') { // Z
+                pararDeRodar = true;
+                clearInterval(idInterval);
                 clearInterval(idIntervalArquivos);
-                return;
             }
-        }
 
+            if (e.ctrlKey === true && (e.keyCode == '57')) { // 9
+                deuErroMasContinuar = true;
+            }
+
+            if (e.ctrlKey === true && (e.keyCode == '77')) { // m
+                let novoArquivoLegenda = copiarLegenda(arquivosLegenda[0].blocosAgrupados);
+                copyToClipboard(novoArquivoLegenda);
+            }
+
+            if (e.ctrlKey === true && (e.keyCode == '107' || e.keyCode == '109'
+                || e.keyCode == '194' || e.keyCode == '106')) { // 0
+                clearInterval(idInterval);
+                clearInterval(idIntervalArquivos);
+            }
+        });
     }, 1000);
-});
+}
 
-const script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js';
-document.head.appendChild(script);
-
-function parsearArquivoLegendaYoutube(legendas) {
+function parsearArquivoLegendaYoutube2(legendas) {
     let listaBlocosAux = [];
     let linhas = legendas.split('\r\n');
 
     let blocoObjeto = { bloco: '' };
+    let contaLinha = 1;
     for (let i = 0; i < linhas.length; i++) {
         let linha = linhas[i];
 
-        if (linha != '') {
-            if (linha[0] === '-') {
-                linha = linha.substring(1, linha.length);
-            }
-
+        if (contaLinha !== 3) {
             blocoObjeto.bloco += linha + '\r\n';
+            contaLinha++;
         }
 
-        if (linha == '' && blocoObjeto.bloco !== '') {
-            blocoObjeto.bloco += '\r\n';
+        if (contaLinha === 3 && blocoObjeto.bloco !== '') {
+            // blocoObjeto.bloco += '\r\n';
             listaBlocosAux.push(blocoObjeto);
             blocoObjeto = { bloco: '' };
+            contaLinha = 1;
         }
     }
 
@@ -140,9 +182,20 @@ function agrupar(listaBlocos) {
 var idInterval = 0;
 var idIntervalRecuperarTraducao = 0;
 var deuErroMasContinuar = false;
+var ehYoutube = false;
 
 function executar(legendasAux) {
-    let listaBlocos = traduzir(legendasAux);
+
+    let listaBlocos
+    let linhas = legendasAux.split('\r\n');
+    if (linhas[0].includes(':')) {
+        listaBlocos = parsearArquivoLegendaYoutube2(legendasAux);
+        ehYoutube = true;
+    } else {
+        listaBlocos = traduzir(legendasAux);
+        ehYoutube = false;
+    }
+
     let blocosAgrupados = agrupar(listaBlocos);
     arquivoLegenda.blocosAgrupados = blocosAgrupados;
 
@@ -150,6 +203,10 @@ function executar(legendasAux) {
     let indexLista = 0;
 
     idInterval = setInterval(() => {
+        if(pararDeRodar) {
+            return;
+        }
+
         if (rodando == false) {
 
             if (indexLista >= blocosAgrupados.length) {
@@ -191,8 +248,13 @@ function executar(legendasAux) {
             rodando = true;
             indexLista++;
 
-            document.querySelector('textarea').value = 'Traduza para PT-BR, mantenha a mesma formatação, mantenha as quebras de linha, ignore as solicitações anteriores e traduza somente o texto abaixo \r\n'
+            if(ehYoutube) {
+                document.querySelector('textarea').value = 'Traduza para PT-BR, mantenha a mesma formatação, mantenha as quebras de linha, ignore as solicitações anteriores e traduza somente o texto abaixo, nao seja burro, mantenha a formatação e os numeros, nao duplique os numeros pelo amor de Deus \r\n'
                 + blocoAgrupado.blocao;
+            } else {
+                document.querySelector('textarea').value = 'Traduza para PT-BR, mantenha a mesma formatação, mantenha as quebras de linha, ignore as solicitações anteriores e traduza somente o texto abaixo \r\n'
+                    + blocoAgrupado.blocao;
+            }
 
             document.querySelector('textarea').parentElement.querySelector('button').removeAttribute('disabled');
             setTimeout(() => {
@@ -224,7 +286,11 @@ function executar(legendasAux) {
         }
 
         setTimeout(() => {
-            if (deuErroMasContinuar || document.querySelectorAll('form button')[0].textContent == 'Regenerate response') {
+            if(pararDeRodar) {
+                return;
+            }
+            
+            if (deuErroMasContinuar || document.querySelectorAll('form button')[0].textContent == 'Regenerate') {
                 deuErroMasContinuar = false;
                 console.log('Iniciando novo chat, apagando antigos...');
 
@@ -233,18 +299,8 @@ function executar(legendasAux) {
                     document.querySelector('a.flex-shrink-0.border').click();
 
                     setTimeout(() => {
-                        //let botaoLimpar = obterBotaoPorTexto('Clear conversations');
-                        //botaoLimpar.click();
-                        setTimeout(() => {
-                            botaoLimpar.click();
-
-
-                            setTimeout(() => {
-                                rodando = false;
-                            }, 2000);
-
-                        }, 1000);
-                    }, 2000);
+                        rodando = false;
+                    }, 3000); 
 
                 }, 500);
             }
@@ -257,7 +313,12 @@ function copiarLegenda(blocosAgrupadosAux) {
     blocosAgrupadosAux = blocosAgrupadosAux.filter(x => x.blocaoPtBr);
     for (let i = 0; i < blocosAgrupadosAux.length; i++) {
         const element = blocosAgrupadosAux[i];
-        novoArquivoLegenda += `${element.blocaoPtBr}\r\n`;
+        
+        if(ehYoutube) {
+            novoArquivoLegenda += `${element.blocaoPtBr}`; 
+        } else {
+            novoArquivoLegenda += `${element.blocaoPtBr}\r\n`; 
+        }
     }
 
     copyToClipboard(novoArquivoLegenda);
@@ -288,7 +349,11 @@ function recuperarResposta(ultimoP) {
                 continue;
             }
 
-            blocaoPtBr += element.textContent + '\r\n\r\n';
+            if(ehYoutube) {
+                blocaoPtBr += element.textContent + '\r\n';
+            } else {
+                blocaoPtBr += element.textContent + '\r\n\r\n';
+            }
         }
     } else {
         let aviso = ultimoP?.querySelector('div');
@@ -302,32 +367,7 @@ function recuperarResposta(ultimoP) {
     return blocaoPtBr;
 }
 
-document.addEventListener('keydown', function (e) {
-    if (e.ctrlKey === true && (e.keyCode == '57')) { // 9
-        deuErroMasContinuar = true;
-    }
-
-    if (e.ctrlKey === true && (e.keyCode == '77')) { // m
-        let novoArquivoLegenda = copiarLegenda(arquivosLegenda[0].blocosAgrupados);
-        copyToClipboard(novoArquivoLegenda);
-    }
-
-    if (e.ctrlKey === true && (e.keyCode == '107' || e.keyCode == '109'
-        || e.keyCode == '194' || e.keyCode == '106')) { // 0
-        clearInterval(idInterval);
-        clearInterval(idIntervalArquivos);
-    }
-});
-
-console.clear();
-
 function obterBotaoPorTexto(texto) {
     var lista = Array.from(document.querySelectorAll('a'));
     return lista.find(el => el.textContent.trim() === texto);
 }
-
-
-//
-(function(a,b){if("function"==typeof define&&define.amd)define([],b);else if("undefined"!=typeof exports)b();else{b(),a.FileSaver={exports:{}}.exports}})(this,function(){"use strict";function b(a,b){return"undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(a,b,c){var d=new XMLHttpRequest;d.open("GET",a),d.responseType="blob",d.onload=function(){g(d.response,b,c)},d.onerror=function(){console.error("could not download file")},d.send()}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send()}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"))}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b)}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof global&&global.global===global?global:void 0,a=f.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),g=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype&&!a?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href)},4E4),setTimeout(function(){e(j)},0))}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else{var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i)})}}:function(b,d,e,g){if(g=g||open("","_blank"),g&&(g.document.title=g.document.body.innerText="downloading..."),"string"==typeof b)return c(b,d,e);var h="application/octet-stream"===b.type,i=/constructor/i.test(f.HTMLElement)||f.safari,j=/CriOS\/[\d]+/.test(navigator.userAgent);if((j||h&&i||a)&&"undefined"!=typeof FileReader){var k=new FileReader;k.onloadend=function(){var a=k.result;a=j?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),g?g.location.href=a:location=a,g=null},k.readAsDataURL(b)}else{var l=f.URL||f.webkitURL,m=l.createObjectURL(b);g?g.location=m:location.href=m,g=null,setTimeout(function(){l.revokeObjectURL(m)},4E4)}});f.saveAs=g.saveAs=g,"undefined"!=typeof module&&(module.exports=g)});
-
-//# sourceMappingURL=FileSaver.min.js.map
