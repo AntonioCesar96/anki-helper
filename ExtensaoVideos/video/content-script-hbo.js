@@ -301,18 +301,18 @@ function afterDOMLoadedHbo() {
                     // audio
                     var portugues = document.querySelector('div[aria-label="Áudio"] div[aria-label="Português (Brasil)"]');
 
-                    // var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
-                    // if (!ingles) {
-                    //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    if (!ingles) {
+                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                        if (!ingles) {
+                            ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
+                        }
+                    }
+
+                    // var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
                     // if (!ingles) {
                     //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
                     // }
-                    // }
-
-                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
-                    if (!ingles) {
-                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
-                    }
 
                     if (ingles) {
 
@@ -411,18 +411,18 @@ function afterDOMLoadedHbo() {
 
                     var portugues = document.querySelector('div[aria-label="Áudio"] div[aria-label="Português (Brasil)"]');
 
-                    // var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
-                    // if (!ingles) {
-                    //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Descrição áudio"]');
+                    if (!ingles) {
+                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
+                        if (!ingles) {
+                            ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
+                        }
+                    }
+
+                    // var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
                     // if (!ingles) {
                     //     ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
                     // }
-                    // }
-
-                    var ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês - Original"]');
-                    if (!ingles) {
-                        ingles = document.querySelector('div[aria-label="Áudio"] div[aria-label="Inglês"]');
-                    }
 
 
                     if (ingles) {
