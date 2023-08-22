@@ -1,4 +1,4 @@
-if (location.host === "www.instagram.com") {
+if (location.host.includes("instagram")) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMInstagram);
     } else {
