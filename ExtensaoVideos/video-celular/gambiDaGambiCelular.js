@@ -65,6 +65,7 @@ afterDOMGambiDaGambiCelular();
 var legendas = [];
 var styleElementGambiDaGambi;
 var esconderBarra = false;
+var legendaTopoHtml;
 
 function addStyleElementGambiDaGambiCelular() {
     if (styleElementGambiDaGambi) {
@@ -74,24 +75,49 @@ function addStyleElementGambiDaGambiCelular() {
     styleElementGambiDaGambi = document.createElement("style");
 
     styleElementGambiDaGambi.innerHTML = ".legenda {position: absolute !important;} ";
-    styleElementGambiDaGambi.innerHTML += ".jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 10px !important; }  ";
-    styleElementGambiDaGambi.innerHTML += ".jw-flag-user-inactive .jw-text-track-display {height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 10px !important; }  "; 
+    styleElementGambiDaGambi.innerHTML += ".jw-text-track-display {opacity: 0; height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 10px !important; }  ";
+    styleElementGambiDaGambi.innerHTML += ".jw-flag-user-inactive .jw-text-track-display {opacity: 0; height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 10px !important; }  ";
 
     styleElementGambiDaGambi.innerHTML += "[aria-label='Rewind 10 Seconds'], [aria-label='Seek forward 10s'], [aria-label='Seek backward 10s'], [aria-label='Picture in Picture (PiP)'] { display: none !important; } ";
+    styleElementGambiDaGambi.innerHTML += ".jwplayer {user-select: auto !important; } ";
 
     if (esconderBarra) {
         styleElementGambiDaGambi.innerHTML += ".jw-controlbar, .jw-controls-backdrop { display: none !important; }";
 
-        styleElementGambiDaGambi.innerHTML += ".jw-text-track-display { position: fixed !important; height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 20px !important; }  "; 
-        styleElementGambiDaGambi.innerHTML += ".jw-flag-user-inactive .jw-text-track-display { position: fixed !important; height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 20px !important; }  "; 
+        styleElementGambiDaGambi.innerHTML += ".jw-text-track-display { position: fixed !important; height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 20px !important; }  ";
+        styleElementGambiDaGambi.innerHTML += ".jw-flag-user-inactive .jw-text-track-display { position: fixed !important; height: auto !important; left: 0 !important; right: 0 !important; top: auto !important; bottom: 20px !important; }  ";
     }
 
     document.head.appendChild(styleElementGambiDaGambi);
 }
 
+function criarLegendaTopo() {
+    let legenda = document.createElement('div');
+    legenda.setAttribute('id', 'legendaTopoHtml');
+    legenda.classList.add('legenda');
+    legenda.style.position = 'fixed !important';
+    legenda.style.zIndex = '99999999999';
+    legenda.style.top = '10px';
+    legenda.style.left = '0';
+    legenda.style.width = '100%';
+    legenda.style.color = '#fff';
+    legenda.style.fontSize = '22px';
+    legenda.style.fontFamily = 'NovaFonte, sans-serif';
+    legenda.style.textAlign = 'center';
+    legenda.innerText = 'Texto da legenda';
+
+    return legenda;
+}
+
+
 function afterDOMGambiDaGambiCelular() {
 
     addStyleElementGambiDaGambiCelular();
+
+    if (!document.getElementById('legendaTopoHtml')) {
+        legendaTopoHtml = criarLegendaTopo();
+        document.querySelector('video').parentElement.appendChild(legendaTopoHtml);
+    }
 
     setInterval(() => {
         let legenda = pegarLegendaGambiCelular();
@@ -103,8 +129,53 @@ function afterDOMGambiDaGambiCelular() {
         if (achou.length === 0) {
             legendas.push(legenda);
         }
-
     }, 250);
+
+
+    let lastLegenda;
+    setInterval(() => {
+        let legenda = document.querySelector(".jw-text-track-display")?.innerText;
+        if (lastLegenda === legenda) {
+            return;
+        }
+
+        lastLegenda = legenda;
+
+        if (!legenda) {
+            legendaTopoHtml.innerHTML = '';
+            legendaTopoHtml.style.display = 'none';
+            return;
+        }
+
+        legenda = legenda.replaceAll("\\n", " <br> ");
+
+
+        let palavras = legenda.split(" ");
+        let divContainer = document.createElement("div");
+        divContainer.style.lineHeight = "normal";
+        divContainer.style.padding = "0px 0px 0";
+
+        palavras.forEach(palavra => {
+            let span = document.createElement("span");
+            span.innerHTML = palavra + " ";
+            span.style.cursor = "pointer";
+            span.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            span.style.padding = "0px 0px 0";
+            span.style.margin = "0";
+
+            span.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                copyToClipboard(palavra);
+            });
+
+            divContainer.appendChild(span);
+        });
+
+        legendaTopoHtml.innerHTML = '';
+        legendaTopoHtml.appendChild(divContainer);
+        legendaTopoHtml.style.display = 'block';
+    }, 1);
 
 
     let copiarButton = document.createElement("button");
@@ -261,4 +332,4 @@ function copyToClipboard(text) {
     document.execCommand("copy");
     video.parentElement.removeChild(elem);
 }
-`
+ `
