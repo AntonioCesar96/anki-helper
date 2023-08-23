@@ -34,6 +34,7 @@
             ],
             "js": [
                 "content-script-youtube.js",
+                "content-script-youtube2222.js",
                 "content-script-prime.js",
                 "content-script-hbo.js",
                 "content-script-disney.js",
