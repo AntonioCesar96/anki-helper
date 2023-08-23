@@ -129,10 +129,10 @@ function redefinirTimer() {
 }
 
 function tratarVideo() {
-    let videoElement = getVideo();
-
+    
     let intervalAddTimer = setInterval(() => {
-        if (videoElement.readyState !== 4) {
+        let videoElement = getVideo();
+        if (!videoElement || videoElement.readyState !== 4) {
             return;
         }
 

@@ -37,7 +37,7 @@ function addStyleElementGambiDaGambi() {
 
 function afterDOMGambiDaGambi() {
     if (!localStorage.getItem('qualLegendaCopiar')) {
-        localStorage.setItem('qualLegendaCopiar', 'legendaTopoHtml')
+        localStorage.setItem('qualLegendaCopiar', 'legendaRodapeHtml')
     }
 
     afterDOMLegenda();
@@ -230,7 +230,7 @@ function afterDOMLegenda() {
     console.log('Fone Helper Rodando! - Legenda');
 
     if (!localStorage.getItem('qualLegendaCopiar')) {
-        localStorage.setItem('qualLegendaCopiar', 'legendaTopoHtml')
+        localStorage.setItem('qualLegendaCopiar', 'legendaRodapeHtml')
     }
 
     if (!localStorage.getItem('teclaTempo1')) {
