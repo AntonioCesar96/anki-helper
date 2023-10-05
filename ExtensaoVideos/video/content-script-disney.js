@@ -92,6 +92,13 @@ function addStyleElementStar() {
 function afterDOMDisney() {
     console.log('Fone Helper Rodando! - Star ou Disney');
 
+    setInterval(() => {
+        let btnNext = document.querySelector('button[data-gv2elementkey="playNext"]');
+        if(btnNext) {
+            btnNext.click();
+        }
+    }, 5000);
+
     setTimeout(() => {
         console.log('Fone Helper Rodando! - Star ou Disney');
 

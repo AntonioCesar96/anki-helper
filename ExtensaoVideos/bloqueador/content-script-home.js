@@ -30,13 +30,20 @@ var sitesHome = [
         seletor: 'body'
     },
     {
+        host: "www.youtube.com/watch",
+        href: "https://www.youtube.com/",
+        seletor: '#related'
+    },
+    {
         host: "www.youtube.com",
         href: "https://www.youtube.com/",
         seletor: 'ytd-browse[page-subtype="home"]'
     }
 ]
 
-var siteHome = sitesHome.filter(x => x.host === location.host)[0];
+var siteHome = sitesHome.filter(x => location.href.includes(x.host))[0];
+
+console.log(siteHome);
 
 if (siteHome) {
     console.log('Home');
@@ -66,7 +73,9 @@ function readTextFile() {
             if (rawFile.status === 200 || rawFile.status == 0) {
                 var html = rawFile.responseText;
 
-                replaceHtml(html)
+                setTimeout(() => {
+                    replaceHtml(html)
+                }, 1000)
             }
         }
     }
@@ -151,21 +160,21 @@ function afterDOMLoadedHome() {
 
     tratamentoTelaInicial();
 
-    if (document.location.href.includes('https://www.youtube.com')) {
-        setInterval(() => {
-            if (document.querySelector(siteHome?.seletor)) {
-                document.querySelector(siteHome?.seletor).innerHTML = '';
-            }
-        }, 1000);
+    // if (document.location.href.includes('https://www.youtube#####.com')) {
+    //     setInterval(() => {
+    //         if (document.querySelector(siteHome?.seletor)) {
+    //             document.querySelector(siteHome?.seletor).innerHTML = '';
+    //         }
+    //     }, 1000);
 
-        for (let i = 0; i < 10; i++) {
-            setTimeout(() => {
-                if (document.querySelector(siteHome?.seletor)) {
-                    document.querySelector(siteHome?.seletor).innerHTML = '';
-                }
-            }, (50 * i));
-        }
-    }
+    //     for (let i = 0; i < 10; i++) {
+    //         setTimeout(() => {
+    //             if (document.querySelector(siteHome?.seletor)) {
+    //                 document.querySelector(siteHome?.seletor).innerHTML = '';
+    //             }
+    //         }, (50 * i));
+    //     }
+    // }
 
     setTimeout(() => {
         readTextFile();

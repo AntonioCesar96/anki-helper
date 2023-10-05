@@ -85,6 +85,12 @@ function addstyleElementYoutube() {
 
     styleElementYoutube.innerHTML = ``;
 
+    styleElementYoutube.innerHTML += `ytd-browse[page-subtype="home"] #contents {  display: none !important; }`;
+    styleElementYoutube.innerHTML += `#related #items, #big-yoodle {  display: none !important; }`;
+
+    styleElementYoutube.innerHTML += `body.efyt-mini-player._top-right #movie_player:not(.ytp-fullscreen), body.efyt-mini-player._bottom-right #movie_player:not(.ytp-fullscreen) { right: 300px !important}`;
+    styleElementYoutube.innerHTML += `body._top-right #efyt-progress, body._bottom-right #efyt-progress { right: 300px !important}`;
+
     if (esconderBarra) {
         styleElementYoutube.innerHTML += `.caption-window.ytp-caption-window-bottom { margin-bottom: 0 !important; }`;
         styleElementYoutube.innerHTML += `.ytp-chrome-bottom, .ytp-gradient-bottom { display: none !important; }`;
@@ -95,6 +101,8 @@ function addstyleElementYoutube() {
 }
 
 function afterDOMLoadedYoutube() {
+
+    addstyleElementYoutube();
 
     setInterval(() => {
         // document.querySelectorAll('.ytp-panel-menu [role="menuitem"] .ytp-menuitem-content')
@@ -320,6 +328,24 @@ function pegarLegendaYoutube() {
 function afterDOMLoadedPronunciation() {
 
     console.log("Pronunciation");
+
+    function countSequences(n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n === 1) {
+            return 2; // Duas opções: pular ou dançar
+        } else {
+            let a1 = countSequences(n - 1);
+            let a2 = countSequences(n - 2);
+            
+            return a1 + a2;
+        }
+    }
+    
+    const n = 3; // Número de etapas
+    const totalSequences = countSequences(n);
+    console.log("Número de sequências possíveis: " + totalSequences);
 
     setTimeout(() => {
         document.addEventListener('contextmenu', function (e) {

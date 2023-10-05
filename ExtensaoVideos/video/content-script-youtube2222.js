@@ -59,7 +59,7 @@ function afterDOMLoadedYoutube2() {
             e = e || window.event;
             console.log(e.keyCode);
 
-            if (e.keyCode == '65') { // A
+            if (e.keyCode == '9999999999') { // A
                 document.querySelector('#startHoursInput').value = document.querySelector('.ytp-time-current').textContent;
 
                 dadosYoutube = getObjectFromLocalStorage();
@@ -76,7 +76,7 @@ function afterDOMLoadedYoutube2() {
                 saveObjectToLocalStorage(dadosYoutube);
             }
 
-            if (e.keyCode == '83') { // S
+            if (e.keyCode == '9999999999999') { // S
                 document.querySelector('#endHoursInput').value = document.querySelector('.ytp-time-current').textContent;
 
                 dadosYoutube = getObjectFromLocalStorage();
@@ -94,7 +94,7 @@ function afterDOMLoadedYoutube2() {
                 saveObjectToLocalStorage(dadosYoutube);
             }
 
-            if (e.keyCode == '68') { // D
+            if (e.keyCode == '999999999999999999999') { // D
                 const elem = document.createElement('textarea');
                 elem.value = localStorage.getItem('DADOS-YOUTUBE');
                 document.body.appendChild(elem);
@@ -394,7 +394,10 @@ function addstyleElementYoutube2() {
 
     styleElementYoutube2.innerHTML = ``;
 
-    styleElementYoutube2.innerHTML = `
+    styleElementYoutube2.innerHTML += `body.efyt-mini-player._top-right #player-container #movie_player:not(.ytp-fullscreen), body.efyt-mini-player._bottom-right #player-container #movie_player:not(.ytp-fullscreen) { right: 300px !important}`;
+    styleElementYoutube2.innerHTML += `body._top-right #efyt-progress, body._bottom-right #efyt-progress { right: 300px !important}`;
+
+    styleElementYoutube2.innerHTML += `
         #efyt-loop-panel2 {
             background-color: rgba(28, 28, 28, 0.8);
             border-radius: 4px;

@@ -6,8 +6,6 @@ if (location.host.includes("instagram")) {
     }
 }
 
-var elementoSugestaoTop = 0;
-
 function afterDOMInstagram() {
     console.log('Fone Helper Rodando! - Instagram');
 
@@ -29,11 +27,6 @@ function afterDOMInstagram() {
 
 
     setInterval(() => {
-        let element = getSuggestedPosts();
-        if (element) {
-            elementoSugestaoTop = (element.offsetTop + element.clientHeight) - (window.innerHeight || document.documentElement.clientHeight);
-        }
-
         var reels = document.querySelector('a[href="/reels/"]');
         if (reels) {
             let reelsGranGranFather = reels.parentElement.parentElement.parentElement;
@@ -64,14 +57,15 @@ function travarScrollParaBaixo() {
             return;
         }
 
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         var pathHome = document.querySelector('path[d="M22 23h-6.001a1 1 0 0 1-1-1v-5.455a2.997 2.997 0 1 0-5.993 0V22a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V11.543a1.002 1.002 0 0 1 .31-.724l10-9.543a1.001 1.001 0 0 1 1.38 0l10 9.543a1.002 1.002 0 0 1 .31.724V22a1 1 0 0 1-1 1Z"]');
+        if (!pathHome)
+            return;
 
-        if (pathHome && (scrollTop > lastScrollTop) && elementoSuggestedPostsEstaVisivelOuJaPassou()) {// Rolar para baixo
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-            let element = getSuggestedPosts();
+        if ((scrollTop > lastScrollTop) && elementoSuggestedPostsEstaVisivelOuJaPassou()) {// Rolar para baixo
             window.scrollTo({
-                top: elementoSugestaoTop + 200,
+                top: 0,
                 left: 0,
                 behavior: 'smooth'
             });
@@ -79,16 +73,6 @@ function travarScrollParaBaixo() {
 
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
-}
-
-function getSuggestedPosts() {
-    var labels = document.querySelectorAll('main span[dir="auto"]');
-
-    for (let i = 0; i < labels.length; i++) {
-        if (labels[i].textContent.startsWith("Suggested Posts")) {
-            return labels[i];
-        }
-    }
 }
 
 function getPastPosts() {
@@ -101,14 +85,27 @@ function getPastPosts() {
     }
 }
 
+function getSuggestedPosts() {
+    var labels = document.querySelectorAll('main span[dir="auto"]');
+
+    for (let i = 0; i < labels.length; i++) {
+        if (
+            labels[i].textContent.startsWith("Suggested Posts") ||
+            labels[i].textContent.startsWith("Suggested for you")
+        ) {
+            return labels[i];
+        }
+    }
+}
+
 function elementoSuggestedPostsEstaVisivelOuJaPassou() {
     let element = getSuggestedPosts();
     if (!element) {
-        return true;
+        return false;
     }
 
     var rect = element.getBoundingClientRect();
     var windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-    return (rect.top + 100) <= windowHeight;
+    return (rect.top + 400) <= windowHeight;
 }
