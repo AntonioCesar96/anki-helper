@@ -17,6 +17,7 @@ site = {
     seletorAudioIngles: '.atvwebplayersdk-audiomenu-container [aria-label="English"]',
     seletorAudioIngles2: '.atvwebplayersdk-audiomenu-container [aria-label="English [Audio Description]"]',
     seletorAudioPortugues: '.atvwebplayersdk-audiomenu-container [aria-label="Português"]',
+    seletorAudioPortugues2: '.atvwebplayersdk-audiomenu-container [aria-label="Português (Brasil)"]',
     seletorLegendaIngles: '.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="English [CC]"]',
     seletorLegendaOff: '.atvwebplayersdk-subtitleandaudiomenu-container [aria-label="Off"]',
     seletorLegendaPortugues: '.atvwebplayersdk-subtitleoption-container [aria-label="Português"]',
@@ -117,8 +118,13 @@ function fonePrime() {
         }
         if (audioIngles) {
             if (audioIngles.checked) {
-                document.querySelector(site.seletorAudioPortugues)
-                    .parentElement.querySelector('label').click();
+
+                var audioPtBr = document.querySelector(site.seletorAudioPortugues);
+                if (!audioPtBr) {
+                    audioPtBr = document.querySelector(site.seletorAudioPortugues2);
+                }
+
+                audioPtBr.parentElement.querySelector('label').click();
             } else {
                 audioIngles.parentElement.querySelector('label').click();
             }
@@ -398,8 +404,12 @@ function afterDOMLoadedPrime() {
                     audioIngles = document.querySelector(site.seletorAudioIngles2);
                 }
                 if (audioIngles.checked) {
-                    document.querySelector(site.seletorAudioPortugues)
-                        .parentElement.querySelector('label').click();
+                    var audioPtBr = document.querySelector(site.seletorAudioPortugues);
+                    if (!audioPtBr) {
+                        audioPtBr = document.querySelector(site.seletorAudioPortugues2);
+                    }
+
+                    audioPtBr.parentElement.querySelector('label').click();
                 } else {
                     audioIngles.parentElement.querySelector('label').click();
                 }
@@ -450,8 +460,12 @@ function afterDOMLoadedPrime() {
             }
             if (e.keyCode == '66' && audioIngles) { // B
                 if (audioIngles.checked) {
-                    document.querySelector(site.seletorAudioPortugues)
-                        .parentElement.querySelector('label').click();
+                    var audioPtBr = document.querySelector(site.seletorAudioPortugues);
+                    if (!audioPtBr) {
+                        audioPtBr = document.querySelector(site.seletorAudioPortugues2);
+                    }
+
+                    audioPtBr.parentElement.querySelector('label').click();
                 } else {
                     audioIngles.parentElement.querySelector('label').click();
                 }
