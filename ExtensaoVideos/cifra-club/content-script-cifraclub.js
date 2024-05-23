@@ -188,6 +188,9 @@ function afterDOMLoadedCifra() {
         let fontSize = localStorage.getItem("fontSizeCifraClub");
         document.querySelector('pre').style.fontSize = fontSize;       
         
+        document.querySelector('header.header')?.remove();
+        document.querySelector('.bfHeader-wrapper')?.remove();
+
         mudarTitulo();
 
         document.addEventListener('keydown', function (e) {

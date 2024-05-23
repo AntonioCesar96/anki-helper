@@ -412,8 +412,8 @@ function addstyleElementYoutube2() {
             position: absolute;
             z-index: 63;
             position: absolute;
-            top: -6px;
-            right: 0;
+            top: -500px;
+            right: -300px;
             height: 20px;
         }
 

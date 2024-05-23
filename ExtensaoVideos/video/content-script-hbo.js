@@ -1,4 +1,4 @@
-if (location.host === "play.hbomax.com") {
+if (location.host === "play.max.com") {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMLoadedHbo);
     } else {

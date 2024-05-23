@@ -112,9 +112,9 @@ function fonePrime() {
             return;
         }
 
-        var audioIngles = document.querySelector(site.seletorAudioIngles);
+        var audioIngles = document.querySelector(site.seletorAudioIngles2);
         if (!audioIngles) {
-            audioIngles = document.querySelector(site.seletorAudioIngles2);
+            audioIngles = document.querySelector(site.seletorAudioIngles);
         }
         if (audioIngles) {
             if (audioIngles.checked) {
@@ -399,9 +399,9 @@ function afterDOMLoadedPrime() {
                         .parentElement.querySelector('label').click()
                 }
 
-                var audioIngles = document.querySelector(site.seletorAudioIngles);
+                var audioIngles = document.querySelector(site.seletorAudioIngles2);
                 if (!audioIngles) {
-                    audioIngles = document.querySelector(site.seletorAudioIngles2);
+                    audioIngles = document.querySelector(site.seletorAudioIngles);
                 }
                 if (audioIngles.checked) {
                     var audioPtBr = document.querySelector(site.seletorAudioPortugues);
@@ -454,9 +454,9 @@ function afterDOMLoadedPrime() {
                 }
             }
 
-            var audioIngles = document.querySelector(site.seletorAudioIngles);
+            var audioIngles = document.querySelector(site.seletorAudioIngles2);
             if (!audioIngles) {
-                audioIngles = document.querySelector(site.seletorAudioIngles2);
+                audioIngles = document.querySelector(site.seletorAudioIngles);
             }
             if (e.keyCode == '66' && audioIngles) { // B
                 if (audioIngles.checked) {

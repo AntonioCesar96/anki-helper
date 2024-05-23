@@ -71,6 +71,7 @@ var tempoInicial = 0;
 var tempoFinal = 0;
 var tempo = 0;
 var timer = 0;
+var playbackRateAux = 0;
 var legendas = [];
 
 var styleElementYoutube;
@@ -85,8 +86,8 @@ function addstyleElementYoutube() {
 
     styleElementYoutube.innerHTML = ``;
 
-    styleElementYoutube.innerHTML += `ytd-browse[page-subtype="home"] #contents {  display: none !important; }`;
-    styleElementYoutube.innerHTML += `#related #items, #big-yoodle {  display: none !important; }`;
+    //styleElementYoutube.innerHTML += `ytd-browse[page-subtype="home"] #contents {  display: none !important; }`;
+    //styleElementYoutube.innerHTML += `#related #items, #big-yoodle {  display: none !important; }`;
 
     styleElementYoutube.innerHTML += `body.efyt-mini-player._top-right #movie_player:not(.ytp-fullscreen), body.efyt-mini-player._bottom-right #movie_player:not(.ytp-fullscreen) { right: 300px !important}`;
     styleElementYoutube.innerHTML += `body._top-right #efyt-progress, body._bottom-right #efyt-progress { right: 300px !important}`;
@@ -197,14 +198,28 @@ function afterDOMLoadedYoutube() {
                 }
             }
 
+            if (e.keyCode == '106') { // *
+                if(video.playbackRate == 1) {
+                    video.playbackRate = playbackRateAux;
+                } else {
+                    video.playbackRate = 1;
+                }
+
+                document.title = video.playbackRate + ' - ' + title;
+            }
+
             if (e.keyCode == '107' || e.keyCode == '187') { // -
                 video.playbackRate = Number((video.playbackRate + playbackRate).toPrecision(3));
                 document.title = video.playbackRate + ' - ' + title;
+
+                playbackRateAux = video.playbackRate;
             }
 
             if (e.keyCode == '109' || e.keyCode == '189') { // +
                 video.playbackRate = Number((video.playbackRate - playbackRate).toPrecision(3));
                 document.title = video.playbackRate + ' - ' + title;
+
+                playbackRateAux = video.playbackRate;
             }
 
             // Repete Pedaço do video

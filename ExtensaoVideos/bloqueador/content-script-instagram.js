@@ -47,6 +47,39 @@ function afterDOMInstagram() {
     }, 1000);
 
 
+    setTimeout(() => {
+
+        document.onkeydown = checkKey;
+
+        async function checkKey(e) {
+            e = e || window.event;
+            let videos = document.querySelectorAll('video');
+
+            if (e.keyCode == '96') { // 0
+                for (let i = 0; i < videos.length; i++) {
+                    videos[i].currentTime = videos[i].currentTime - 3;
+                }
+            }
+
+            if (e.keyCode == '110') { // ,
+                for (let i = 0; i < videos.length; i++) {
+                    videos[i].currentTime = videos[i].currentTime - 4;
+                }
+            }
+
+            if (e.keyCode == '37') { // <-
+                for (let i = 0; i < videos.length; i++) {
+                    videos[i].currentTime = videos[i].currentTime - 4;
+                }
+            }
+
+            if (e.keyCode == '39') { // ->
+                for (let i = 0; i < videos.length; i++) {
+                    videos[i].currentTime = videos[i].currentTime + 4;
+                }
+            }
+        }
+    }, 5000);
 }
 
 function travarScrollParaBaixo() {
