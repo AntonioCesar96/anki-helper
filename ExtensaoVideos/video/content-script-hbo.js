@@ -102,8 +102,8 @@ function acelerarVideoHbo() {
 
     var video = getVideo();
     if (video && playbackRate) {
-        video.playbackRate = playbackRate;
-        document.title = video.playbackRate + ' - ' + tituloPagina;
+        //video.playbackRate = playbackRate;
+        //document.title = video.playbackRate + ' - ' + tituloPagina;
     }
 
 }
@@ -145,7 +145,9 @@ function addStyleElementHboMax() {
     styleElementHboMax = document.createElement('style');
 
     // talvez text-shadow: #000000 0px 0px 7px;
-    styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-1rynq56 {font-family: NovaFonte, sans-serif !important; font-size: ${fonteLegendaRodapeHboMax}px !important; text-shadow: none !important; } `;
+    //styleElementHboMax.innerHTML += `.TopGradient-Beam-Web-Ent__sc-xdp0fw-1, .BottomGradient-Beam-Web-Ent__sc-xdp0fw-2 { opacity: 0 !important; } `;
+    styleElementHboMax.innerHTML += `div[data-testid="protection_layer"] { opacity: 0 !important; } `;
+
     styleElementHboMax.innerHTML += `div[data-testid="CueBoxContainer"] .css-1rynq56 {background-color: rgba(0, 0, 0, ${backgroundColorRodapeHboMax}) !important; font-weight: normal !important;} `;
 
     // Comentar se começar a ficar zuado
@@ -186,8 +188,9 @@ function afterDOMLoadedHbo() {
 
 
     let intervalCriarModal = setInterval(() => {
+        addStyleElementHboMax();
+        
         if (document.querySelector('#posicaoSliderRodape')) {
-            addStyleElementHboMax();
 
             let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
             posicaoRodapeSliderInput.addEventListener('input', function () {

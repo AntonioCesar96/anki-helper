@@ -135,6 +135,12 @@ export class LivrosClasse {
         },
         {
             biblia: true,
+            nome: 'biblia-comentario\\65-Matthew',
+            seletorPaginacao: 'a[href^="#-calibre_link"]',
+            idsEsconder: []
+        },
+        {
+            biblia: true,
             nome: 'biblia-comentario\\83-Galatians',
             seletorPaginacao: 'a[href^="#-calibre_link"]',
             idsEsconder: []

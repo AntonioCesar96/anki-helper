@@ -1,10 +1,10 @@
-if (location.host.includes("instagram")) {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', afterDOMInstagram);
-    } else {
-        afterDOMInstagram();
-    }
-}
+// if (location.host.includes("instagram")) {
+//     if (document.readyState === 'loading') {
+//         document.addEventListener('DOMContentLoaded', afterDOMInstagram);
+//     } else {
+//         afterDOMInstagram();
+//     }
+// }
 
 function afterDOMInstagram() {
     console.log('Fone Helper Rodando! - Instagram');

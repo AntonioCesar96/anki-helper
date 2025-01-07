@@ -410,9 +410,9 @@ function addstyleElementYoutube2() {
             font-size: 1.1em;
             padding: 8px;
             position: absolute;
-            z-index: 63;
+            z-index: 999999;
             position: absolute;
-            top: -500px;
+            top: -489px;
             right: -300px;
             height: 20px;
         }
