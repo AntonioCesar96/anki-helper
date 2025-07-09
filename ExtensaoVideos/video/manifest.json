@@ -41,7 +41,7 @@
                 "content-script-netflix.js",
                 "content-script-legenda.js",
                 "content-script-soaper.js",
-                "content-script-sysmapjs"
+                "content-script-instagram.js"
             ]
         }
     ]

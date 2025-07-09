@@ -59,6 +59,12 @@ function afterDOMLoadedYoutube2() {
             e = e || window.event;
             console.log(e.keyCode);
 
+            if (e.keyCode === 13) { // Enter
+                let videoElement = getVideo();
+                videoElement.currentTime = dadosYoutube.inicioSecs;
+                videoElement.play();
+            }
+
             if (e.keyCode == '9999999999') { // A
                 document.querySelector('#startHoursInput').value = document.querySelector('.ytp-time-current').textContent;
 
@@ -129,7 +135,7 @@ function redefinirTimer() {
 }
 
 function tratarVideo() {
-    
+
     let intervalAddTimer = setInterval(() => {
         let videoElement = getVideo();
         if (!videoElement || videoElement.readyState !== 4) {

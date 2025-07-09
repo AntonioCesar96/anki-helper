@@ -28,10 +28,15 @@ function afterDOMSysMap() {
 
 function sysmapLancarHoras() {
 
-    var ano = 2024;
-    var mes = 1;
+    // var ano = 2025;
+    // var mes = 1;
+    // var dia = 1;
+    // var lancarAteDia = 8;
+
+    var ano = new Date().getFullYear();
+    var mes = new Date().getMonth() + 1;
     var dia = 1;
-    var lancarAteDia = 25;
+    var lancarAteDia = new Date().getDate() - 1;
 
     var dynamicsLast = document.querySelectorAll('[class="td-date"]');
     if (dynamicsLast && dynamicsLast.length > 0) {

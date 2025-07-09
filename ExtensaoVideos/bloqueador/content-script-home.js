@@ -4,46 +4,46 @@ var sitesHome = [
         href: "https://twitter.com/explore",
         seletor: 'body'
     },
-    {
-        host: "x.com",
-        href: "https://x.com/explore",
-        seletor: 'body'
-    },
-    {
-        host: "www.instagram.com",
-        href: "https://www.instagram.com/",
-        seletor: 'body'
-    },
-    {
-        host: "g1.globo.com",
-        href: "https://g1.globo.com/",
-        seletor: 'body'
-    },
-    {
-        host: "ge.globo.com",
-        href: "https://ge.globo.com/",
-        seletor: 'body'
-    },
-    {
-        host: "www.campograndenews.com.br",
-        href: "https://www.campograndenews.com.br/",
-        seletor: 'body'
-    },
-    {
-        host: "midiamax.uol.com.br",
-        href: "https://midiamax.uol.com.br/",
-        seletor: 'body'
-    },
+    // {
+    //     host: "x.com",
+    //     href: "https://x.com/explore",
+    //     seletor: 'body'
+    // },
+    // {
+    //     host: "www.instagram.com",
+    //     href: "https://www.instagram.com/",
+    //     seletor: 'body'
+    // },
+    // {
+    //     host: "g1.globo.com",
+    //     href: "https://g1.globo.com/",
+    //     seletor: 'body'
+    // },
+    // {
+    //     host: "ge.globo.com",
+    //     href: "https://ge.globo.com/",
+    //     seletor: 'body'
+    // },
+    // {
+    //     host: "www.campograndenews.com.br",
+    //     href: "https://www.campograndenews.com.br/",
+    //     seletor: 'body'
+    // },
+    // {
+    //     host: "midiamax.uol.com.br",
+    //     href: "https://midiamax.uol.com.br/",
+    //     seletor: 'body'
+    // },
     // {
     //     host: "www.youtube.com/watch",
     //     href: "https://www.youtube.com/",
     //     seletor: '#related'
     // },
-    {
-        host: "www.youtube.com",
-        href: "https://www.youtube.com/",
-        seletor: 'ytd-browse[page-subtype="home"]'
-    }
+    // {
+    //     host: "www.youtube.com",
+    //     href: "https://www.youtube.com/",
+    //     seletor: 'ytd-browse[page-subtype="home"]'
+    // }
 ]
 
 var siteHome = sitesHome.filter(x => location.href.includes(x.host))[0];
@@ -140,10 +140,11 @@ function tratamentoTelaInicial() {
                 oldHref = document.location.href;
 
                 if (document.location.href.includes('https://www.youtube.com/shorts')) {
-                    document.querySelector('video').pause();
-                    if (document.querySelector('#shorts-container')) {
-                        document.querySelector('#shorts-container').innerHTML = '';
-                    }
+                    return;
+                    // document.querySelector('video').pause();
+                    // if (document.querySelector('#shorts-container')) {
+                    //     document.querySelector('#shorts-container').innerHTML = '';
+                    // }
                 }
                 readTextFile();
             }
