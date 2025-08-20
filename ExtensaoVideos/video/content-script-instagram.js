@@ -18,6 +18,8 @@ function getVideo() {
     return null;
 }
 
+var tempoInicial = 0, tempoFinal = 0;
+let onTimeUpdate;
 function afterDOMLoadedInstagram() {
 
     setTimeout(() => {
@@ -31,8 +33,51 @@ function afterDOMLoadedInstagram() {
 
             console.log(e.keyCode);
 
+            if (e.keyCode == '81') { // Q
+                tempoInicial = video.currentTime;
+                console.log("Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal);
+            }
+
+            if (e.keyCode == '87') { // W
+                tempoFinal = video.currentTime;
+                console.log("Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal);
+            }
+
+            if (e.keyCode == '69' && tempoInicial != 0 && tempoFinal != 0) { // E
+                Rodar();
+            }
+
+            if (e.keyCode == '82') { // R
+                if (onTimeUpdate) {
+                    video.removeEventListener('timeupdate', onTimeUpdate);
+                    console.log("timeupdate cancelado!")
+                }
+            }
+
+            function Rodar() {
+                const video = getVideo();
+
+                // Remove listener anterior, caso exista
+                if (onTimeUpdate) {
+                    video.removeEventListener('timeupdate', onTimeUpdate);
+                }
+
+                video.currentTime = tempoInicial;
+                video.muted = false;
+                video.play();
+
+                onTimeUpdate = () => {
+                    if (video.currentTime >= tempoFinal) {
+                        video.currentTime = tempoInicial;
+                    }
+                };
+
+                video.addEventListener('timeupdate', onTimeUpdate);
+                console.log("timeupdate setado! Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal)
+            }
+
             if (e.keyCode === 13) { // Enter
-                video.currentTime = 0;
+                video.currentTime = tempoInicial;
                 video.muted = false;
                 video.play();
             }
@@ -42,7 +87,7 @@ function afterDOMLoadedInstagram() {
                 video.muted = false;
             }
 
-            if (e.keyCode == '96') {
+            if (e.keyCode == '96') { // zero
                 video.currentTime = video.currentTime - 3;
                 video.muted = false;
             }

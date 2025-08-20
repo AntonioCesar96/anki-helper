@@ -71,7 +71,7 @@ var tempoInicial = 0;
 var tempoFinal = 0;
 var tempo = 0;
 var timer = 0;
-var playbackRateAux = 0;
+var playbackRateAux = 1.1;
 var legendas = [];
 
 var styleElementYoutube;
@@ -101,6 +101,34 @@ function addstyleElementYoutube() {
     document.head.appendChild(styleElementYoutube);
 }
 
+var playbackRateAuxInterval;
+function playbackRateInterval() {
+    if (playbackRateAuxInterval)
+        clearInterval(playbackRateAuxInterval);
+
+    playbackRateAuxInterval = setInterval(() => {
+        var title = document.title.replace(/^(\d+(\.\d+)?\s*-\s*)*/, '');
+        if (!sessionStorage.getItem('playbackRateAux')) {
+            clearInterval(playbackRateAuxInterval);
+            return;
+        }
+
+        var video = getVideo();
+        if (!video) {
+            return;
+        }
+
+        const rate = Number(sessionStorage.getItem('playbackRateAux')).toPrecision(3);
+        video.playbackRate = rate;
+        playbackRateAux = video.playbackRate;
+
+        if (!title.startsWith('' + rate)) {
+            document.title = video.playbackRate + ' - ' + title;
+        }
+    }, 2000);
+}
+
+let onTimeUpdate222222;
 function afterDOMLoadedYoutube() {
 
     addstyleElementYoutube();
@@ -125,8 +153,10 @@ function afterDOMLoadedYoutube() {
         fone();
     }, 5000);
 
+    playbackRateInterval();
+
     setTimeout(() => {
-        var title = document.title;
+        var title = document.title.replace(/^(\d+(\.\d+)?\s*-\s*)*/, '');
 
         var playbackRate = false ? 0.1 : 0.05;
 
@@ -143,15 +173,31 @@ function afterDOMLoadedYoutube() {
                 addstyleElementYoutube();
             }
 
+            if (location.pathname.startsWith("/shorts")) {
+                if (e.keyCode == '37') {  // seta esquerda
+                    video.currentTime = video.currentTime - 5;
+                }
+
+                if (e.keyCode == '39') {  // seta esquerda
+                    video.currentTime = video.currentTime + 5;
+                }
+            }
+
             if (e.keyCode == '110') { // ,
                 video.currentTime = video.currentTime - 4;
             }
 
-            if (e.code == 'KeyZ') { 
+            if (e.keyCode == '96') { // zero
+                video.currentTime = video.currentTime - 3;
+                video.muted = false;
+            }
+
+
+            if (e.code == 'KeyZ') {
                 video.currentTime = video.currentTime - 3.5;
             }
-            
-            if (e.code == 'KeyX') { 
+
+            if (e.code == 'KeyX') {
                 video.currentTime = video.currentTime - 3;
             }
 
@@ -199,13 +245,19 @@ function afterDOMLoadedYoutube() {
             }
 
             if (e.keyCode == '106') { // *
-                if(video.playbackRate == 1) {
+                if (video.playbackRate == 1) {
                     video.playbackRate = playbackRateAux;
+                    playbackRateInterval();
                 } else {
                     video.playbackRate = 1;
+
+                    if (playbackRateAuxInterval)
+                        clearInterval(playbackRateAuxInterval);
                 }
 
                 document.title = video.playbackRate + ' - ' + title;
+
+
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -
@@ -213,6 +265,9 @@ function afterDOMLoadedYoutube() {
                 document.title = video.playbackRate + ' - ' + title;
 
                 playbackRateAux = video.playbackRate;
+
+                sessionStorage.setItem('playbackRateAux', playbackRateAux);
+                playbackRateInterval();
             }
 
             if (e.keyCode == '109' || e.keyCode == '189') { // +
@@ -220,6 +275,9 @@ function afterDOMLoadedYoutube() {
                 document.title = video.playbackRate + ' - ' + title;
 
                 playbackRateAux = video.playbackRate;
+
+                sessionStorage.setItem('playbackRateAux', playbackRateAux);
+                playbackRateInterval();
             }
 
             // Repete Pedaço do video
@@ -233,28 +291,37 @@ function afterDOMLoadedYoutube() {
                 console.log("Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal);
             }
 
-            function Rodar() {
-                tempo = tempoFinal - tempoInicial;
-
-                console.log("Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal + " - Tempo: " + tempo);
-
-                var video = getVideo();
-                video.currentTime = tempoFinal - tempo;
-
-                timer = setInterval(() => {
-                    var video = getVideo();
-                    video.currentTime = tempoFinal - tempo;
-                }, (tempo * 1000));
-            }
-
             if (e.keyCode == '69' && tempoInicial != 0 && tempoFinal != 0) { // E
-                clearInterval(timer);
                 Rodar();
             }
 
             if (e.keyCode == '82') { // R
-                clearInterval(timer);
-                console.log("Interval cancelado!")
+                if (onTimeUpdate222222) {
+                    video.removeEventListener('timeupdate', onTimeUpdate222222);
+                    console.log("timeupdate cancelado!")
+                }
+            }
+
+            function Rodar() {
+                const video = getVideo();
+
+                // Remove listener anterior, caso exista
+                if (onTimeUpdate222222) {
+                    video.removeEventListener('timeupdate', onTimeUpdate222222);
+                }
+
+                video.currentTime = tempoInicial;
+                video.muted = false;
+                video.play();
+
+                onTimeUpdate222222 = () => {
+                    if (video.currentTime >= tempoFinal) {
+                        video.currentTime = tempoInicial;
+                    }
+                };
+
+                video.addEventListener('timeupdate', onTimeUpdate222222);
+                console.log("timeupdate setado! Tempo Inicial: " + tempoInicial + " - Tempo Final: " + tempoFinal)
             }
 
             if (e.ctrlKey === false && (e.keyCode == '220' || e.keyCode == '221')) { // ] [
@@ -353,11 +420,11 @@ function afterDOMLoadedPronunciation() {
         } else {
             let a1 = countSequences(n - 1);
             let a2 = countSequences(n - 2);
-            
+
             return a1 + a2;
         }
     }
-    
+
     const n = 3; // Número de etapas
     const totalSequences = countSequences(n);
     console.log("Número de sequências possíveis: " + totalSequences);

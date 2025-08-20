@@ -1,4 +1,4 @@
-if (location.host === "play.max.com") {
+if (location.host === "play.hbomax.com") {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMLoadedHbo);
     } else {
@@ -109,7 +109,7 @@ function acelerarVideoHbo() {
 }
 
 function pularIntro2(tentativas) {
-    var pular = document.querySelector('div[aria-label="Pular abertura"]');
+    var pular = document.querySelector('div[aria-label="Ignorar abertura"]');
     if (!pular) {
         setTimeout(() => {
             //console.log(new Date() + "Tentando pular intro... Tentativa: " + tentativas);
@@ -186,7 +186,7 @@ function afterDOMLoadedHbo() {
         }
     }, 100);
 
-
+/*
     let intervalCriarModal = setInterval(() => {
         addStyleElementHboMax();
         
@@ -219,6 +219,9 @@ function afterDOMLoadedHbo() {
             clearInterval(intervalCriarModal);
         }
     }, 500);
+*/
+
+    addStyleElementHboMax();
 
     setInterval(() => {
         let fundo = document.querySelector('div[aria-label="Ignorar Controles"]');
