@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive Video Folder Browser</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Plyr CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+</head>
+
+<body>
+  <div id="playerOverlay">
+    <video id="videoPlayer" controls></video>
+  </div>
+
+  <div id="controls">
+    <input value="1ZQOLQdZYiLZ7bmr5GDlImDhySb_MHluT" type="text" id="folderId" name="folderId"
+      placeholder="Enter Google Drive Folder ID" size="40" />
+    <input value="AIzaSyANgmyXsQe51IfWYEecFmqL5TWA-aYZrsU" type="text" id="apiKey" placeholder="Enter Google API Key"
+      size="40" />
+    <button id="loadRoot">Load Folder</button>
+  </div>
+  <nav id="breadcrumb"></nav>
+  <ul id="fileList"></ul>
+
+  <script>
+    let durationCredits = 25000;
+
+    let crumbs = [];
+    let currentVideos = [];
+    let currentIndex = 0;
+    let player;
+    // Map to hold subtitle files by base name
+    let subtitleMap = {};
+
+    // Cache key for folder data
+    const CACHE_KEY = 'gdPlayer_folderCache';
+    const STATE_KEY = 'gdPlayer_state';
+
+    // IndexedDB settings
+    const DB_NAME = 'gdPlayerDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'subtitles';
+    let db;
+
+    function getCache() {
+      const raw = localStorage.getItem(CACHE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }
+
+    function setCache(cache) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+    }
+
+    function clearCache() {
+      localStorage.removeItem(CACHE_KEY);
+      // Clear IndexedDB subtitles store
+      const request = indexedDB.deleteDatabase(DB_NAME);
+      request.onsuccess = () => alert('Cache limpo com sucesso!');
+      request.onerror = () => alert('Erro ao limpar cache de legendas.');
+    }
+
+    function saveState(fileId, time) {
+      const state = { folderId: crumbs.slice(-1)[0].id, fileId, time };
+      localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+      const s = localStorage.getItem(STATE_KEY);
+      return s ? JSON.parse(s) : null;
+    }
+
+    function updateBreadcrumb() {
+      const $bc = $('#breadcrumb').empty();
+      crumbs.forEach((c, i) => {
+        if (i > 0) $bc.append('<span>&gt;</span>');
+        const link = $('<a>').text(c.name).attr('data-id', c.id);
+        link.on('click', () => { crumbs = crumbs.slice(0, i + 1); listFolder(c.id); });
+        $bc.append(link);
+      });
+    }
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = e => {
+          const _db = e.target.result;
+          if (!_db.objectStoreNames.contains(STORE_NAME)) {
+            _db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = e => {
+          db = e.target.result;
+          // Ensure store exists
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.close();
+            indexedDB.deleteDatabase(DB_NAME).onsuccess = () => {
+              openDB().then(resolve).catch(reject);
+            };
+          } else resolve(db);
+        };
+        request.onerror = e => reject(e);
+      });
+    }
+
+    function getSubtitleFromDB(id) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(id);
+        req.onsuccess = () => {
+          if (req.result) resolve(req.result.data);
+          else resolve(null);
+        };
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function saveSubtitleToDB(id, data) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.put({ id, data });
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function initDB() {
+      try {
+        await openDB();
+      } catch (err) {
+        console.error('DB init error:', err);
+      }
+    }
+
+    function listFolder(folderId) {
+      const apiKey = $('#apiKey').val().trim();
+      if (!apiKey) { alert('Please enter uma API Key válida.'); return; }
+
+      // Reset subtitle map for this folder
+      subtitleMap = {};
+
+      const cache = getCache();
+      if (cache[folderId]) {
+        renderFiles(cache[folderId]);
+        resumeState(folderId);
+        return;
+      }
+
+      $.get('https://www.googleapis.com/drive/v3/files', {
+        q: `'${folderId}' in parents and trashed=false`,
+        key: apiKey,
+        fields: 'files(id,name,mimeType)',
+        orderBy: 'folder,name'
+      }).done(response => {
+        cache[folderId] = response.files;
+        setCache(cache);
+        renderFiles(response.files);
+        resumeState(folderId);
+      }).fail(err => {
+        console.error(err);
+        alert('Erro ao buscar dados da pasta.');
+      });
+    }
+
+    function renderFiles(files) {
+      $('#fileList').empty();
+      currentVideos = [];
+
+      files.forEach(file => {
+        const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
+        const ext = file.name.split('.').pop().toLowerCase();
+        const isVideo = ['mp4', 'webm', 'ogg', 'mkv', 'm4v'].includes(ext);
+        const isSrt = ext === 'srt';
+
+        if (isSrt) {
+          const baseName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]+/g, '');
+          subtitleMap[baseName] = file;
+
+          const idVideoDaLegenda = file.name.replace('.srt', '.mp4').replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]+/g, '');
+          $('#' + idVideoDaLegenda).text($('#' + idVideoDaLegenda).text() + ' [CC]');
+          return;
+        }
+
+        let id = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]+/g, '');
+        const $span = $('<span>').attr('id', id)
+          .addClass(isFolder ? 'folder' : (isVideo ? 'video' : 'file'))
+          .text(file.name);
+        const $li = $('<li>').append($span);
+
+        if (isFolder) {
+          $span.on('click', () => {
+            crumbs.push({ id: file.id, name: file.name });
+            updateBreadcrumb();
+            listFolder(file.id);
+          });
+        } else if (isVideo) {
+          currentVideos.push(file);
+          $span.on('click', () => playVideoAtIndex(currentVideos.findIndex(v => v.id === file.id)));
+        }
+
+        $('#fileList').append($li);
+      });
+    }
+
+    function resumeState(folderId) {
+      const state = loadState();
+      if (state && state.folderId === folderId) {
+        const idx = currentVideos.findIndex(v => v.id === state.fileId);
+        if (idx >= 0) playVideoAtIndex(idx, state.time);
+      }
+    }
+
+    async function getCachedSubtitle(subFile) {
+      if (!db) await initDB();
+
+      // Check IndexedDB
+      let text = await getSubtitleFromDB(subFile.id);
+      if (text) {
+        const blob = new Blob([text], { type: 'text/vtt' });
+        return URL.createObjectURL(blob);
+      }
+      // Fetch and store
+      const apiKey = $('#apiKey').val().trim();
+      const subUrl = `https://www.googleapis.com/drive/v3/files/${subFile.id}?alt=media&key=${apiKey}`;
+      const srtText = await $.get(subUrl);
+
+      const vttText = 'WEBVTT\n\n' +
+        srtText
+          .replace(/\r+/g, '')                                  // remove CR
+          .split('\n\n')                                        // blocos
+          .map(block =>
+            block.replace(
+              /(\d{2}:\d{2}:\d{2}),(\d{3})/g,                   // SRT “hh:mm:ss,mmm”
+              '$1.$2'                                          // → “hh:mm:ss.mmm”
+            )
+          )
+          .join('\n\n');
+
+      await saveSubtitleToDB(subFile.id, vttText);
+      const blob = new Blob([vttText], { type: 'text/vtt' });
+      return URL.createObjectURL(blob);
+    }
+
+    async function playVideoAtIndex(idx, startTime = 0) {
+      const apiKey = $('#apiKey').val().trim();
+      if (!player) {
+        player = new Plyr('#videoPlayer');
+        player.on('ended', () => {
+          if (currentIndex < currentVideos.length - 1) playVideoAtIndex(currentIndex + 1);
+          else nextSeason();
+        });
+        $('#playerOverlay .close-btn').on('click', () => $('#playerOverlay').hide());
+      }
+
+      currentIndex = idx;
+      const file = currentVideos[idx];
+      const videoUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${apiKey}`;
+
+      const baseName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]+/g, '');
+      let tracks = [];
+      if (subtitleMap[baseName]) {
+        const subFile = subtitleMap[baseName];
+        const cachedUrl = await getCachedSubtitle(subFile);
+        tracks = [{ kind: 'captions', label: 'English', srclang: 'en-US', src: cachedUrl, default: true }];
+      }
+
+      $('#playerOverlay').show();
+      player.source = { type: 'video', title: file.name, sources: [{ src: videoUrl, provider: 'html5' }], tracks };
+
+      player.play().then(() => {
+        setTimeout(() => {
+          player.currentTime = startTime;
+          if (tracks.length > 0) {
+            player.toggleCaptions(true);
+          }
+        }, 500);
+      });
+      player.on('timeupdate', () => {
+        saveState(file.id, player.currentTime);
+
+        if ((player.currentTime * 1000) > 10000) {
+          const ms = player.currentTime * 1000;
+          const totalMs = player.duration * 1000;
+          if (ms >= totalMs - durationCredits) {
+            if (currentIndex < currentVideos.length - 1) playVideoAtIndex(currentIndex + 1);
+            else nextSeason();
+          }
+        }
+      });
+
+      $('.plyr__video-wrapper').attr('data-plyr-title', file.name);
+      const safeId = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]+/g, '');
+      $('.videoAtual').removeClass('videoAtual');
+      $('#' + safeId).addClass('videoAtual');
+    }
+
+    function nextSeason() {
+      console.log("falta implementar");
+
+      // helper to go to next season
+      // window.nextSeason = function () {
+      //   const parentId = crumbs.slice(-2)[0]?.id;
+      //   if (!parentId) return;
+      //   $.get('https://www.googleapis.com/drive/v3/files', {
+      //     q: `'${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`, key: apiKey,
+      //     fields: 'files(id,name)', orderBy: 'name'
+      //   }).done(resp => {
+      //     const siblings = resp.files;
+      //     const currName = crumbs.slice(-1)[0].name;
+      //     const idx = siblings.findIndex(f => f.name === currName);
+      //     if (idx >= 0 && idx < siblings.length - 1) {
+      //       const next = siblings[idx + 1]; crumbs = crumbs.slice(0, -1).concat(next);
+      //       updateBreadcrumb();
+      //       listFolder(next.id);
+
+      //       setTimeout(() => {
+      //         if (currentVideos.length > 0) {
+      //           playVideoAtIndex(0);
+      //         }
+      //       }, 1500);
+      //     }
+      //   });
+      // };
+    }
+
+    function setupControls() {
+      $('#loadRoot').on('click', () => {
+        const rootId = $('#folderId').val().trim();
+        if (!rootId) { alert('Please enter a folder ID.'); return; }
+        crumbs = [{ id: rootId, name: 'Root' }];
+        updateBreadcrumb();
+        listFolder(rootId);
+      });
+
+      const $clearBtn = $('<button>').attr('id', 'clearCache').text('Limpar Cache');
+      $('#loadRoot').after($clearBtn);
+      $clearBtn.on('click', clearCache);
+    }
+
+    $(document).ready(async () => {
+      await initDB();
+      setupControls();
+      $('#loadRoot').click();
+
+      document.addEventListener('keydown', e => {
+        var video = document.querySelector('video');
+        if (e.keyCode == 96) video.currentTime -= 3;
+        if (e.keyCode == 110) video.currentTime -= 4;
+        if (e.keyCode == 37) video.currentTime -= 5;
+        if (e.keyCode == 39) video.currentTime += 5;
+      });
+    });
+  </script>
+
+
+
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    .videoAtual {
+      color: #f90000 !important;
+    }
+
+    #controls {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    #breadcrumb {
+      margin-bottom: 15px;
+    }
+
+    #breadcrumb a {
+      text-decoration: none;
+      color: #0066cc;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+
+    #breadcrumb span {
+      margin-right: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+
+    span.folder {
+      font-weight: bold;
+      cursor: pointer;
+      color: #cc6600;
+    }
+
+    span.video {
+      color: #333;
+      cursor: pointer;
+    }
+
+    #playerOverlay {
+      display: none;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 0;
+      height: 100vh;
+    }
+
+    .plyr--video {
+      height: 100vh !important;
+      width: 100% !important;
+    }
+
+    #playerOverlay .plyr__video-embed,
+    #playerOverlay video {
+      height: 100%;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    #playerOverlay .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .plyr__video-wrapper {
+      position: relative;
+    }
+
+    .plyr__video-wrapper::before {
+      content: attr(data-plyr-title);
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .plyr__video-wrapper:hover::before {
+      opacity: 1;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #000;
+      /* preto */
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #222;
+      /* preto um pouco mais claro para diferenciar */
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #444;
+    }
+  </style>
+</body>
+
+</html>

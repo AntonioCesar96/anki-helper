@@ -1,5 +1,5 @@
 {
-    "name": "Video Utils",
+    "name": "Instagram Utils",
     "manifest_version": 3,
     "version": "1.0",
     "permissions": [
@@ -24,15 +24,7 @@
                 "file://*/*"
             ],
             "js": [
-                "content-script-youtube.js",
-                "content-script-youtube2222.js",
-                "content-script-prime.js",
-                "content-script-hbo.js",
-                "content-script-disney.js",
-                "content-script-legenda.js",
-                "content-script-soaper.js",
-                "content-script-instagram.js",
-                "content-script-drive.js"
+                "instagram-kiwi.js"
             ]
         }
     ]

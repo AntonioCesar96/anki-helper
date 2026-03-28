@@ -109,23 +109,62 @@ function acelerarVideoHbo() {
 }
 
 function pularIntro2(tentativas) {
-    var pular = document.querySelector('div[aria-label="Ignorar abertura"]');
+    var pular = document.querySelector('button[aria-label="Ignorar abertura"]');
     if (!pular) {
         setTimeout(() => {
-            //console.log(new Date() + "Tentando pular intro... Tentativa: " + tentativas);
+            console.log(new Date() + "Tentando pular intro... Tentativa: " + tentativas);
             pularIntro2(++tentativas)
         }, 3000);
+
+        const tituloSerie = document.querySelector('span[data-testid="player-ux-asset-title"]')?.textContent;
+        if (!tituloSerie)
+            return;
+
+        // Friends
+        if ("Friends" === tituloSerie.trim()) {
+            const btnNext = document.querySelector('button[data-testid="player-ux-up-next-button"]');
+            if (!btnNext)
+                return;
+
+            const durationCredits = 6000;
+
+            const video = getVideo();
+            const ms = video.currentTime * 1000;
+            const totalMs = video.duration * 1000;
+            if (ms >= (totalMs - durationCredits)) {
+                btnNext.click();
+                console.log(new Date() + " Episodio chegou ao fim, pulando para proximo");
+            }
+        }
+
+        // The Big Bang Theory
+        if ("The Big Bang Theory" === tituloSerie.trim()) {
+            const durationCredits = 27000;
+            const video = getVideo();
+
+            const ms = video.currentTime * 1000;
+            const totalMs = video.duration * 1000;
+            if (ms >= (totalMs - durationCredits) && ms <= (video.duration * 1000 - 1000)) {
+                video.currentTime = video.duration - 1;
+                console.log(new Date() + " Episodio chegou ao fim, pulando para proximo");
+            }
+        }
 
         return;
     }
 
     pular.click();
 
-    // console.log("Abertura pulada, próxima tentativa será: " + new Date((Date.now() + (1000 * 60 * 10))));
+    const video = getVideo();
+    const ms = video.currentTime * 1000;
+    const totalMs = video.duration * 1000;
+    const proximaTentativaDePulo = totalMs - ms - (1000 * 60)
+
+    console.log("Abertura pulada, próxima tentativa será: " + new Date((Date.now() + proximaTentativaDePulo)));
     setTimeout(() => {
-        //console.log(new Date() + "Iniciando processo de tentativas");
+        console.log(new Date() + " Iniciando processo de tentativas");
         pularIntro2(1);
-    }, (1000 * 60 * 1));
+    }, proximaTentativaDePulo);
 }
 
 
@@ -186,40 +225,40 @@ function afterDOMLoadedHbo() {
         }
     }, 100);
 
-/*
-    let intervalCriarModal = setInterval(() => {
-        addStyleElementHboMax();
-        
-        if (document.querySelector('#posicaoSliderRodape')) {
-
-            let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
-            posicaoRodapeSliderInput.addEventListener('input', function () {
-                posicaoLegendaSliderRodapeHboMax = Number(this.value);
-                addStyleElementHboMax();
-            });
-
-            let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
-            fonteLegendaRodapeInput.addEventListener('input', function () {
-                fonteLegendaRodapeHboMax = Number(this.value);
-                addStyleElementHboMax();
-            });
-
-            let posicaoRodapeInput = document.querySelector('#posicaoRodape');
-            posicaoRodapeInput.addEventListener('input', function () {
-                posicaoLegendaRodapeHboMax = Number(this.value);
-                addStyleElementHboMax();
-            });
-
-            let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
-            backgroundColorRodapeInput.addEventListener('input', function () {
-                backgroundColorRodapeHboMax = this.value;
-                addStyleElementHboMax();
-            });
-
-            clearInterval(intervalCriarModal);
-        }
-    }, 500);
-*/
+    /*
+        let intervalCriarModal = setInterval(() => {
+            addStyleElementHboMax();
+            
+            if (document.querySelector('#posicaoSliderRodape')) {
+    
+                let posicaoRodapeSliderInput = document.querySelector('#posicaoSliderRodape');
+                posicaoRodapeSliderInput.addEventListener('input', function () {
+                    posicaoLegendaSliderRodapeHboMax = Number(this.value);
+                    addStyleElementHboMax();
+                });
+    
+                let fonteLegendaRodapeInput = document.querySelector('#fonteRodape');
+                fonteLegendaRodapeInput.addEventListener('input', function () {
+                    fonteLegendaRodapeHboMax = Number(this.value);
+                    addStyleElementHboMax();
+                });
+    
+                let posicaoRodapeInput = document.querySelector('#posicaoRodape');
+                posicaoRodapeInput.addEventListener('input', function () {
+                    posicaoLegendaRodapeHboMax = Number(this.value);
+                    addStyleElementHboMax();
+                });
+    
+                let backgroundColorRodapeInput = document.querySelector('#backgroundColorRodape');
+                backgroundColorRodapeInput.addEventListener('input', function () {
+                    backgroundColorRodapeHboMax = this.value;
+                    addStyleElementHboMax();
+                });
+    
+                clearInterval(intervalCriarModal);
+            }
+        }, 500);
+    */
 
     addStyleElementHboMax();
 

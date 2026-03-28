@@ -1,8 +1,8 @@
-if (location.host === "www.instagram.com" || location.origin === 'file://') {
+if (location.host === 'drive.google.com') {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', afterDOMLoadedInstagram);
+        document.addEventListener('DOMContentLoaded', afterDOMLoadedDrive);
     } else {
-        afterDOMLoadedInstagram();
+        afterDOMLoadedDrive();
     }
 }
 
@@ -23,7 +23,7 @@ let tempoInicialInput, tempoFinalInput;
 // variável de controle (true por padrão)
 let useGrayscale = true;
 
-function afterDOMLoadedInstagram() {
+function afterDOMLoadedDrive() {
 
     setTimeout(() => {
         // cria o botão

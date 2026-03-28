@@ -1,5 +1,5 @@
 var sitesHome = [
-    { host: "www.netflix.com", },
+    // { host: "www.netflix.com", },
     { host: "primevideo" },
     { host: "play.hbomax.com" },
     { host: "www.disneyplus.com" },
@@ -12,9 +12,9 @@ var sitesHome = [
 var siteHome = sitesHome.filter(x => location.host.includes(x.host))[0];
 if (siteHome) {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', afterDOMLegenda);
+        //document.addEventListener('DOMContentLoaded', afterDOMLegenda);
     } else {
-        afterDOMLegenda();
+        //afterDOMLegenda();
     }
 }
 

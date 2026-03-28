@@ -1,9 +1,66 @@
+var botaoDireitoPronunciation = false;
+
 if (location.host === "www.youtube.com") {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMLoadedYoutube);
     } else {
         afterDOMLoadedYoutube();
     }
+
+
+    (function () {
+        let lastUrl = location.href;
+
+        function isYoutubeHome(url) {
+            return url === "https://www.youtube.com/" || url === "https://www.youtube.com";
+        }
+
+        function flashWhiteScreen() {
+            // Evita duplicar
+            if (document.getElementById("yt-white-flash")) return;
+
+            const overlay = document.createElement("div");
+            overlay.id = "yt-white-flash";
+            overlay.style.position = "fixed";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100vw";
+            overlay.style.height = "100vh";
+            overlay.style.background = "#ffffff";
+            overlay.style.zIndex = "999999";
+            overlay.style.pointerEvents = "none";
+
+            document.body.appendChild(overlay);
+
+            setTimeout(() => {
+                overlay.remove();
+            }, 5000);
+        }
+
+        function checkUrlChange() {
+            const currentUrl = location.href;
+
+            if (currentUrl !== lastUrl) {
+                lastUrl = currentUrl;
+
+                if (isYoutubeHome(currentUrl)) {
+                    //flashWhiteScreen();
+                }
+            }
+        }
+
+        // Observa mudanças de navegação SPA
+        const observer = new MutationObserver(checkUrlChange);
+        observer.observe(document, { childList: true, subtree: true });
+
+        // Caso abra direto na home
+        window.addEventListener("load", () => {
+            if (isYoutubeHome(location.href)) {
+                //flashWhiteScreen();
+            }
+        });
+    })();
+
 }
 
 if (document.readyState === 'loading') {
@@ -101,13 +158,18 @@ function addstyleElementYoutube() {
     document.head.appendChild(styleElementYoutube);
 }
 
+function getTitleYoutube() {
+    var title = document.title.replace(/^(\d+(\.\d+)?\s*-\s*)*/, '');
+    return title;
+}
+
 var playbackRateAuxInterval;
 function playbackRateInterval() {
     if (playbackRateAuxInterval)
         clearInterval(playbackRateAuxInterval);
 
     playbackRateAuxInterval = setInterval(() => {
-        var title = document.title.replace(/^(\d+(\.\d+)?\s*-\s*)*/, '');
+        var title = getTitleYoutube();
         if (!sessionStorage.getItem('playbackRateAux')) {
             clearInterval(playbackRateAuxInterval);
             return;
@@ -124,6 +186,7 @@ function playbackRateInterval() {
 
         if (!title.startsWith('' + rate)) {
             document.title = video.playbackRate + ' - ' + title;
+            mostrarVelocidade();
         }
     }, 2000);
 }
@@ -132,6 +195,66 @@ let onTimeUpdate222222;
 function afterDOMLoadedYoutube() {
 
     addstyleElementYoutube();
+/*
+    // remove todas as opções e deixa somente a Musica clicada
+    setInterval(() => {
+        const chips = document.querySelectorAll('[page-subtype="home"] yt-chip-cloud-chip-renderer');
+
+        chips.forEach(chip => {
+            const text = chip.innerText?.trim();
+
+            if (text === 'Música') {
+                // Mantém visível
+                chip.style.display = '';
+
+                // Verifica se está ativo pelo critério correto
+                const isActive = chip.querySelector('.ytChipShapeActive');
+
+                // Clica se não estiver ativo
+                if (!isActive) {
+                    const button = chip.querySelector('button');
+                    if (button) {
+                        button.click();
+                    }
+                }
+            } else {
+                // Esconde os outros
+                chip.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('ytd-playlist-panel-renderer, ytd-guide-renderer, [id="contents"]').forEach(function name(el) {
+            el.style.filter = 'grayscale(100%)';
+        });
+    }, 1000);
+
+    // remove o Todos das opções relacionadas e clica no segundo item para esconder videos e deixar musicas
+    setInterval(() => {
+        const chips = document.querySelectorAll('#related yt-chip-cloud-chip-renderer');
+
+        if (chips.length < 2) return;
+
+        const primeiro = chips[0];
+        const segundo = chips[1];
+
+        // Esconde o primeiro chip
+        if (primeiro.style.display !== 'none') {
+            primeiro.style.display = 'none';
+        }
+
+        // Verifica se o segundo NÃO está selecionado
+        const botaoSegundo = segundo.querySelector('button[role="tab"]');
+        const isSelecionado =
+            segundo.hasAttribute('selected') ||
+            botaoSegundo?.getAttribute('aria-selected') === 'true';
+
+        // Clica apenas se ainda não tiver sido clicado
+        if (!isSelecionado && botaoSegundo) {
+            botaoSegundo.click();
+        }
+    }, 1000);
+*/
+
 
     setInterval(() => {
         // document.querySelectorAll('.ytp-panel-menu [role="menuitem"] .ytp-menuitem-content')
@@ -156,7 +279,7 @@ function afterDOMLoadedYoutube() {
     playbackRateInterval();
 
     setTimeout(() => {
-        var title = document.title.replace(/^(\d+(\.\d+)?\s*-\s*)*/, '');
+        var title = getTitleYoutube();
 
         var playbackRate = false ? 0.1 : 0.05;
 
@@ -165,8 +288,26 @@ function afterDOMLoadedYoutube() {
         document.addEventListener('keydown', function (e) {
             e = e || window.event;
             var video = getVideo();
+            var title = getTitleYoutube();
 
             console.log(e.keyCode);
+
+            if (['PageUp', 'PageDown'].includes(e.code)) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+
+            // ----- PAGEDOWN -----
+            if (e.code === 'PageDown') {
+                video.currentTime = video.currentTime - 4;
+                return;
+            }
+
+            if (e.code === 'PageUp') {
+                video.currentTime = video.currentTime - 3;
+                return;
+            }
 
             if (e.key === '.') {
                 esconderBarra = !esconderBarra;
@@ -244,6 +385,17 @@ function afterDOMLoadedYoutube() {
                 }
             }
 
+            if (e.keyCode == '111') { // *
+                document.querySelectorAll('body').forEach(function name(el) {
+                    if(el.style.filter){
+                        el.style.filter = '';
+                        return;
+                    }
+                    
+                    el.style.filter = 'grayscale(100%)';
+                });
+            }
+
             if (e.keyCode == '106') { // *
                 if (video.playbackRate == 1) {
                     video.playbackRate = playbackRateAux;
@@ -256,13 +408,13 @@ function afterDOMLoadedYoutube() {
                 }
 
                 document.title = video.playbackRate + ' - ' + title;
-
-
+                mostrarVelocidade();
             }
 
             if (e.keyCode == '107' || e.keyCode == '187') { // -
                 video.playbackRate = Number((video.playbackRate + playbackRate).toPrecision(3));
                 document.title = video.playbackRate + ' - ' + title;
+                mostrarVelocidade();
 
                 playbackRateAux = video.playbackRate;
 
@@ -273,6 +425,7 @@ function afterDOMLoadedYoutube() {
             if (e.keyCode == '109' || e.keyCode == '189') { // +
                 video.playbackRate = Number((video.playbackRate - playbackRate).toPrecision(3));
                 document.title = video.playbackRate + ' - ' + title;
+                mostrarVelocidade();
 
                 playbackRateAux = video.playbackRate;
 
@@ -430,34 +583,230 @@ function afterDOMLoadedPronunciation() {
     console.log("Número de sequências possíveis: " + totalSequences);
 
     setTimeout(() => {
-        document.addEventListener('contextmenu', function (e) {
-
-            let palavraMarcada = window.getSelection()?.toString().trim() ?? "";
-
-            if (e.ctrlKey) {
-                e.preventDefault();
-
-                var audio = new Audio(`http://localhost:3000/google/pronunciation?palavra=${palavraMarcada}`);
-                audio.play();
-
-            }
-        }, true);
-
+        
         document.addEventListener('keydown', function (e) {
 
             let palavraMarcada = window.getSelection()?.toString().trim() ?? "";
 
+            // if (e.ctrlKey === true && (e.keyCode == '220' || e.keyCode == '221')) { // ] [
+
+            //     window.open("https://www.google.com/search?q=" + palavraMarcada + "+pronunciation+english");
+            // }
+
+            // if (e.ctrlKey === true && e.keyCode == '194') { // ] [
+
+            //     window.open("https://context.reverso.net/traducao/ingles-portugues/" + palavraMarcada);
+            // }
+
             if (e.ctrlKey === true && (e.keyCode == '220' || e.keyCode == '221')) { // ] [
 
-                window.open("https://www.google.com/search?q=" + palavraMarcada + "+pronunciation+english");
-            }
-
-            if (e.ctrlKey === true && e.keyCode == '194') { // ] [
-
-                window.open("https://context.reverso.net/traducao/ingles-portugues/" + palavraMarcada);
+                botaoDireitoPronunciation = !botaoDireitoPronunciation;
             }
 
         });
+
+
+
+        function getSelectedText() {
+        const sel = window.getSelection?.();
+        const text = sel ? String(sel).trim() : "";
+        if (text) return text;
+
+        // Selection inside input/textarea
+        const el = document.activeElement;
+        if (
+        el &&
+        (el.tagName === "TEXTAREA" ||
+            (el.tagName === "INPUT" && /text|search|url|email|tel|password/i.test(el.type)))
+        ) {
+        const start = el.selectionStart ?? 0;
+        const end = el.selectionEnd ?? 0;
+        return String(el.value || "").slice(start, end).trim();
+        }
+
+        return "";
+    }
+
+    function getWordFromTextNode(node, x, y) {
+        if (!node || node.nodeType !== Node.TEXT_NODE) return "";
+
+        const text = node.textContent || "";
+        if (!text.trim()) return "";
+
+        const range = document.createRange();
+
+        for (let i = 0; i < text.length; i++) {
+        range.setStart(node, i);
+        range.setEnd(node, i + 1);
+
+        for (const rect of range.getClientRects()) {
+            if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+            // Expand to word (letters/numbers/_)
+            let start = i;
+            let end = i;
+
+            while (start > 0 && /\w/.test(text[start - 1])) start--;
+            while (end < text.length - 1 && /\w/.test(text[end + 1])) end++;
+
+            return text.slice(start, end + 1).trim();
+            }
+        }
+        }
+        return "";
+    }
+
+    function getWordUnderCursor(e) {
+        // If the user right-clicked on an input/textarea, try to use caret position
+        const clickedEl = document.elementFromPoint(e.clientX, e.clientY);
+        if (!clickedEl) return "";
+
+        if (clickedEl.tagName === "INPUT" || clickedEl.tagName === "TEXTAREA") {
+        const pos = clickedEl.selectionStart;
+        if (pos == null) return "";
+        const t = clickedEl.value || "";
+
+        let start = Math.min(pos, t.length);
+        let end = Math.min(pos, t.length);
+
+        while (start > 0 && /\w/.test(t[start - 1])) start--;
+        while (end < t.length && /\w/.test(t[end])) end++;
+
+        return t.slice(start, end).trim();
+        }
+
+        // Modern best-effort: caret range from point (fast)
+        const caretRange =
+        document.caretRangeFromPoint?.(e.clientX, e.clientY) ||
+        document.caretPositionFromPoint?.(e.clientX, e.clientY);
+
+        if (caretRange) {
+        let node, offset;
+        if (caretRange.startContainer) {
+            node = caretRange.startContainer;
+            offset = caretRange.startOffset;
+        } else if (caretRange.offsetNode) {
+            node = caretRange.offsetNode;
+            offset = caretRange.offset;
+        }
+
+        if (node && node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent || "";
+            if (!text.trim()) return "";
+
+            let i = Math.max(0, Math.min(offset, text.length - 1));
+            // If we landed on whitespace, try move left/right a bit
+            if (!/\w/.test(text[i])) {
+            if (i > 0 && /\w/.test(text[i - 1])) i = i - 1;
+            else if (i < text.length - 1 && /\w/.test(text[i + 1])) i = i + 1;
+            else return "";
+            }
+
+            let start = i;
+            let end = i;
+            while (start > 0 && /\w/.test(text[start - 1])) start--;
+            while (end < text.length - 1 && /\w/.test(text[end + 1])) end++;
+
+            return text.slice(start, end + 1).trim();
+        }
+        }
+
+        // Fallback: walk text nodes under clicked element and hit-test rectangles
+        const walker = document.createTreeWalker(clickedEl, NodeFilter.SHOW_TEXT);
+        let n;
+        while ((n = walker.nextNode())) {
+        const w = getWordFromTextNode(n, e.clientX, e.clientY);
+        if (w) return w;
+        }
+
+        return "";
+    }
+
+    function pickEnglishVoice() {
+        const voices = speechSynthesis.getVoices() || [];
+        return (
+        voices.filter(v => v.voiceURI == "Microsoft Andrew Online (Natural) - English (United States)")[0] ||
+        voices.find(v => /^en-US/i.test(v.lang)) ||
+        voices.find(v => /^en/i.test(v.lang)) ||
+        voices[0] ||
+        null
+        );
+    }
+
+    function speak(text) {
+        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+        alert("Your browser doesn't support Speech Synthesis.");
+        return;
+        }
+
+        speechSynthesis.cancel();
+
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        u.rate = 0.7;
+        u.pitch = 1;
+
+        const v = pickEnglishVoice();
+        if (v) u.voice = v;
+
+        speechSynthesis.speak(u);
+    }
+
+    // Ensure voices get loaded in browsers that do it async
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+
+    document.addEventListener(
+        "contextmenu",
+        (e) => {
+            if(!botaoDireitoPronunciation) {
+                if (!e.ctrlKey) return;
+            }
+            const selected = getSelectedText();
+            const text = selected || getWordUnderCursor(e);
+            if (!text) return;
+
+            e.preventDefault(); // hide context menu for this action
+            speak(text);
+        },
+        true
+    );
     }, 1000);
 
 }
+
+function mostrarVelocidade() {
+    const titleEl = document.querySelector('#title h1');
+    if (titleEl && titleEl.textContent?.trim() !== document.title) {
+        titleEl.textContent = document.title.replace('- YouTube', '');
+    }
+
+    if (!getVideo()) {
+        return;
+    }
+
+    if (getVideo()?.playbackRate == 1) {
+        document.getElementById('spanVelocidade')?.remove();
+        return;
+    }
+
+    document.getElementById('spanVelocidade')?.remove();
+
+    var spanVelocidade = document.createElement('span');
+    spanVelocidade.setAttribute('id', 'spanVelocidade');
+    spanVelocidade.innerText = getVideo()?.playbackRate;
+    spanVelocidade.style.padding = '2px 5px 1px';
+    spanVelocidade.style.display = 'block';
+    spanVelocidade.style.border = 'none';
+    spanVelocidade.style.backgroundColor = '#000';
+    spanVelocidade.style.color = '#fff';
+    spanVelocidade.style.fontFamily = 'sans-serif';
+    spanVelocidade.style.cursor = 'pointer';
+    spanVelocidade.style.borderRadius = '5px';
+    spanVelocidade.style.position = 'absolute';
+    spanVelocidade.style.top = '3px';
+    spanVelocidade.style.left = '3px';
+    spanVelocidade.style.opacity = '.5';
+
+    document.querySelector('#container video').parentElement.style.position = 'relative';
+    document.querySelector('#container video').parentElement.appendChild(spanVelocidade);
+}
+

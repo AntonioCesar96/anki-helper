@@ -1,5 +1,11 @@
 
 
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', AfterDom);
+} else {
+    AfterDom();
+}
+
 if (location.host.includes('cifraclub')) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', afterDOMLoadedCifra);
@@ -217,4 +223,8 @@ function afterDOMLoadedCifra() {
 
 function mudarTitulo() {
     document.title = document.querySelector('pre').style.fontSize + ' - ' + document.querySelector('pre').style.lineHeight + ' - ' + tituloPagina;
+}
+
+function AfterDom() {
+    
 }

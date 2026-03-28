@@ -34,12 +34,12 @@ function afterDOMLoadedYoutube2() {
     addstyleElementYoutube2();
 
     let intervalAddTimer = setInterval(() => {
-        if (!document.querySelector('#below')) {
+        if (!document.querySelector('#page-manager')) {
             return;
         }
         clearInterval(intervalAddTimer);
 
-        document.querySelector('#below').appendChild(AAAAAAAAAAAAA());
+        document.querySelector('#page-manager').appendChild(AAAAAAAAAAAAA());
 
         tratarVideo();
 
@@ -252,6 +252,39 @@ function criaDadosYoutubeVazio() {
 function AAAAAAAAAAAAA() {
     const loopPanel = document.createElement("div");
     loopPanel.id = "efyt-loop-panel2";
+
+    // --- estilo básico para permitir arrastar ---
+    //loopPanel.style.position = "relative";
+    loopPanel.style.top = "48px";
+    loopPanel.style.left = "1045px";
+    //loopPanel.style.cursor = "move";
+    //loopPanel.style.zIndex = "9999"; 
+    loopPanel.style.maxWidth = "240px"; 
+
+    // função de drag
+    function makeDraggable(el) {
+        let offsetX = 0, offsetY = 0, isDown = false;
+
+        el.addEventListener("mousedown", function (e) {
+            isDown = true;
+            offsetX = e.clientX - el.offsetLeft;
+            offsetY = e.clientY - el.offsetTop;
+            document.body.style.userSelect = "none"; // evita seleção de texto
+        });
+
+        document.addEventListener("mouseup", function () {
+            isDown = false;
+            document.body.style.userSelect = "auto";
+        });
+
+        document.addEventListener("mousemove", function (e) {
+            if (!isDown) return;
+            el.style.left = (e.clientX - offsetX) + "px";
+            el.style.top = (e.clientY - offsetY) + "px";
+        });
+    }
+
+    makeDraggable(loopPanel);
 
     const startDiv = document.createElement("div");
     const startSpan = document.createElement("span");
