@@ -32,7 +32,8 @@
                 "content-script-legenda.js",
                 "content-script-soaper.js",
                 "content-script-instagram.js",
-                "content-script-drive.js"
+                "content-script-drive.js",
+                "content-script-whatsapp.js"
             ]
         }
     ]
