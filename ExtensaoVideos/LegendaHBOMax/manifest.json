@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Legenda Streaming",
+  "version": "1.0.0",
+  "description": "Carrega legendas SRT externas e sincroniza com o video do Max/HBO Max e Disney+.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.max.com/*",
+        "https://play.max.com/*",
+        "https://www.hbomax.com/*",
+        "https://play.hbomax.com/*",
+        "https://disneyplus.com/*",
+        "https://*.disneyplus.com/*"
+      ],
+      "js": ["javascript.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}

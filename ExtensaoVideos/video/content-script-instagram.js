@@ -21,7 +21,7 @@ let onTimeUpdate;
 let tempoInicialInput, tempoFinalInput;
 
 // variável de controle (true por padrão)
-let useGrayscale = true;
+let useGrayscale = false;
 
 function afterDOMLoadedInstagram() {
 
@@ -78,7 +78,7 @@ function afterDOMLoadedInstagram() {
 
     setTimeout(() => {
         if (location.origin === 'file://') {
-            criarPainelControles();
+            //criarPainelControles();
 
             // recuperar valores salvos
             let saved = localStorage.getItem("crop_" + location.href);
